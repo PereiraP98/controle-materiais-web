@@ -7,61 +7,76 @@ body {
 }
 
 header {
-    background-color: #1f2937;
-    padding: 15px 20px;
-    color: white;
+    background-color: #215C98;
+    padding: 20px;
     text-align: center;
-    font-size: 1.5em;
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
 }
 
 .container {
     max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
+    margin: 40px auto;
+    padding: 30px;
     background: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
-h1 {
-    font-size: 1.8em;
+h2 {
+    color: #215C98;
+    text-align: center;
     margin-bottom: 20px;
-    color: #1f2937;
 }
 
 label {
-    font-size: 1em;
+    font-weight: 500;
     margin-bottom: 5px;
     display: block;
+    color: #215C98;
 }
 
-select, input[type="number"] {
+select, input[type="text"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
     font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+select:focus, input[type="text"]:focus {
+    border-color: #215C98;
+    outline: none;
 }
 
 button {
-    padding: 12px 20px;
-    font-size: 1em;
-    background-color: #2563eb;
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
+    background-color: #215C98;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #1d4ed8;
+    background-color: #17406d;
+    transform: scale(1.05);
 }
 
 footer {
-    margin-top: 20px;
     text-align: center;
+    margin-top: 30px;
+    padding: 10px;
+    background-color: #215C98;
+    color: white;
     font-size: 0.9em;
-    color: #888;
 }
