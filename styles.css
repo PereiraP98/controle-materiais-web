@@ -1,5 +1,5 @@
 /* Reset padrão */
-body, h1, h2, p, form, input, select, button {
+body, h1, h2, ul, li, form, input, select, button {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -18,31 +18,38 @@ header {
     color: white;
     padding: 20px;
     text-align: center;
-    font-size: 1.8em;
-    font-weight: 700;
+    font-size: 2em;
+    font-weight: bold;
 }
 
-/* Formulário */
-.form-container {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+/* Layout principal */
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Janela de Solicitação */
+.solicitacao-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    flex: 1;
+    max-width: 600px;
 }
 
-.form-container h2 {
+.solicitacao-container h2 {
     color: #215C98;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.5em;
 }
 
 label {
     font-weight: 500;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     display: block;
     color: #333;
 }
@@ -62,8 +69,12 @@ select:focus, input[type="text"]:focus {
     outline: none;
 }
 
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
 button {
-    width: 100%;
     padding: 12px;
     font-size: 1em;
     background-color: #215C98;
@@ -79,14 +90,41 @@ button:hover {
     transform: scale(1.03);
 }
 
+/* Materiais Reservados */
+.materiais-reservados, .materiais-solicitados {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    max-width: 400px;
+}
+
+.materiais-reservados h2, .materiais-solicitados h2 {
+    color: #215C98;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    padding: 10px;
+    background-color: #f3f4f6;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 /* Rodapé */
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #215C98;
-    color: white;
     text-align: center;
     padding: 10px;
+    background-color: #215C98;
+    color: white;
     font-size: 0.9em;
 }
