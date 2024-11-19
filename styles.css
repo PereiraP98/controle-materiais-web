@@ -30,53 +30,46 @@ header {
     padding: 20px;
 }
 
-/* Janela de Solicitação */
+/* Coluna esquerda */
 .left-column {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.solicitacao-container, .materiais-reservados {
+/* Estilo das janelas */
+.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Janela de Gráficos */
 .graficos-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-.graficos-container h2 {
+/* Inputs e selects modernos */
+select, input[type="text"] {
+    width: 100%;
+    padding: 12px;
     margin-bottom: 15px;
-    color: #215C98;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Materiais Solicitados */
-.materiais-solicitados {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+select:focus, input[type="text"]:focus {
+    border-color: #215C98;
+    box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
+    outline: none;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-ul li {
-    padding: 10px;
-    background-color: #f3f4f6;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+input[type="text"]::placeholder {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9em;
 }
 
 /* Botões */
