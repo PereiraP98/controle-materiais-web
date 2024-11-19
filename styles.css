@@ -1,43 +1,50 @@
-body {
-    font-family: 'Roboto', Arial, sans-serif;
+/* Reset padrão */
+body, h1, h2, p, form, input, select, button {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', Arial, sans-serif;
     background-color: #f3f4f6;
     color: #333;
+    line-height: 1.6;
 }
 
+/* Cabeçalho */
 header {
     background-color: #215C98;
+    color: white;
     padding: 20px;
     text-align: center;
-    color: white;
+    font-size: 1.8em;
+    font-weight: 700;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2em;
-}
-
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 30px;
+/* Formulário */
+.form-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
     background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
 }
 
-h2 {
+.form-container h2 {
     color: #215C98;
-    text-align: center;
     margin-bottom: 20px;
+    font-size: 1.5em;
 }
 
 label {
     font-weight: 500;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     display: block;
-    color: #215C98;
+    color: #333;
 }
 
 select, input[type="text"] {
@@ -45,7 +52,7 @@ select, input[type="text"] {
     padding: 10px;
     margin-bottom: 15px;
     border: 2px solid #ccc;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 1em;
     transition: border-color 0.3s ease;
 }
@@ -57,8 +64,8 @@ select:focus, input[type="text"]:focus {
 
 button {
     width: 100%;
-    padding: 15px;
-    font-size: 1.1em;
+    padding: 12px;
+    font-size: 1em;
     background-color: #215C98;
     color: white;
     border: none;
@@ -69,14 +76,17 @@ button {
 
 button:hover {
     background-color: #17406d;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
+/* Rodapé */
 footer {
-    text-align: center;
-    margin-top: 30px;
-    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     background-color: #215C98;
     color: white;
+    text-align: center;
+    padding: 10px;
     font-size: 0.9em;
 }
