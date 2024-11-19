@@ -15,11 +15,25 @@ body {
 /* Cabeçalho */
 header {
     background-color: #215C98;
+    padding: 10px 20px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 50px; /* Ajuste do tamanho da logo */
+    height: auto;
+}
+
+header h1 {
     color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 1.5em;
+    font-size: 1.2em; /* Tamanho reduzido do título */
     font-weight: bold;
+    margin: 0;
 }
 
 /* Layout principal */
