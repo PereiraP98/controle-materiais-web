@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Controle de Materiais</title>
 </head>
 <body>
     <header>
@@ -19,7 +19,7 @@
                 <h2>Solicitação de Materiais</h2>
                 <form id="materialForm">
                     <label for="local">Local:</label>
-                    <select id="local" name="local">
+                    <select id="local" name="local" required>
                         <option value="CA">CA</option>
                         <option value="VF">VF</option>
                         <option value="VD">VD</option>
@@ -32,7 +32,7 @@
                     <input type="text" id="item" name="item" placeholder="Ex: 20239" maxlength="5" pattern="\d{5}" required>
 
                     <label for="destino">Destino:</label>
-                    <select id="destino" name="destino">
+                    <select id="destino" name="destino" required>
                         <option value="PICKING">PICKING</option>
                         <option value="MESA">MESA</option>
                     </select>
@@ -47,9 +47,18 @@
             <!-- Materiais Reservados -->
             <section class="materiais-reservados">
                 <h2>Materiais Reservados</h2>
-                <ul id="reservadosList">
-                    <!-- Itens reservados aparecerão aqui -->
-                </ul>
+                <table id="reservadosTable">
+                    <thead>
+                        <tr>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>DESTINO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Registros de materiais reservados serão adicionados aqui -->
+                    </tbody>
+                </table>
             </section>
         </div>
 
@@ -65,56 +74,24 @@
         <!-- Coluna Direita (Materiais Solicitados) -->
         <section class="materiais-solicitados">
             <h2>Materiais Solicitados</h2>
-            <ul id="solicitadosList">
-                <!-- Itens solicitados aparecerão aqui -->
-            </ul>
+            <table id="solicitadosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>DESTINO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Registros de materiais solicitados serão adicionados aqui -->
+                </tbody>
+            </table>
             <button type="button" id="detalhesButton">Detalhes</button>
         </section>
     </main>
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
-    <script>
-        document.getElementById("materialForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const local = document.getElementById("local").value;
-            const item = document.getElementById("item").value;
-            const destino = document.getElementById("destino").value;
-
-            if (!/^\d{5}$/.test(item)) {
-                alert("O código do item deve ter exatamente 5 dígitos.");
-                return;
-            }
-
-            const listaSolicitados = document.getElementById("solicitadosList");
-            const novoItem = document.createElement("li");
-            novoItem.textContent = `Local: ${local}, Item: ${item}, Destino: ${destino}`;
-            listaSolicitados.appendChild(novoItem);
-
-            alert("Item solicitado com sucesso!");
-        });
-
-        document.getElementById("reservarButton").addEventListener("click", function() {
-            const local = document.getElementById("local").value;
-            const item = document.getElementById("item").value;
-            const destino = document.getElementById("destino").value;
-
-            if (!/^\d{5}$/.test(item)) {
-                alert("O código do item deve ter exatamente 5 dígitos.");
-                return;
-            }
-
-            const listaReservados = document.getElementById("reservadosList");
-            const novoItem = document.createElement("li");
-            novoItem.textContent = `Local: ${local}, Item: ${item}, Destino: ${destino}`;
-            listaReservados.appendChild(novoItem);
-
-            alert("Item reservado com sucesso!");
-        });
-
-        document.getElementById("detalhesButton").addEventListener("click", function() {
-            alert("Exibindo detalhes dos materiais solicitados.");
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
