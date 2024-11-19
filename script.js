@@ -33,3 +33,23 @@ document.getElementById("reservarButton").addEventListener("click", function() {
     if (!/^\d{5}$/.test(item)) {
         alert("O código do item deve ter exatamente 5 dígitos.");
         return;
+    }
+
+    // Adicionar item na tabela de reservados
+    const reservadosTable = document.getElementById("reservadosTable").querySelector("tbody");
+    const newRow = document.createElement("tr");
+
+    newRow.innerHTML = `
+        <td>${local}</td>
+        <td>${item}</td>
+        <td>${destino}</td>
+    `;
+
+    reservadosTable.appendChild(newRow);
+
+    alert("Item reservado com sucesso!");
+});
+
+document.getElementById("detalhesButton").addEventListener("click", function() {
+    alert("Exibindo detalhes dos materiais solicitados.");
+});
