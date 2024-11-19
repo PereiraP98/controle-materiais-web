@@ -12,45 +12,48 @@
         <h1>Controle de Materiais</h1>
     </header>
     <main class="main-container">
-        <!-- Janela de Solicitação -->
-        <section class="solicitacao-container">
-            <h2>Solicitação de Materiais</h2>
-            <form id="materialForm">
-                <label for="local">Local:</label>
-                <select id="local" name="local">
-                    <option value="CA">CA</option>
-                    <option value="VF">VF</option>
-                    <option value="VD">VD</option>
-                    <option value="VE">VE</option>
-                    <option value="EX">EX</option>
-                    <option value="R01">R01</option>
-                </select>
+        <!-- Coluna Esquerda -->
+        <div class="left-column">
+            <!-- Janela de Solicitação -->
+            <section class="solicitacao-container">
+                <h2>Solicitação de Materiais</h2>
+                <form id="materialForm">
+                    <label for="local">Local:</label>
+                    <select id="local" name="local">
+                        <option value="CA">CA</option>
+                        <option value="VF">VF</option>
+                        <option value="VD">VD</option>
+                        <option value="VE">VE</option>
+                        <option value="EX">EX</option>
+                        <option value="R01">R01</option>
+                    </select>
 
-                <label for="item">Código do Item:</label>
-                <input type="text" id="item" name="item" placeholder="Ex: 12345" maxlength="5" pattern="\d{5}" required>
+                    <label for="item">Código do Item:</label>
+                    <input type="text" id="item" name="item" placeholder="Ex: 12345" maxlength="5" pattern="\d{5}" required>
 
-                <label for="destino">Destino:</label>
-                <select id="destino" name="destino">
-                    <option value="PICKING">PICKING</option>
-                    <option value="MESA">MESA</option>
-                </select>
+                    <label for="destino">Destino:</label>
+                    <select id="destino" name="destino">
+                        <option value="PICKING">PICKING</option>
+                        <option value="MESA">MESA</option>
+                    </select>
 
-                <div class="button-container">
-                    <button type="submit">Solicitar</button>
-                    <button type="button" id="reservarButton">Reservar</button>
-                </div>
-            </form>
-        </section>
+                    <div class="button-container">
+                        <button type="submit">Solicitar</button>
+                        <button type="button" id="reservarButton">Reservar</button>
+                    </div>
+                </form>
+            </section>
 
-        <!-- Janela de Materiais Reservados -->
-        <section class="materiais-reservados">
-            <h2>Materiais Reservados</h2>
-            <ul id="reservadosList">
-                <!-- Itens reservados aparecerão aqui -->
-            </ul>
-        </section>
+            <!-- Materiais Reservados -->
+            <section class="materiais-reservados">
+                <h2>Materiais Reservados</h2>
+                <ul id="reservadosList">
+                    <!-- Itens reservados aparecerão aqui -->
+                </ul>
+            </section>
+        </div>
 
-        <!-- Janela de Gráficos -->
+        <!-- Coluna Central (Gráficos) -->
         <section class="graficos-container">
             <h2>Gráficos</h2>
             <div id="graficoPlaceholder">
@@ -59,7 +62,7 @@
             </div>
         </section>
 
-        <!-- Materiais Solicitados -->
+        <!-- Coluna Direita (Materiais Solicitados) -->
         <section class="materiais-solicitados">
             <h2>Materiais Solicitados</h2>
             <ul id="solicitadosList">
@@ -72,7 +75,6 @@
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
     <script>
-        // Manipulação de eventos para Solicitar e Reservar
         document.getElementById("materialForm").addEventListener("submit", function(event) {
             event.preventDefault();
             const local = document.getElementById("local").value;
