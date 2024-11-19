@@ -50,6 +50,3 @@ document.getElementById("reservarButton").addEventListener("click", function() {
     alert("Item reservado com sucesso!");
 });
 
-document.getElementById("detalhesButton").addEventListener("click", function() {
-    alert("Exibindo detalhes dos materiais solicitados.");
-});
