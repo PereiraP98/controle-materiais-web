@@ -1,5 +1,5 @@
 /* Reset padrão */
-body, h1, h2, ul, li, form, input, select, button {
+body, h1, h2, ul, li, form, input, select, button, table, th, td {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -49,6 +49,12 @@ header {
     text-align: center;
 }
 
+/* Títulos das seções */
+h2 {
+    margin-bottom: 15px;
+    color: #215C98;
+}
+
 /* Inputs e selects modernos */
 select, input[type="text"] {
     width: 100%;
@@ -73,6 +79,11 @@ input[type="text"]::placeholder {
 }
 
 /* Botões */
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
 button {
     padding: 12px;
     font-size: 1em;
@@ -87,6 +98,33 @@ button {
 button:hover {
     background-color: #17406d;
     transform: scale(1.03);
+}
+
+/* Estilo para tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background-color: #215C98;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+tbody tr:hover {
+    background-color: #d3e4f7;
 }
 
 /* Rodapé */
