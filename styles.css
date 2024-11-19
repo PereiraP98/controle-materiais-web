@@ -150,3 +150,44 @@ footer {
     font-size: 0.9em;
 }
 
+
+/* Detalhes de materiais */
+.detalhes-container {
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: left;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background-color: #215C98;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+tbody tr:hover {
+    background-color: #d3e4f7;
+}
+
+th:nth-child(8), td:nth-child(8) {
+    color: yellow; /* Define a cor do texto da coluna REPORT */
+    font-weight: bold;
+}
+
