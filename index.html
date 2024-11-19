@@ -11,35 +11,59 @@
     <header>
         <h1>Controle de Materiais</h1>
     </header>
-    <div class="form-container">
-        <h2>Solicitação de Materiais</h2>
-        <form id="materialForm">
-            <label for="local">Local:</label>
-            <select id="local" name="local">
-                <option value="CA">CA</option>
-                <option value="VF">VF</option>
-                <option value="VD">VD</option>
-                <option value="VE">VE</option>
-                <option value="EX">EX</option>
-                <option value="R01">R01</option>
-            </select>
+    <main class="main-container">
+        <!-- Janela de Solicitação -->
+        <section class="solicitacao-container">
+            <h2>Solicitação de Materiais</h2>
+            <form id="materialForm">
+                <label for="local">Local:</label>
+                <select id="local" name="local">
+                    <option value="CA">CA</option>
+                    <option value="VF">VF</option>
+                    <option value="VD">VD</option>
+                    <option value="VE">VE</option>
+                    <option value="EX">EX</option>
+                    <option value="R01">R01</option>
+                </select>
 
-            <label for="item">Código do Item:</label>
-            <input type="text" id="item" name="item" placeholder="Ex: 12345" maxlength="5" pattern="\d{5}" required>
+                <label for="item">Código do Item:</label>
+                <input type="text" id="item" name="item" placeholder="Ex: 12345" maxlength="5" pattern="\d{5}" required>
 
-            <label for="destino">Destino:</label>
-            <select id="destino" name="destino">
-                <option value="PICKING">PICKING</option>
-                <option value="MESA">MESA</option>
-            </select>
+                <label for="destino">Destino:</label>
+                <select id="destino" name="destino">
+                    <option value="PICKING">PICKING</option>
+                    <option value="MESA">MESA</option>
+                </select>
 
-            <button type="submit">Solicitar</button>
-        </form>
-    </div>
+                <div class="button-container">
+                    <button type="submit">Solicitar</button>
+                    <button type="button" id="reservarButton">Reservar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Materiais Reservados -->
+        <section class="materiais-reservados">
+            <h2>Materiais Reservados</h2>
+            <ul id="reservadosList">
+                <!-- Itens reservados aparecerão aqui -->
+            </ul>
+        </section>
+
+        <!-- Materiais Solicitados -->
+        <section class="materiais-solicitados">
+            <h2>Materiais Solicitados</h2>
+            <ul id="solicitadosList">
+                <!-- Itens solicitados aparecerão aqui -->
+            </ul>
+            <button type="button" id="detalhesButton">Detalhes</button>
+        </section>
+    </main>
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
     <script>
+        // Manipulação de eventos para Solicitar e Reservar
         document.getElementById("materialForm").addEventListener("submit", function(event) {
             event.preventDefault();
             const local = document.getElementById("local").value;
@@ -51,8 +75,34 @@
                 return;
             }
 
-            console.log(`Local: ${local}, Item: ${item}, Destino: ${destino}`);
-            alert("Solicitação enviada com sucesso!");
+            const listaSolicitados = document.getElementById("solicitadosList");
+            const novoItem = document.createElement("li");
+            novoItem.textContent = `Local: ${local}, Item: ${item}, Destino: ${destino}`;
+            listaSolicitados.appendChild(novoItem);
+
+            alert("Item solicitado com sucesso!");
+        });
+
+        document.getElementById("reservarButton").addEventListener("click", function() {
+            const local = document.getElementById("local").value;
+            const item = document.getElementById("item").value;
+            const destino = document.getElementById("destino").value;
+
+            if (!/^\d{5}$/.test(item)) {
+                alert("O código do item deve ter exatamente 5 dígitos.");
+                return;
+            }
+
+            const listaReservados = document.getElementById("reservadosList");
+            const novoItem = document.createElement("li");
+            novoItem.textContent = `Local: ${local}, Item: ${item}, Destino: ${destino}`;
+            listaReservados.appendChild(novoItem);
+
+            alert("Item reservado com sucesso!");
+        });
+
+        document.getElementById("detalhesButton").addEventListener("click", function() {
+            alert("Exibindo detalhes dos materiais solicitados.");
         });
     </script>
 </body>
