@@ -46,11 +46,11 @@ header h1 {
 
 /* Layout principal específico para detalhes.html */
 .detalhes-page .main-container {
-    grid-template-columns: 1fr; /* Uma coluna para detalhes.html */
+    grid-template-columns: 1fr 1fr; /* Duas colunas para detalhes.html */
 }
 
 /* Colunas */
-.column {
+.column, .detalhes-container {
     display: grid;
     grid-auto-rows: auto;
     grid-gap: 30px;
