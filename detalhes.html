@@ -7,43 +7,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilo para ocultar ou mostrar dinamicamente a coluna de seleção */
-        .checkbox-column {
-            width: 40px;
+        /* Reset e Estilo Base */
+        body, h1, h2, ul, li, form, input, select, button, table, th, td {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        header {
+            background-color: #215C98;
+            padding: 10px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+        }
+
+        /* Tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
             text-align: center;
         }
+
+        th {
+            background-color: #215C98;
+            color: white;
+        }
+
+        .checkbox-column {
+            width: 40px;
+        }
+
         .checkbox-column.hidden {
             display: none;
         }
+
+        tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+
+        tbody tr:hover {
+            background-color: #d3e4f7;
+        }
+
+        /* Botões */
         .excluir-button {
             background-color: #f44336;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             padding: 10px 15px;
             cursor: pointer;
             font-size: 1em;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            display: block;
         }
+
         .excluir-button:hover {
             background-color: #d32f2f;
+        }
+
+        button {
+            background-color: #215C98;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #17406d;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Janela de Confirmação */
+        .janela-flutuante {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            z-index: 1000;
+            width: 300px;
+            text-align: center;
+        }
+
+        .janela-flutuante h2 {
+            margin-bottom: 15px;
+            color: #215C98;
+        }
+
+        .janela-flutuante button {
+            margin: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #215C98;
+            color: white;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/refs/heads/main/assets/logo.webp" alt="DevCore Logo" class="logo">
-            <h1>Detalhes de Materiais</h1>
-        </div>
+        <img src="https://github.com/PereiraP98/controle-materiais-web/raw/refs/heads/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+        <h1>Detalhes de Materiais</h1>
     </header>
     <main>
         <section class="detalhes-container">
             <h2>Detalhes de Materiais Solicitados</h2>
-            <!-- Botão Excluir Itens -->
             <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
             <table id="detalhesTable">
                 <thead>
@@ -60,120 +164,71 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Os registros de materiais solicitados serão adicionados aqui -->
+                    <!-- Dados dinâmicos -->
                 </tbody>
             </table>
-
-            <!-- Botões de navegação -->
             <div class="button-container">
-                <button type="button" onclick="location.href='index.html'">Voltar</button>
-                <button type="button" id="materiaisRecebidosButton">Materiais Recebidos</button>
+                <button onclick="location.href='index.html'">Voltar</button>
+                <button id="materiaisRecebidosButton">Materiais Recebidos</button>
             </div>
         </section>
     </main>
-
-    <!-- Janela de Confirmação -->
-    <div class="janela-flutuante" id="janelaConfirmacao" style="display: none;">
-        <h2>Confirmação</h2>
-        <p>Tem certeza que deseja excluir os itens selecionados?</p>
-        <button id="confirmarButton">SIM</button>
-        <button id="cancelarButton">NÃO</button>
-    </div>
-
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
 
     <script>
-        const excluirItensButton = document.getElementById("excluirItensButton");
-        const confirmarButton = document.getElementById("confirmarButton");
-        const cancelarButton = document.getElementById("cancelarButton");
-        const janelaConfirmacao = document.getElementById("janelaConfirmacao");
-        const detalhesTable = document.getElementById("detalhesTable");
-        let selecionandoItens = false;
+        document.addEventListener("DOMContentLoaded", () => {
+            const excluirItensButton = document.getElementById("excluirItensButton");
+            const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
 
-        // Ocultar/Mostrar coluna de seleção
-        function toggleSelectionColumn(show) {
-            const columnIndex = 0; // Index da coluna de checkboxes
-            const headerCell = detalhesTable.querySelector("thead th:nth-child(1)");
-            const rows = detalhesTable.querySelectorAll("tbody tr");
-            
-            headerCell.classList.toggle("hidden", !show);
-            rows.forEach((row) => {
-                const cell = row.children[columnIndex];
-                if (cell) {
-                    cell.style.display = show ? "table-cell" : "none";
-                }
-            });
-        }
+            let selecionandoItens = false;
 
-        // Carregar dados armazenados
-        document.addEventListener("DOMContentLoaded", function () {
-            const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-
-            detalhes.forEach((detalhe) => {
-                const newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td class="checkbox-column hidden"><input type="checkbox" class="item-checkbox"></td>
-                    <td>${detalhe.local}</td>
-                    <td>${detalhe.item}</td>
-                    <td>${detalhe.quantidade}</td>
-                    <td>${detalhe.destino}</td>
-                    <td>${detalhe.dataAtual}</td>
-                    <td>${detalhe.horario}</td>
-                    <td><button class="receberButton">Receber</button></td>
-                    <td style="color: yellow; text-align: center;">REPORT</td>
-                `;
-                detalhesTable.querySelector("tbody").appendChild(newRow);
-            });
-
-            toggleSelectionColumn(false); // Ocultar coluna de seleção inicialmente
-        });
-
-        // Alternar modo de seleção
-        excluirItensButton.addEventListener("click", () => {
-            selecionandoItens = !selecionandoItens;
-            toggleSelectionColumn(selecionandoItens);
-
-            if (selecionandoItens) {
-                excluirItensButton.textContent = "Confirmar Exclusão";
-            } else {
-                janelaConfirmacao.style.display = "block";
+            // Alternar exibição da coluna de seleção
+            function toggleSelectionColumn(show) {
+                document.querySelectorAll(".checkbox-column").forEach(col => col.style.display = show ? "table-cell" : "none");
+                document.querySelectorAll(".item-checkbox").forEach(input => input.style.display = show ? "inline-block" : "none");
             }
-        });
 
-        // Confirmar exclusão de itens
-        confirmarButton.addEventListener("click", () => {
-            const checkboxes = document.querySelectorAll(".item-checkbox:checked");
-            checkboxes.forEach((checkbox) => {
-                const row = checkbox.closest("tr");
-                detalhesTable.querySelector("tbody").removeChild(row);
+            // Carregar itens simulados no localStorage
+            const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            detalhes.forEach(item => {
+                const row = `
+                    <tr>
+                        <td class="checkbox-column hidden"><input type="checkbox" class="item-checkbox"></td>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.dataAtual}</td>
+                        <td>${item.horario}</td>
+                        <td><button class="receberButton">Receber</button></td>
+                        <td style="color: yellow;">REPORT</td>
+                    </tr>`;
+                detalhesTable.insertAdjacentHTML("beforeend", row);
             });
 
-            const linhasAtualizadas = Array.from(detalhesTable.querySelectorAll("tbody tr")).map((row) => ({
-                local: row.cells[1].innerText,
-                item: row.cells[2].innerText,
-                quantidade: row.cells[3].innerText,
-                destino: row.cells[4].innerText,
-                dataAtual: row.cells[5].innerText,
-                horario: row.cells[6].innerText,
-            }));
-
-            localStorage.setItem("detalhes", JSON.stringify(linhasAtualizadas));
-
-            janelaConfirmacao.style.display = "none";
+            // Ocultar a coluna inicialmente
             toggleSelectionColumn(false);
-            selecionandoItens = false;
-            excluirItensButton.textContent = "Excluir Itens";
-            alert("Itens excluídos com sucesso!");
-        });
 
-        // Cancelar exclusão de itens
-        cancelarButton.addEventListener("click", () => {
-            janelaConfirmacao.style.display = "none";
-            toggleSelectionColumn(false);
-            selecionandoItens = false;
-            excluirItensButton.textContent = "Excluir Itens";
+            // Alternar exclusão
+            excluirItensButton.addEventListener("click", () => {
+                selecionandoItens = !selecionandoItens;
+                toggleSelectionColumn(selecionandoItens);
+                excluirItensButton.textContent = selecionandoItens ? "Confirmar Exclusão" : "Excluir Itens";
+            });
+
+            excluirItensButton.addEventListener("dblclick", () => {
+                const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
+                if (selectedCheckboxes.length === 0) {
+                    alert("Selecione ao menos um item para excluir.");
+                    return;
+                }
+                selectedCheckboxes.forEach(checkbox => checkbox.closest("tr").remove());
+                toggleSelectionColumn(false);
+                excluirItensButton.textContent = "Excluir Itens";
+                alert("Itens excluídos com sucesso!");
+            });
         });
     </script>
 </body>
