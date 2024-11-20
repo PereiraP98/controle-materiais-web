@@ -119,18 +119,20 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    font-size: 0.9em;
-    text-align: left;
+    font-size: 0.85em; /* Tamanho ajustado para melhor leitura */
+    text-align: center; /* Centraliza o texto em todas as células */
 }
 
 th, td {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 5px 10px; /* Espaçamento ajustado */
 }
 
 th {
     background-color: #215C98;
     color: white;
+    font-size: 1em;
+    white-space: nowrap; /* Impede quebra de texto */
 }
 
 tbody tr:nth-child(even) {
