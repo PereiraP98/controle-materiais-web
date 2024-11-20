@@ -47,3 +47,20 @@
     </footer>
 </body>
 </html>
+document.addEventListener("DOMContentLoaded", function() {
+    const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+    const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+
+    detalhes.forEach(detalhe => {
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${detalhe.local}</td>
+            <td>${detalhe.item}</td>
+            <td>${detalhe.quantidade}</td>
+            <td>${detalhe.destino}</td>
+            <td>${detalhe.dataAtual}</td>
+            <td>${detalhe.horario}</td>
+        `;
+        detalhesTable.appendChild(newRow);
+    });
+});
