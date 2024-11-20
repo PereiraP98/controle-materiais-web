@@ -214,3 +214,64 @@ button:hover {
     background-color: #17406d;
     transform: scale(1.05);
 }
+
+/* Janela Flutuante */
+.janela-flutuante {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    z-index: 1000;
+    width: 300px;
+}
+
+.janela-flutuante h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #215C98;
+}
+
+.janela-flutuante label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.janela-flutuante input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+.janela-flutuante .button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.janela-flutuante button {
+    padding: 10px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 45%;
+}
+
+.janela-flutuante button#cancelarSolicitacaoButton {
+    background-color: #f5a5a5;
+    color: white;
+}
+
+.janela-flutuante button#confirmarSolicitacaoButton {
+    background-color: #a5f5a5;
+    color: white;
+}
