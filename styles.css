@@ -52,15 +52,12 @@ header h1 {
 }
 
 /* Estilo das janelas */
-.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados {
+.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados, .detalhes-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.graficos-container {
-    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 /* Títulos das seções */
@@ -122,6 +119,9 @@ table {
     font-size: 0.85em; /* Tamanho ajustado para melhor leitura */
     text-align: center;
     table-layout: fixed; /* Ajusta largura fixa das colunas */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efeito janela */
 }
 
 th, td {
@@ -148,11 +148,11 @@ th:nth-child(7), td:nth-child(7) { width: 15%; } /* RECEBER */
 th:nth-child(8), td:nth-child(8) { width: 10%; color: yellow; } /* REPORT */
 
 tbody tr:nth-child(even) {
-    background-color: #f3f4f6;
+    background-color: #f9f9f9;
 }
 
 tbody tr:hover {
-    background-color: #d3e4f7;
+    background-color: #e3f2fd;
 }
 
 td button {
