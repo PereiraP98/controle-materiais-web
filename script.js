@@ -1,17 +1,17 @@
 // Abrir a janela flutuante para solicitação de material
-document.getElementById("abrirSolicitacaoButton").addEventListener("click", function () {
+document.getElementById("abrirSolicitacaoButton")?.addEventListener("click", function () {
     const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     document.getElementById("horario").value = horarioAtual; // Preenche o horário atual
     document.getElementById("janelaSolicitacao").style.display = "block";
 });
 
 // Cancelar a solicitação e fechar a janela flutuante
-document.getElementById("cancelarSolicitacaoButton").addEventListener("click", function () {
+document.getElementById("cancelarSolicitacaoButton")?.addEventListener("click", function () {
     document.getElementById("janelaSolicitacao").style.display = "none";
 });
 
 // Confirmar a solicitação e registrar os dados
-document.getElementById("janelaForm").addEventListener("submit", function (event) {
+document.getElementById("janelaForm")?.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const quantidade = document.getElementById("quantidade").value;
@@ -53,7 +53,7 @@ document.getElementById("janelaForm").addEventListener("submit", function (event
 });
 
 // Reservar um item
-document.getElementById("reservarButton").addEventListener("click", function () {
+document.getElementById("reservarButton")?.addEventListener("click", function () {
     const local = document.getElementById("local").value;
     const item = document.getElementById("item").value;
     const destino = document.getElementById("destino").value;
@@ -78,7 +78,7 @@ document.getElementById("reservarButton").addEventListener("click", function () 
 // Carregar os itens solicitados armazenados no localStorage na página index
 document.addEventListener("DOMContentLoaded", function () {
     const solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
+    const solicitadosTable = document.getElementById("solicitadosTable")?.querySelector("tbody");
 
     solicitados.forEach((item) => {
         const newRow = document.createElement("tr");
