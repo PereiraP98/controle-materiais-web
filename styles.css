@@ -36,14 +36,14 @@ header h1 {
 /* Layout principal */
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Duas colunas */
-    grid-gap: 30px; /* Aumentado o espaçamento entre as colunas */
-    padding: 30px; /* Aumentado o padding geral */
+    grid-template-columns: 1fr 1fr 1fr; /* Três colunas */
+    grid-gap: 30px; /* Espaçamento entre as colunas */
+    padding: 30px; /* Padding geral */
 }
 
 .column {
     display: grid;
-    grid-template-rows: auto auto;
+    grid-auto-rows: auto;
     grid-gap: 30px;
 }
 
@@ -53,20 +53,20 @@ header h1 {
 .graficos-container,
 .materiais-solicitados {
     background: white;
-    padding: 25px; /* Aumentado o padding interno */
+    padding: 25px; /* Padding interno */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Títulos */
 h2 {
-    margin-bottom: 20px; /* Aumentado o espaçamento abaixo dos títulos */
+    margin-bottom: 20px; /* Espaçamento abaixo dos títulos */
     color: #215C98;
 }
 
 /* Botões */
 button {
-    padding: 12px 18px; /* Aumentado o tamanho dos botões */
+    padding: 12px 18px; /* Tamanho dos botões */
     font-size: 1em;
     background-color: #215C98;
     color: white;
