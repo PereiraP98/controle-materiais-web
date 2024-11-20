@@ -44,8 +44,12 @@ document.getElementById("janelaForm").addEventListener("submit", function (event
         <td>${item}</td>
         <td>${destino}</td>
     `;
-
     solicitadosTable.appendChild(newRow);
+
+    // Salvar os itens solicitados no localStorage
+    let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+    solicitados.push({ local, item, destino });
+    localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
     // Salvar os detalhes completos no localStorage para exibição na página de detalhes
     let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
@@ -85,9 +89,23 @@ document.getElementById("reservarButton").addEventListener("click", function () 
     alert("Material reservado com sucesso!");
 });
 
-// Carregar os detalhes armazenados na página "detalhes.html"
-if (window.location.pathname.includes("detalhes.html")) {
-    document.addEventListener("DOMContentLoaded", function () {
+// Carregar os itens solicitados armazenados no localStorage na página index
+document.addEventListener("DOMContentLoaded", function () {
+    const solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+    const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
+
+    solicitados.forEach((item) => {
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${item.local}</td>
+            <td>${item.item}</td>
+            <td>${item.destino}</td>
+        `;
+        solicitadosTable.appendChild(newRow);
+    });
+
+    // Carregar os detalhes na página de detalhes.html
+    if (window.location.pathname.includes("detalhes.html")) {
         const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
 
@@ -105,12 +123,5 @@ if (window.location.pathname.includes("detalhes.html")) {
             `;
             detalhesTable.appendChild(newRow);
         });
-
-        // Ação para o botão "Receber"
-        document.querySelectorAll(".receberButton").forEach((button) => {
-            button.addEventListener("click", function () {
-                alert("Material recebido com sucesso!");
-            });
-        });
-    });
-}
+    }
+});
