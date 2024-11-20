@@ -22,7 +22,7 @@
                     <tr>
                         <th>LOCAL</th>
                         <th>ITEM</th>
-                        <th>QDT</th>
+                        <th>QTD</th>
                         <th>DESTINO</th>
                         <th>DATA</th>
                         <th>HORA</th>
@@ -69,16 +69,17 @@
             // Ação para o botão "Receber"
             document.querySelectorAll(".receberButton").forEach((button) => {
                 button.addEventListener("click", function () {
-                    alert("Material recebido com sucesso!");
-                    // Aqui você pode adicionar lógica para registrar o recebimento.
+                    const row = this.closest("tr");
+                    alert(`Material do item ${row.cells[1].textContent} recebido com sucesso!`);
+                    // Aqui você pode adicionar lógica para remover ou registrar o recebimento do material
                 });
             });
         });
 
         // Ação do botão "Materiais Recebidos"
         document.getElementById("materiaisRecebidosButton").addEventListener("click", function () {
-            alert("Página de Materiais Recebidos será implementada.");
-            // Adicione o redirecionamento ou lógica para a página de materiais recebidos.
+            alert("Página de Materiais Recebidos será implementada em breve.");
+            // Adicione o redirecionamento ou lógica para a página de materiais recebidos
         });
     </script>
 </body>
