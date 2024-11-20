@@ -39,11 +39,17 @@ header h1 {
 /* Layout principal */
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Três colunas */
-    grid-gap: 30px; /* Espaçamento entre as colunas */
-    padding: 30px; /* Padding geral */
+    grid-template-columns: 1fr 1fr 1fr; /* Três colunas padrão */
+    grid-gap: 30px;
+    padding: 30px;
 }
 
+/* Layout principal específico para detalhes.html */
+.detalhes-page .main-container {
+    grid-template-columns: 1fr; /* Uma coluna para detalhes.html */
+}
+
+/* Colunas */
 .column {
     display: grid;
     grid-auto-rows: auto;
@@ -57,20 +63,20 @@ header h1 {
 .materiais-solicitados,
 .detalhes-container {
     background: white;
-    padding: 25px; /* Padding interno */
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Títulos */
 h2 {
-    margin-bottom: 20px; /* Espaçamento abaixo dos títulos */
+    margin-bottom: 20px;
     color: #215C98;
 }
 
 /* Botões */
 button {
-    padding: 12px 18px; /* Tamanho dos botões */
+    padding: 12px 18px;
     font-size: 1em;
     background-color: #215C98;
     color: white;
@@ -98,7 +104,7 @@ button:hover {
     background-color: #d32f2f;
 }
 
-/* Botão de exclusão na página de detalhes (detalhes.html) */
+/* Botão de exclusão nas janelas de detalhes */
 .detalhes-container .excluir-button {
     background-color: #f44336;
     color: white;
@@ -158,6 +164,15 @@ th {
     color: white;
 }
 
+/* Coluna de seleção */
+.checkbox-column {
+    width: 40px;
+}
+
+.checkbox-column.hidden {
+    display: none;
+}
+
 /* Linhas da tabela */
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
@@ -165,15 +180,6 @@ tbody tr:nth-child(even) {
 
 tbody tr:hover {
     background-color: #d3e4f7;
-}
-
-/* Coluna de seleção na tabela de detalhes */
-.checkbox-column {
-    width: 40px;
-}
-
-.checkbox-column.hidden {
-    display: none;
 }
 
 /* Janela flutuante */
@@ -201,7 +207,7 @@ tbody tr:hover {
     margin: 10px;
 }
 
-/* Título e botão de exclusão na página de detalhes */
+/* Título e botão de exclusão */
 .title-container {
     display: flex;
     justify-content: space-between;
