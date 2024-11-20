@@ -138,7 +138,7 @@ th:nth-child(3), td:nth-child(3) { width: 5%; }  /* QDT */
 th:nth-child(4), td:nth-child(4) { width: 6%; } /* DESTINO */
 th:nth-child(5), td:nth-child(5) { width: 5%; } /* DATA */
 th:nth-child(6), td:nth-child(6) { width: 5%; } /* HORA */
-th:nth-child(7), td:nth-child(7) { width: 6%; } /* RECEBER */
+th:nth-child(7), td:nth-child(7) { width: 5%; } /* RECEBER */
 th:nth-child(8), td:nth-child(8) { width: 8%; }  /* REPORT */
 
 th {
