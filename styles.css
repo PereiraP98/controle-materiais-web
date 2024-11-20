@@ -56,6 +56,9 @@ header h1 {
 h2 {
     margin-bottom: 15px;
     color: #215C98;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 /* Inputs e selects */
@@ -72,6 +75,12 @@ select, input[type="text"], input[type="number"], input[type="time"] {
 select:focus, input:focus {
     border-color: #215C98;
     box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
+}
+
+select {
+    background-color: #fff;
+    color: #333;
+    font-weight: 500;
 }
 
 /* Botões */
@@ -127,6 +136,8 @@ th, td {
 th {
     background-color: #215C98;
     color: white;
+    font-weight: bold;
+    text-align: center;
 }
 
 tbody tr:nth-child(even) {
@@ -141,6 +152,7 @@ tbody tr:hover {
 th:nth-child(8), td:nth-child(8) {
     color: yellow; /* Define a cor do texto da coluna REPORT */
     font-weight: bold;
+    text-align: center;
 }
 
 /* Janela Flutuante */
