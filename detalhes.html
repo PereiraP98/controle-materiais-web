@@ -17,7 +17,7 @@
         </div>
     </header>
     <main class="main-container">
-        <!-- Seção de detalhes estilizada como janela -->
+        <!-- Seção de detalhes de materiais solicitados -->
         <section class="detalhes-container">
             <div class="title-container">
                 <h2>Detalhes de Materiais Solicitados</h2>
@@ -44,6 +44,35 @@
             <div class="button-container">
                 <button onclick="location.href='index.html'">Voltar</button>
                 <button id="materiaisRecebidosButton">Materiais Recebidos</button>
+            </div>
+        </section>
+
+        <!-- Nova seção: Detalhes de Materiais Recebidos -->
+        <section class="detalhes-container">
+            <div class="title-container">
+                <h2>Detalhes de Materiais Recebidos</h2>
+                <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
+            </div>
+            <table id="recebidosTable">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column hidden">Selecionar</th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dinâmicos -->
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button onclick="location.href='index.html'">Voltar</button>
             </div>
         </section>
     </main>
