@@ -25,13 +25,13 @@ header {
 }
 
 .logo {
-    width: 50px; /* Ajuste do tamanho da logo */
+    width: 50px;
     height: auto;
 }
 
 header h1 {
     color: white;
-    font-size: 1.2em; /* Tamanho reduzido do título */
+    font-size: 1.2em;
     font-weight: bold;
     margin: 0;
 }
@@ -120,19 +120,20 @@ table {
     border-collapse: collapse;
     margin-top: 10px;
     font-size: 0.9em;
-    text-align: left;
+    text-align: center; /* Centraliza o texto nas colunas */
 }
 
 th, td {
     border: 1px solid #ccc;
     padding: 10px;
+    white-space: nowrap;
 }
 
-/* Ajuste específico para colunas */
+/* Ajuste de largura das colunas */
 th:nth-child(1), td:nth-child(1) { width: 10%; } /* LOCAL */
-th:nth-child(2), td:nth-child(2) { width: 15%; } /* ITEM */
+th:nth-child(2), td:nth-child(2) { width: 12%; } /* ITEM */
 th:nth-child(3), td:nth-child(3) { width: 8%; }  /* QDT */
-th:nth-child(4), td:nth-child(4) { width: 20%; } /* DESTINO */
+th:nth-child(4), td:nth-child(4) { width: 15%; } /* DESTINO */
 th:nth-child(5), td:nth-child(5) { width: 12%; } /* DATA */
 th:nth-child(6), td:nth-child(6) { width: 12%; } /* HORA */
 th:nth-child(7), td:nth-child(7) { width: 15%; } /* RECEBER */
@@ -141,6 +142,7 @@ th:nth-child(8), td:nth-child(8) { width: 8%; }  /* REPORT */
 th {
     background-color: #215C98;
     color: white;
+    text-align: center; /* Centraliza os títulos das colunas */
 }
 
 tbody tr:nth-child(even) {
@@ -231,30 +233,6 @@ footer {
 }
 
 th:nth-child(8), td:nth-child(8) {
-    color: yellow; /* Define a cor do texto da coluna REPORT */
+    color: yellow;
     font-weight: bold;
-}
-
-/* Botões de navegação */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-button {
-    padding: 12px 20px;
-    font-size: 1em;
-    background-color: #215C98;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #17406d;
-    transform: scale(1.05);
 }
