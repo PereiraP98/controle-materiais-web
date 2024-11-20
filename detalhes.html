@@ -6,6 +6,32 @@
     <title>Detalhes de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilo para ocultar ou mostrar dinamicamente a coluna de seleção */
+        .checkbox-column {
+            width: 40px;
+            text-align: center;
+        }
+        .checkbox-column.hidden {
+            display: none;
+        }
+        .excluir-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            transition: background-color 0.3s;
+        }
+        .excluir-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -19,10 +45,10 @@
             <h2>Detalhes de Materiais Solicitados</h2>
             <!-- Botão Excluir Itens -->
             <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
-            <table id="detalhesTable" class="">
+            <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <th></th> <!-- Coluna para caixas de seleção -->
+                        <th class="checkbox-column hidden">Selecionar</th>
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
@@ -47,7 +73,7 @@
     </main>
 
     <!-- Janela de Confirmação -->
-    <div class="janela-flutuante" id="janelaConfirmacao">
+    <div class="janela-flutuante" id="janelaConfirmacao" style="display: none;">
         <h2>Confirmação</h2>
         <p>Tem certeza que deseja excluir os itens selecionados?</p>
         <button id="confirmarButton">SIM</button>
@@ -62,7 +88,6 @@
         const excluirItensButton = document.getElementById("excluirItensButton");
         const confirmarButton = document.getElementById("confirmarButton");
         const cancelarButton = document.getElementById("cancelarButton");
-
         const janelaConfirmacao = document.getElementById("janelaConfirmacao");
         const detalhesTable = document.getElementById("detalhesTable");
         let selecionandoItens = false;
@@ -70,7 +95,10 @@
         // Ocultar/Mostrar coluna de seleção
         function toggleSelectionColumn(show) {
             const columnIndex = 0; // Index da coluna de checkboxes
-            const rows = detalhesTable.querySelectorAll("tr");
+            const headerCell = detalhesTable.querySelector("thead th:nth-child(1)");
+            const rows = detalhesTable.querySelectorAll("tbody tr");
+            
+            headerCell.classList.toggle("hidden", !show);
             rows.forEach((row) => {
                 const cell = row.children[columnIndex];
                 if (cell) {
@@ -86,7 +114,7 @@
             detalhes.forEach((detalhe) => {
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
-                    <td><input type="checkbox" class="item-checkbox"></td>
+                    <td class="checkbox-column hidden"><input type="checkbox" class="item-checkbox"></td>
                     <td>${detalhe.local}</td>
                     <td>${detalhe.item}</td>
                     <td>${detalhe.quantidade}</td>
