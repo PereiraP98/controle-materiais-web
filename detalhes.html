@@ -20,6 +20,7 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
+                        <th></th> <!-- Coluna para caixas de seleção -->
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
@@ -39,21 +40,51 @@
             <div class="button-container">
                 <button type="button" onclick="location.href='index.html'">Voltar</button>
                 <button type="button" id="materiaisRecebidosButton">Materiais Recebidos</button>
+                <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
             </div>
         </section>
     </main>
+
+    <!-- Janela de Informação -->
+    <div class="janela-flutuante" id="janelaInformacao">
+        <h2>Selecione os Itens</h2>
+        <p>Marque as caixas de seleção ao lado dos itens que deseja excluir.</p>
+        <button id="fecharJanelaButton">Fechar</button>
+    </div>
+
+    <!-- Janela de Confirmação -->
+    <div class="janela-flutuante" id="janelaConfirmacao">
+        <h2>Confirmação</h2>
+        <p>Tem certeza que deseja excluir os itens selecionados?</p>
+        <button id="confirmarButton">SIM</button>
+        <button id="cancelarButton">NÃO</button>
+    </div>
+
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
+
     <script>
-        // Função para carregar dados armazenados (usando localStorage)
+        const excluirItensButton = document.getElementById("excluirItensButton");
+        const fecharJanelaButton = document.getElementById("fecharJanelaButton");
+        const confirmarButton = document.getElementById("confirmarButton");
+        const cancelarButton = document.getElementById("cancelarButton");
+
+        const janelaInformacao = document.getElementById("janelaInformacao");
+        const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+
+        const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+
+        let selecionandoItens = false;
+
+        // Carregar dados armazenados
         document.addEventListener("DOMContentLoaded", function () {
             const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-            const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
 
             detalhes.forEach((detalhe) => {
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
+                    <td><input type="checkbox" class="item-checkbox"></td>
                     <td>${detalhe.local}</td>
                     <td>${detalhe.item}</td>
                     <td>${detalhe.quantidade}</td>
@@ -72,6 +103,39 @@
                     alert("Material recebido com sucesso!");
                 });
             });
+        });
+
+        // Abrir janela de seleção de itens
+        excluirItensButton.addEventListener("click", () => {
+            if (!selecionandoItens) {
+                janelaInformacao.style.display = "block";
+                selecionandoItens = true;
+                excluirItensButton.textContent = "Confirmar Exclusão";
+            } else {
+                janelaConfirmacao.style.display = "block";
+            }
+        });
+
+        // Fechar janela de informação
+        fecharJanelaButton.addEventListener("click", () => {
+            janelaInformacao.style.display = "none";
+        });
+
+        // Confirmar exclusão de itens
+        confirmarButton.addEventListener("click", () => {
+            const checkboxes = document.querySelectorAll(".item-checkbox:checked");
+            checkboxes.forEach((checkbox) => {
+                const row = checkbox.closest("tr");
+                detalhesTable.removeChild(row);
+            });
+            janelaConfirmacao.style.display = "none";
+            selecionandoItens = false;
+            excluirItensButton.textContent = "Excluir Itens";
+        });
+
+        // Cancelar exclusão de itens
+        cancelarButton.addEventListener("click", () => {
+            janelaConfirmacao.style.display = "none";
         });
     </script>
 </body>
