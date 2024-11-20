@@ -35,7 +35,7 @@ document.getElementById("janelaForm").addEventListener("submit", function (event
         month: "2-digit",
     });
 
-    // Adicionar o item à tabela de materiais solicitados na página inicial
+    // Adicionar o item à tabela de materiais solicitados na página index
     const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
     const newRow = document.createElement("tr");
 
@@ -110,7 +110,6 @@ if (window.location.pathname.includes("detalhes.html")) {
         document.querySelectorAll(".receberButton").forEach((button) => {
             button.addEventListener("click", function () {
                 alert("Material recebido com sucesso!");
-                // Aqui você pode adicionar lógica para registrar o recebimento.
             });
         });
     });
