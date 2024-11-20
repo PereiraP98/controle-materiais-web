@@ -135,7 +135,7 @@ th, td {
 th:nth-child(1), td:nth-child(1) { width: 10%; } /* LOCAL */
 th:nth-child(2), td:nth-child(2) { width: 12%; } /* ITEM */
 th:nth-child(3), td:nth-child(3) { width: 8%; }  /* QDT */
-th:nth-child(4), td:nth-child(4) { width: 15%; } /* DESTINO */
+th:nth-child(4), td:nth-child(4) { width: 10%; } /* DESTINO */
 th:nth-child(5), td:nth-child(5) { width: 12%; } /* DATA */
 th:nth-child(6), td:nth-child(6) { width: 12%; } /* HORA */
 th:nth-child(7), td:nth-child(7) { width: 15%; } /* RECEBER */
