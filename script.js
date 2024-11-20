@@ -93,11 +93,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (window.location.pathname.includes("detalhes.html")) {
         const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+        const excluirItensButton = document.getElementById("excluirItensButton");
 
         detalhes.forEach((detalhe) => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td><input type="checkbox" class="delete-checkbox"></td>
+                <td><input type="checkbox" class="delete-checkbox" style="display: none;"></td>
                 <td>${detalhe.local}</td>
                 <td>${detalhe.item}</td>
                 <td>${detalhe.quantidade}</td>
@@ -110,30 +111,46 @@ document.addEventListener("DOMContentLoaded", function () {
             detalhesTable.appendChild(newRow);
         });
 
-        document.getElementById("excluirItensButton").addEventListener("click", function () {
-            const checkboxes = document.querySelectorAll(".delete-checkbox:checked");
-            if (checkboxes.length === 0) {
-                alert("Selecione os itens que deseja excluir.");
-                return;
-            }
+        excluirItensButton.addEventListener("click", function () {
+            const checkboxes = document.querySelectorAll(".delete-checkbox");
+            const checkboxesVisible = checkboxes[0]?.style.display === "inline-block";
 
-            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+            if (checkboxesVisible) {
+                const selectedCheckboxes = document.querySelectorAll(".delete-checkbox:checked");
+
+                if (selectedCheckboxes.length === 0) {
+                    alert("Selecione os itens que deseja excluir.");
+                    return;
+                }
+
+                if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                    selectedCheckboxes.forEach((checkbox) => {
+                        const row = checkbox.closest("tr");
+                        row.remove();
+                    });
+
+                    let detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
+                        local: row.cells[1].innerText,
+                        item: row.cells[2].innerText,
+                        quantidade: row.cells[3].innerText,
+                        destino: row.cells[4].innerText,
+                        dataAtual: row.cells[5].innerText,
+                        horario: row.cells[6].innerText,
+                    }));
+                    localStorage.setItem("detalhes", JSON.stringify(detalhesAtualizados));
+
+                    alert("Itens excluídos com sucesso!");
+                }
+
                 checkboxes.forEach((checkbox) => {
-                    const row = checkbox.closest("tr");
-                    row.remove();
+                    checkbox.style.display = "none";
                 });
-
-                let detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
-                    local: row.cells[1].innerText,
-                    item: row.cells[2].innerText,
-                    quantidade: row.cells[3].innerText,
-                    destino: row.cells[4].innerText,
-                    dataAtual: row.cells[5].innerText,
-                    horario: row.cells[6].innerText,
-                }));
-                localStorage.setItem("detalhes", JSON.stringify(detalhesAtualizados));
-
-                alert("Itens excluídos com sucesso!");
+                excluirItensButton.textContent = "Excluir Itens";
+            } else {
+                checkboxes.forEach((checkbox) => {
+                    checkbox.style.display = "inline-block";
+                });
+                excluirItensButton.textContent = "Confirmar Exclusão";
             }
         });
     }
