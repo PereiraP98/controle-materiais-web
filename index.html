@@ -5,88 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reset padrão */
+        body, h1, h2, ul, li, form, input, select, button, table, th, td {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        header {
+            background-color: #215C98;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: auto;
+        }
+
+        header h1 {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #215C98;
+        }
+
+        .solicitacao-container {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .materiais-reservados {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .graficos-container {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+        }
+
+        .materiais-solicitados {
+            grid-column: 3;
+            grid-row: 1 / span 2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #215C98;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+
+        tbody tr:hover {
+            background-color: #d3e4f7;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #215C98;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/refs/heads/main/assets/logo.webp" alt="DevCore Logo" class="logo">
-            <h1>Controle de Materiais</h1>
-        </div>
+        <img src="https://github.com/PereiraP98/controle-materiais-web/raw/refs/heads/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+        <h1>Controle de Materiais</h1>
     </header>
     <main>
-        <div class="main-container">
-            <!-- Solicitação de Materiais -->
-            <section class="solicitacao-container">
-                <h2>Solicitação de Materiais</h2>
-                <form id="solicitacaoForm">
-                    <label for="local">Local:</label>
-                    <select id="local">
-                        <option value="CA">CA</option>
-                        <option value="VF">VF</option>
-                    </select>
-                    <label for="item">Código do Item:</label>
-                    <input type="text" id="item" placeholder="Insira o código do item">
-                    <label for="destino">Destino:</label>
-                    <select id="destino">
-                        <option value="PICKING">PICKING</option>
-                        <option value="MESA">MESA</option>
-                    </select>
-                    <div class="button-container">
-                        <button type="submit">Solicitar</button>
-                        <button type="reset">Limpar</button>
-                    </div>
-                </form>
-            </section>
+        <!-- Solicitação de Materiais -->
+        <section class="solicitacao-container">
+            <h2>Solicitação de Materiais</h2>
+            <form id="solicitacaoForm">
+                <label for="local">Local:</label>
+                <select id="local">
+                    <option value="CA">CA</option>
+                    <option value="VF">VF</option>
+                </select>
+                <label for="item">Código do Item:</label>
+                <input type="text" id="item" placeholder="Insira o código do item">
+                <label for="destino">Destino:</label>
+                <select id="destino">
+                    <option value="PICKING">PICKING</option>
+                    <option value="MESA">MESA</option>
+                </select>
+                <div class="button-container">
+                    <button type="submit">Solicitar</button>
+                    <button type="reset">Limpar</button>
+                </div>
+            </form>
+        </section>
 
-            <!-- Materiais Reservados -->
-            <section class="materiais-reservados">
-                <h2>Materiais Reservados</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Local</th>
-                            <th>Item</th>
-                            <th>Destino</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reservadosTable">
-                        <!-- Linhas de materiais reservados -->
-                    </tbody>
-                </table>
-            </section>
+        <!-- Materiais Reservados -->
+        <section class="materiais-reservados">
+            <h2>Materiais Reservados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Local</th>
+                        <th>Item</th>
+                        <th>Destino</th>
+                    </tr>
+                </thead>
+                <tbody id="reservadosTable">
+                    <!-- Linhas de materiais reservados -->
+                </tbody>
+            </table>
+        </section>
 
-            <!-- Gráficos -->
-            <section class="graficos-container">
-                <h2>Gráficos</h2>
-                <p>Espaço reservado para gráficos</p>
-            </section>
+        <!-- Gráficos -->
+        <section class="graficos-container">
+            <h2>Gráficos</h2>
+            <p>Espaço reservado para gráficos</p>
+        </section>
 
-            <!-- Materiais Solicitados -->
-            <section class="materiais-solicitados">
-                <h2>Materiais Solicitados</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Local</th>
-                            <th>Item</th>
-                            <th>Destino</th>
-                        </tr>
-                    </thead>
-                    <tbody id="solicitadosTable">
-                        <!-- Linhas de materiais solicitados -->
-                    </tbody>
-                </table>
-            </section>
-        </div>
+        <!-- Materiais Solicitados -->
+        <section class="materiais-solicitados">
+            <h2>Materiais Solicitados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Local</th>
+                        <th>Item</th>
+                        <th>Destino</th>
+                    </tr>
+                </thead>
+                <tbody id="solicitadosTable">
+                    <!-- Linhas de materiais solicitados -->
+                </tbody>
+            </table>
+        </section>
     </main>
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Simular carregamento de dados em Reservados e Solicitados
             const reservados = [
                 { local: "CA", item: "20239", destino: "PICKING" },
                 { local: "VF", item: "11744", destino: "MESA" }
@@ -106,26 +204,6 @@
             solicitados.forEach(mat => {
                 const row = `<tr><td>${mat.local}</td><td>${mat.item}</td><td>${mat.destino}</td></tr>`;
                 solicitadosTable.insertAdjacentHTML("beforeend", row);
-            });
-
-            // Manipular a solicitação de materiais
-            const form = document.getElementById("solicitacaoForm");
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-                const local = document.getElementById("local").value;
-                const item = document.getElementById("item").value;
-                const destino = document.getElementById("destino").value;
-
-                if (!/^\d{5}$/.test(item)) {
-                    alert("O código do item deve ter exatamente 5 dígitos.");
-                    return;
-                }
-
-                const newRow = `<tr><td>${local}</td><td>${item}</td><td>${destino}</td></tr>`;
-                solicitadosTable.insertAdjacentHTML("beforeend", newRow);
-
-                alert("Material solicitado com sucesso!");
-                form.reset();
             });
         });
     </script>
