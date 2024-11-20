@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Código específico para detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
-        const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
         const excluirItensButton = document.getElementById("excluirItensButton");
 
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("recebimentoForm")?.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const index = document.getElementById("recebimentoIndex").value;
+            const index = parseInt(document.getElementById("recebimentoIndex").value);
             const quantidadeRecebida = document.getElementById("recebimentoQuantidade").value;
             const horarioRecebido = document.getElementById("recebimentoHorario").value;
 
@@ -170,6 +170,23 @@ document.addEventListener("DOMContentLoaded", function () {
             // Remove o item da lista de detalhes
             detalhes.splice(index, 1);
             localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+            // **Novo código para remover o item de 'solicitados'**
+            // Carrega o array 'solicitados' do localStorage
+            let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+
+            // Encontra o índice do item correspondente em 'solicitados'
+            const solicitadosIndex = solicitados.findIndex(item =>
+                item.local === detalhe.local &&
+                item.item === detalhe.item &&
+                item.destino === detalhe.destino
+            );
+
+            if (solicitadosIndex !== -1) {
+                // Remove o item de 'solicitados' e atualiza o localStorage
+                solicitados.splice(solicitadosIndex, 1);
+                localStorage.setItem("solicitados", JSON.stringify(solicitados));
+            }
 
             // Atualiza a tabela
             atualizarTabelaDetalhes();
@@ -266,9 +283,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     selectedCheckboxes.forEach((checkbox) => {
                         const row = checkbox.closest("tr");
                         const index = Array.from(detalhesTable.rows).indexOf(row);
+                        const detalhe = detalhes[index];
                         row.remove();
                         // Remove do array detalhes
                         detalhes.splice(index, 1);
+
+                        // **Também remove o item correspondente de 'solicitados'**
+                        let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+                        const solicitadosIndex = solicitados.findIndex(item =>
+                            item.local === detalhe.local &&
+                            item.item === detalhe.item &&
+                            item.destino === detalhe.destino
+                        );
+
+                        if (solicitadosIndex !== -1) {
+                            solicitados.splice(solicitadosIndex, 1);
+                            localStorage.setItem("solicitados", JSON.stringify(solicitados));
+                        }
+
                         localStorage.setItem("detalhes", JSON.stringify(detalhes));
                     });
 
