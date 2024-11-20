@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
         detalhes.forEach((detalhe) => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td style="width: 40px;"><input type="checkbox" class="delete-checkbox" style="display: none;"></td>
+                <td style="width: 10px;"><input type="checkbox" class="delete-checkbox" style="display: none;"></td>
                 <td>${detalhe.local}</td>
                 <td>${detalhe.item}</td>
                 <td>${detalhe.quantidade}</td>
