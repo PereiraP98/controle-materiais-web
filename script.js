@@ -49,4 +49,3 @@ document.getElementById("reservarButton").addEventListener("click", function() {
 
     alert("Item reservado com sucesso!");
 });
-
