@@ -16,9 +16,6 @@ body {
 header {
     background-color: #215C98;
     padding: 10px 20px;
-}
-
-.header-container {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -44,32 +41,59 @@ header h1 {
     padding: 20px;
 }
 
-/* Coluna esquerda */
-.left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Estilo das janelas */
-.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados {
+/* Seções e janelas */
+.detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.graficos-container {
-    text-align: center;
-}
-
-/* Títulos das seções */
+/* Títulos */
 h2 {
     margin-bottom: 15px;
     color: #215C98;
 }
 
-/* Inputs e selects modernos */
+/* Botões */
+button {
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #215C98;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #17406d;
+    transform: scale(1.03);
+}
+
+/* Botão de exclusão */
+button.excluir-button {
+    background-color: #f44336;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-radius: 8px;
+}
+
+button.excluir-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Containers de botões */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Inputs */
 select, input[type="text"], input[type="number"], input[type="time"] {
     width: 100%;
     padding: 12px;
@@ -80,76 +104,28 @@ select, input[type="text"], input[type="number"], input[type="time"] {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-select:focus, input[type="text"]:focus, input[type="number"]:focus, input[type="time"]:focus {
+select:focus, input:focus {
     border-color: #215C98;
     box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
-    outline: none;
-}
-
-input[type="text"]::placeholder {
-    color: #aaa;
-    font-style: italic;
-    font-size: 0.9em;
-}
-
-/* Botões */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 2cm;
-    margin-top: 20px;
-}
-
-button {
-    padding: 12px 20px;
-    font-size: 1em;
-    background-color: #215C98;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #17406d;
-    transform: scale(1.03);
-}
-
-/* Estilo para o botão Excluir Itens */
-button.excluir-button {
-    background-color: #f44336;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    font-size: 1em;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-button.excluir-button:hover {
-    background-color: #d32f2f;
 }
 
 /* Estilo para tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 1em;
-    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95em;
 }
 
 th, td {
     border: 1px solid #ccc;
     padding: 10px;
-    white-space: nowrap;
+    text-align: center;
 }
 
-/* Configuração dinâmica para a coluna de seleção */
+/* Coluna de seleção dinâmica */
 .checkbox-column {
-    width: 50px;
+    width: 40px;
     text-align: center;
 }
 
@@ -157,40 +133,36 @@ th, td {
     display: none;
 }
 
-/* Ajuste de largura das colunas */
-th:nth-child(2), td:nth-child(2) { width: 5%; } /* LOCAL */
-th:nth-child(3), td:nth-child(3) { width: 5%; } /* ITEM */
-th:nth-child(4), td:nth-child(4) { width: 5%; } /* QTD */
-th:nth-child(5), td:nth-child(5) { width: 6%; } /* DESTINO */
-th:nth-child(6), td:nth-child(6) { width: 5%; } /* DATA */
-th:nth-child(7), td:nth-child(7) { width: 5%; } /* HORA */
-th:nth-child(8), td:nth-child(8) { width: 5%; } /* RECEBER */
-th:nth-child(9), td:nth-child(9) { width: 8%; } /* REPORT */
+/* Configuração de largura das colunas */
+th:nth-child(2), td:nth-child(2) { width: 10%; } /* LOCAL */
+th:nth-child(3), td:nth-child(3) { width: 15%; } /* ITEM */
+th:nth-child(4), td:nth-child(4) { width: 10%; } /* QTD */
+th:nth-child(5), td:nth-child(5) { width: 15%; } /* DESTINO */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* DATA */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* HORA */
+th:nth-child(8), td:nth-child(8) { width: 10%; } /* RECEBER */
+th:nth-child(9), td:nth-child(9) { width: 10%; } /* REPORT */
 
 th {
     background-color: #215C98;
     color: white;
-    text-align: center;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f3f4f6;
+    background-color: #f9f9f9;
 }
 
 tbody tr:hover {
     background-color: #d3e4f7;
 }
 
-/* Rodapé */
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #215C98;
-    color: white;
-    font-size: 0.9em;
+/* Estilo REPORT */
+th:nth-child(9), td:nth-child(9) {
+    color: yellow;
+    font-weight: bold;
 }
 
-/* Janela Flutuante */
+/* Janela flutuante */
 .janela-flutuante {
     display: none;
     position: fixed;
@@ -207,50 +179,19 @@ footer {
 }
 
 .janela-flutuante h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.2em;
     color: #215C98;
-}
-
-.janela-flutuante p {
-    margin-bottom: 15px;
-}
-
-.janela-flutuante .button-container {
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .janela-flutuante button {
-    padding: 10px 15px;
-    font-size: 1em;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 45%;
+    margin: 10px;
 }
 
-.janela-flutuante button#cancelarButton {
-    background-color: #f5a5a5;
+/* Rodapé */
+footer {
+    background-color: #215C98;
     color: white;
-}
-
-.janela-flutuante button#confirmarButton {
-    background-color: #a5f5a5;
-    color: white;
-}
-
-/* Detalhes de materiais */
-.detalhes-container {
-    background: white;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-th:nth-child(9), td:nth-child(9) {
-    color: yellow;
-    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9em;
 }
