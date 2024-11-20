@@ -14,35 +14,27 @@
             <h1>Controle de Materiais</h1>
         </div>
     </header>
-    <main class="main-container">
-        <!-- Coluna Esquerda -->
-        <div class="left-column">
-            <!-- Janela de Solicitação -->
+    <main>
+        <div class="main-container">
+            <!-- Solicitação de Materiais -->
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
-                <form id="materialForm">
+                <form id="solicitacaoForm">
                     <label for="local">Local:</label>
-                    <select id="local" name="local" required>
+                    <select id="local">
                         <option value="CA">CA</option>
                         <option value="VF">VF</option>
-                        <option value="VD">VD</option>
-                        <option value="VE">VE</option>
-                        <option value="EX">EX</option>
-                        <option value="R01">R01</option>
                     </select>
-
                     <label for="item">Código do Item:</label>
-                    <input type="text" id="item" name="item" placeholder="Ex: 20239" maxlength="5" pattern="\d{5}" required>
-
+                    <input type="text" id="item" placeholder="Insira o código do item">
                     <label for="destino">Destino:</label>
-                    <select id="destino" name="destino" required>
+                    <select id="destino">
                         <option value="PICKING">PICKING</option>
                         <option value="MESA">MESA</option>
                     </select>
-
                     <div class="button-container">
-                        <button type="button" id="abrirSolicitacaoButton">Solicitar</button>
-                        <button type="button" id="reservarButton">Reservar</button>
+                        <button type="submit">Solicitar</button>
+                        <button type="reset">Limpar</button>
                     </div>
                 </form>
             </section>
@@ -50,69 +42,92 @@
             <!-- Materiais Reservados -->
             <section class="materiais-reservados">
                 <h2>Materiais Reservados</h2>
-                <table id="reservadosTable">
+                <table>
                     <thead>
                         <tr>
-                            <th>LOCAL</th>
-                            <th>ITEM</th>
-                            <th>DESTINO</th>
+                            <th>Local</th>
+                            <th>Item</th>
+                            <th>Destino</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Registros de materiais reservados -->
+                    <tbody id="reservadosTable">
+                        <!-- Linhas de materiais reservados -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Gráficos -->
+            <section class="graficos-container">
+                <h2>Gráficos</h2>
+                <p>Espaço reservado para gráficos</p>
+            </section>
+
+            <!-- Materiais Solicitados -->
+            <section class="materiais-solicitados">
+                <h2>Materiais Solicitados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Local</th>
+                            <th>Item</th>
+                            <th>Destino</th>
+                        </tr>
+                    </thead>
+                    <tbody id="solicitadosTable">
+                        <!-- Linhas de materiais solicitados -->
                     </tbody>
                 </table>
             </section>
         </div>
-
-        <!-- Coluna Central (Gráficos) -->
-        <section class="graficos-container">
-            <h2>Gráficos</h2>
-            <div id="graficoPlaceholder">
-                <!-- Placeholder para futuros gráficos -->
-                <p>Gráficos serão exibidos aqui.</p>
-            </div>
-        </section>
-
-        <!-- Coluna Direita (Materiais Solicitados) -->
-        <section class="materiais-solicitados">
-            <h2>Materiais Solicitados</h2>
-            <table id="solicitadosTable">
-                <thead>
-                    <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>DESTINO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Registros de materiais solicitados -->
-                </tbody>
-            </table>
-            <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
-        </section>
     </main>
-
-    <!-- Janela Flutuante -->
-    <div id="janelaSolicitacao" class="janela-flutuante">
-        <h2>Solicitação de Material</h2>
-        <form id="janelaForm">
-            <label for="quantidade">Quantidade do Material:</label>
-            <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
-
-            <label for="horario">Horário de Solicitação:</label>
-            <input type="time" id="horario" name="horario" value="">
-
-            <div class="button-container">
-                <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
-                <button type="submit" id="confirmarSolicitacaoButton">Solicitar</button>
-            </div>
-        </form>
-    </div>
-
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Simular carregamento de dados em Reservados e Solicitados
+            const reservados = [
+                { local: "CA", item: "20239", destino: "PICKING" },
+                { local: "VF", item: "11744", destino: "MESA" }
+            ];
+            const solicitados = [
+                { local: "CA", item: "30560", destino: "MESA" },
+                { local: "VF", item: "99880", destino: "PICKING" }
+            ];
+
+            const reservadosTable = document.getElementById("reservadosTable");
+            reservados.forEach(mat => {
+                const row = `<tr><td>${mat.local}</td><td>${mat.item}</td><td>${mat.destino}</td></tr>`;
+                reservadosTable.insertAdjacentHTML("beforeend", row);
+            });
+
+            const solicitadosTable = document.getElementById("solicitadosTable");
+            solicitados.forEach(mat => {
+                const row = `<tr><td>${mat.local}</td><td>${mat.item}</td><td>${mat.destino}</td></tr>`;
+                solicitadosTable.insertAdjacentHTML("beforeend", row);
+            });
+
+            // Manipular a solicitação de materiais
+            const form = document.getElementById("solicitacaoForm");
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const local = document.getElementById("local").value;
+                const item = document.getElementById("item").value;
+                const destino = document.getElementById("destino").value;
+
+                if (!/^\d{5}$/.test(item)) {
+                    alert("O código do item deve ter exatamente 5 dígitos.");
+                    return;
+                }
+
+                const newRow = `<tr><td>${local}</td><td>${item}</td><td>${destino}</td></tr>`;
+                solicitadosTable.insertAdjacentHTML("beforeend", newRow);
+
+                alert("Material solicitado com sucesso!");
+                form.reset();
+            });
+        });
+    </script>
 </body>
 </html>
