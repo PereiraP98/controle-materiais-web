@@ -133,7 +133,7 @@ th, td {
 
 /* Ajuste de largura das colunas */
 th:nth-child(1), td:nth-child(1) { width: 10%; } /* LOCAL */
-th:nth-child(2), td:nth-child(2) { width: 12%; } /* ITEM */
+th:nth-child(2), td:nth-child(2) { width: 8%; } /* ITEM */
 th:nth-child(3), td:nth-child(3) { width: 8%; }  /* QDT */
 th:nth-child(4), td:nth-child(4) { width: 10%; } /* DESTINO */
 th:nth-child(5), td:nth-child(5) { width: 12%; } /* DATA */
