@@ -31,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Registros de materiais solicitados serão adicionados aqui dinamicamente -->
+                    <!-- Os registros de materiais solicitados serão adicionados aqui -->
                 </tbody>
             </table>
 
@@ -45,22 +45,41 @@
     <footer>
         © 2024 Controle de Materiais - Todos os direitos reservados.
     </footer>
+    <script>
+        // Função para carregar dados armazenados (usando localStorage)
+        document.addEventListener("DOMContentLoaded", function () {
+            const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+
+            detalhes.forEach((detalhe) => {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${detalhe.local}</td>
+                    <td>${detalhe.item}</td>
+                    <td>${detalhe.quantidade}</td>
+                    <td>${detalhe.destino}</td>
+                    <td>${detalhe.dataAtual}</td>
+                    <td>${detalhe.horario}</td>
+                    <td><button class="receberButton">Receber</button></td>
+                    <td style="color: yellow; text-align: center;">REPORT</td>
+                `;
+                detalhesTable.appendChild(newRow);
+            });
+
+            // Ação para o botão "Receber"
+            document.querySelectorAll(".receberButton").forEach((button) => {
+                button.addEventListener("click", function () {
+                    alert("Material recebido com sucesso!");
+                    // Aqui você pode adicionar lógica para registrar o recebimento.
+                });
+            });
+        });
+
+        // Ação do botão "Materiais Recebidos"
+        document.getElementById("materiaisRecebidosButton").addEventListener("click", function () {
+            alert("Página de Materiais Recebidos será implementada.");
+            // Adicione o redirecionamento ou lógica para a página de materiais recebidos.
+        });
+    </script>
 </body>
 </html>
-document.addEventListener("DOMContentLoaded", function() {
-    const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
-
-    detalhes.forEach(detalhe => {
-        const newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${detalhe.local}</td>
-            <td>${detalhe.item}</td>
-            <td>${detalhe.quantidade}</td>
-            <td>${detalhe.destino}</td>
-            <td>${detalhe.dataAtual}</td>
-            <td>${detalhe.horario}</td>
-        `;
-        detalhesTable.appendChild(newRow);
-    });
-});
