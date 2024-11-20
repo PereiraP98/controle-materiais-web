@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
@@ -9,6 +10,7 @@
 </head>
 <body>
     <header>
+        <!-- Conteúdo do header permanece o mesmo -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/refs/heads/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
@@ -16,7 +18,7 @@
     </header>
     <main class="main-container">
         <!-- Coluna Esquerda -->
-        <div class="left-column">
+        <div class="column">
             <!-- Janela de Solicitação -->
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
@@ -65,32 +67,35 @@
             </section>
         </div>
 
-        <!-- Coluna Central (Gráficos) -->
-        <section class="graficos-container">
-            <h2>Gráficos</h2>
-            <div id="graficoPlaceholder">
-                <!-- Placeholder para futuros gráficos -->
-                <p>Gráficos serão exibidos aqui.</p>
-            </div>
-        </section>
+        <!-- Coluna Direita -->
+        <div class="column">
+            <!-- Gráficos -->
+            <section class="graficos-container">
+                <h2>Gráficos</h2>
+                <div id="graficoPlaceholder">
+                    <!-- Placeholder para futuros gráficos -->
+                    <p>Gráficos serão exibidos aqui.</p>
+                </div>
+            </section>
 
-        <!-- Coluna Direita (Materiais Solicitados) -->
-        <section class="materiais-solicitados">
-            <h2>Materiais Solicitados</h2>
-            <table id="solicitadosTable">
-                <thead>
-                    <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>DESTINO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Registros de materiais solicitados -->
-                </tbody>
-            </table>
-            <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
-        </section>
+            <!-- Materiais Solicitados -->
+            <section class="materiais-solicitados">
+                <h2>Materiais Solicitados</h2>
+                <table id="solicitadosTable">
+                    <thead>
+                        <tr>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>DESTINO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Registros de materiais solicitados -->
+                    </tbody>
+                </table>
+                <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
+            </section>
+        </div>
     </main>
 
     <!-- Janela Flutuante -->
@@ -101,7 +106,7 @@
             <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
 
             <label for="horario">Horário de Solicitação:</label>
-            <input type="time" id="horario" name="horario" value="">
+            <input type="time" id="horario" name="horario">
 
             <div class="button-container">
                 <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
