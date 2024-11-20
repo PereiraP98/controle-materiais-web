@@ -42,22 +42,16 @@ header h1 {
 }
 
 /* Seções e janelas */
-.detalhes-container {
+.detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.title-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Títulos */
+h2 {
     margin-bottom: 15px;
-}
-
-.title-container h2 {
-    margin: 0;
     color: #215C98;
 }
 
@@ -78,17 +72,20 @@ button:hover {
     transform: scale(1.03);
 }
 
+/* Botão de exclusão */
 button.excluir-button {
     background-color: #f44336;
-    padding: 10px 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
     border-radius: 8px;
-    font-size: 1em;
 }
 
 button.excluir-button:hover {
     background-color: #d32f2f;
 }
 
+/* Containers de botões */
 .button-container {
     display: flex;
     justify-content: center;
