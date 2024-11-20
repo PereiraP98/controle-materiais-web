@@ -95,8 +95,8 @@ input[type="text"]::placeholder {
 /* Botões */
 .button-container {
     display: flex;
-    justify-content: center; /* Centraliza os botões */
-    gap: 2cm; /* Espaçamento entre os botões */
+    justify-content: center;
+    gap: 2cm;
     margin-top: 20px;
 }
 
@@ -118,11 +118,17 @@ button:hover {
 
 /* Estilo para o botão Excluir Itens */
 button.excluir-button {
-    background-color: #f44336; /* Vermelho */
+    background-color: #f44336;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border-radius: 8px;
 }
 
 button.excluir-button:hover {
-    background-color: #d32f2f; /* Vermelho escuro */
+    background-color: #d32f2f;
 }
 
 /* Estilo para tabelas */
@@ -131,7 +137,7 @@ table {
     border-collapse: collapse;
     margin-top: 10px;
     font-size: 1em;
-    text-align: center; /* Centraliza o texto nas colunas */
+    text-align: center;
 }
 
 th, td {
@@ -149,12 +155,12 @@ th:nth-child(5), td:nth-child(5) { width: 6%; } /* DESTINO */
 th:nth-child(6), td:nth-child(6) { width: 5%; } /* DATA */
 th:nth-child(7), td:nth-child(7) { width: 5%; } /* HORA */
 th:nth-child(8), td:nth-child(8) { width: 5%; } /* RECEBER */
-th:nth-child(9), td:nth-child(9) { width: 8%; }  /* REPORT */
+th:nth-child(9), td:nth-child(9) { width: 8%; } /* REPORT */
 
 th {
     background-color: #215C98;
     color: white;
-    text-align: center; /* Centraliza os títulos das colunas */
+    text-align: center;
 }
 
 tbody tr:nth-child(even) {
