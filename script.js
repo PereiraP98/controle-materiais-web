@@ -30,14 +30,14 @@ document.getElementById("janelaForm")?.addEventListener("submit", function (even
         month: "2-digit",
     });
 
-    const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
+    const solicitadosTable = document.getElementById("solicitadosTable")?.querySelector("tbody");
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
         <td>${local}</td>
         <td>${item}</td>
         <td>${destino}</td>
     `;
-    solicitadosTable.appendChild(newRow);
+    solicitadosTable?.appendChild(newRow);
 
     let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     solicitados.push({ local, item, destino });
@@ -63,14 +63,14 @@ document.getElementById("reservarButton")?.addEventListener("click", function ()
         return;
     }
 
-    const reservadosTable = document.getElementById("reservadosTable").querySelector("tbody");
+    const reservadosTable = document.getElementById("reservadosTable")?.querySelector("tbody");
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
         <td>${local}</td>
         <td>${item}</td>
         <td>${destino}</td>
     `;
-    reservadosTable.appendChild(newRow);
+    reservadosTable?.appendChild(newRow);
 
     alert("Material reservado com sucesso!");
 });
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td>${item.item}</td>
             <td>${item.destino}</td>
         `;
-        solicitadosTable.appendChild(newRow);
+        solicitadosTable?.appendChild(newRow);
     });
 
     if (window.location.pathname.includes("detalhes.html")) {
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
         detalhes.forEach((detalhe) => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td style="width: 10px;"><input type="checkbox" class="delete-checkbox" style="display: none;"></td>
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                 <td>${detalhe.local}</td>
                 <td>${detalhe.item}</td>
                 <td>${detalhe.quantidade}</td>
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         row.remove();
                     });
 
-                    let detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
+                    const detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
                         local: row.cells[1].innerText,
                         item: row.cells[2].innerText,
                         quantidade: row.cells[3].innerText,
