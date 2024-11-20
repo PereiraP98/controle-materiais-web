@@ -54,7 +54,8 @@ header h1 {
 .solicitacao-container,
 .materiais-reservados,
 .graficos-container,
-.materiais-solicitados {
+.materiais-solicitados,
+.detalhes-container {
     background: white;
     padding: 25px; /* Padding interno */
     border-radius: 10px;
@@ -84,8 +85,8 @@ button:hover {
     transform: scale(1.03);
 }
 
-/* Botão de exclusão */
-button.excluir-button {
+/* Botão de exclusão na janela de solicitação (index.html) */
+.solicitacao-container .excluir-button {
     background-color: #f44336;
     position: absolute;
     top: 20px;
@@ -93,7 +94,23 @@ button.excluir-button {
     border-radius: 8px;
 }
 
-button.excluir-button:hover {
+.solicitacao-container .excluir-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Botão de exclusão na página de detalhes (detalhes.html) */
+.detalhes-container .excluir-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.detalhes-container .excluir-button:hover {
     background-color: #d32f2f;
 }
 
@@ -150,6 +167,15 @@ tbody tr:hover {
     background-color: #d3e4f7;
 }
 
+/* Coluna de seleção na tabela de detalhes */
+.checkbox-column {
+    width: 40px;
+}
+
+.checkbox-column.hidden {
+    display: none;
+}
+
 /* Janela flutuante */
 .janela-flutuante {
     display: none;
@@ -173,6 +199,17 @@ tbody tr:hover {
 
 .janela-flutuante button {
     margin: 10px;
+}
+
+/* Título e botão de exclusão na página de detalhes */
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-container h2 {
+    margin: 0;
 }
 
 /* Rodapé */
