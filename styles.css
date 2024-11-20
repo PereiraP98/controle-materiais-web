@@ -36,13 +36,22 @@ header h1 {
 /* Layout principal */
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Ajustado para colunas iguais */
+    grid-template-columns: 1fr 1fr; /* Duas colunas */
     grid-gap: 30px; /* Aumentado o espaçamento entre as colunas */
     padding: 30px; /* Aumentado o padding geral */
 }
 
+.column {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-gap: 30px;
+}
+
 /* Seções e janelas */
-.detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
+.solicitacao-container,
+.materiais-reservados,
+.graficos-container,
+.materiais-solicitados {
     background: white;
     padding: 25px; /* Aumentado o padding interno */
     border-radius: 10px;
@@ -123,43 +132,19 @@ th, td {
     text-align: center;
 }
 
-/* Coluna de seleção dinâmica */
-.checkbox-column {
-    width: 40px;
-    text-align: center;
-}
-
-.checkbox-column.hidden {
-    display: none;
-}
-
-/* Configuração de largura das colunas */
-th:nth-child(2), td:nth-child(2) { width: 10%; } /* LOCAL */
-th:nth-child(3), td:nth-child(3) { width: 15%; } /* ITEM */
-th:nth-child(4), td:nth-child(4) { width: 10%; } /* QTD */
-th:nth-child(5), td:nth-child(5) { width: 15%; } /* DESTINO */
-th:nth-child(6), td:nth-child(6) { width: 10%; } /* DATA */
-th:nth-child(7), td:nth-child(7) { width: 10%; } /* HORA */
-th:nth-child(8), td:nth-child(8) { width: 10%; } /* RECEBER */
-th:nth-child(9), td:nth-child(9) { width: 10%; } /* REPORT */
-
+/* Cabeçalho da tabela */
 th {
     background-color: #215C98;
     color: white;
 }
 
+/* Linhas da tabela */
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
 tbody tr:hover {
     background-color: #d3e4f7;
-}
-
-/* Estilo REPORT */
-th:nth-child(9), td:nth-child(9) {
-    color: yellow;
-    font-weight: bold;
 }
 
 /* Janela flutuante */
@@ -170,11 +155,11 @@ th:nth-child(9), td:nth-child(9) {
     left: 50%;
     transform: translate(-50%, -50%);
     background: white;
-    padding: 20px;
+    padding: 25px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     z-index: 1000;
-    width: 300px;
+    width: 400px;
     text-align: center;
 }
 
