@@ -1,16 +1,18 @@
-// Abrir a janela flutuante para solicitação de material
+// script.js
+
+// Abrir a janela flutuante para solicitação de material (Página Index)
 document.getElementById("abrirSolicitacaoButton")?.addEventListener("click", function () {
     const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     document.getElementById("horario").value = horarioAtual; // Preenche o horário atual
     document.getElementById("janelaSolicitacao").style.display = "block";
 });
 
-// Cancelar a solicitação e fechar a janela flutuante
+// Cancelar a solicitação e fechar a janela flutuante (Página Index)
 document.getElementById("cancelarSolicitacaoButton")?.addEventListener("click", function () {
     document.getElementById("janelaSolicitacao").style.display = "none";
 });
 
-// Confirmar a solicitação e registrar os dados
+// Confirmar a solicitação e registrar os dados (Página Index)
 document.getElementById("janelaForm")?.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -52,7 +54,7 @@ document.getElementById("janelaForm")?.addEventListener("submit", function (even
     alert("Material solicitado com sucesso!");
 });
 
-// Reservar um item
+// Reservar um item (Página Index)
 document.getElementById("reservarButton")?.addEventListener("click", function () {
     const local = document.getElementById("local").value;
     const item = document.getElementById("item").value;
@@ -90,33 +92,131 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTable?.appendChild(newRow);
     });
 
+    // Código específico para detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
         const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
         const excluirItensButton = document.getElementById("excluirItensButton");
 
-        detalhes.forEach((detalhe) => {
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${detalhe.local}</td>
-                <td>${detalhe.item}</td>
-                <td>${detalhe.quantidade}</td>
-                <td>${detalhe.destino}</td>
-                <td>${detalhe.dataAtual}</td>
-                <td>${detalhe.horario}</td>
-                <td><button class="receberButton">Receber</button></td>
-                <td style="color: yellow; text-align: center;">REPORT</td>
-            `;
-            detalhesTable.appendChild(newRow);
+        // Função para atualizar a tabela de detalhes
+        function atualizarTabelaDetalhes() {
+            detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+            detalhes.forEach((detalhe, index) => {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                    <td>${detalhe.local}</td>
+                    <td>${detalhe.item}</td>
+                    <td>${detalhe.quantidade}</td>
+                    <td>${detalhe.destino}</td>
+                    <td>${detalhe.dataAtual}</td>
+                    <td>${detalhe.horario}</td>
+                    <td><button class="receberButton">Receber</button></td>
+                    <td style="color: yellow; text-align: center;">REPORT</td>
+                `;
+                detalhesTable.appendChild(newRow);
+
+                // Adiciona o evento de clique ao botão Receber
+                const receberButton = newRow.querySelector(".receberButton");
+                receberButton.addEventListener("click", function () {
+                    abrirJanelaRecebimento(index);
+                });
+            });
+        }
+
+        atualizarTabelaDetalhes();
+
+        // Função para abrir a janela flutuante de recebimento
+        function abrirJanelaRecebimento(index) {
+            const detalhe = detalhes[index];
+            // Preenche os campos da janela com os dados atuais
+            document.getElementById("recebimentoQuantidade").value = detalhe.quantidade;
+            const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById("recebimentoHorario").value = horarioAtual;
+            document.getElementById("recebimentoIndex").value = index; // Armazena o índice para uso posterior
+            document.getElementById("janelaRecebimento").style.display = "block";
+        }
+
+        // Fecha a janela de recebimento
+        document.getElementById("cancelarRecebimentoButton")?.addEventListener("click", function () {
+            document.getElementById("janelaRecebimento").style.display = "none";
         });
 
-        excluirItensButton.addEventListener("click", function () {
-            const checkboxes = document.querySelectorAll(".delete-checkbox");
+        // Confirma o recebimento
+        document.getElementById("recebimentoForm")?.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const index = document.getElementById("recebimentoIndex").value;
+            const quantidadeRecebida = document.getElementById("recebimentoQuantidade").value;
+            const horarioRecebido = document.getElementById("recebimentoHorario").value;
+
+            const detalhe = detalhes[index];
+
+            // Cria um novo objeto para materiais recebidos
+            let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            recebidos.push({
+                local: detalhe.local,
+                item: detalhe.item,
+                quantidade: quantidadeRecebida,
+                destino: detalhe.destino,
+                dataAtual: detalhe.dataAtual,
+                horario: detalhe.horario,
+                recebido: horarioRecebido,
+                guardado: '' // Pode ser preenchido posteriormente
+            });
+            localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+            // Remove o item da lista de detalhes
+            detalhes.splice(index, 1);
+            localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+            // Atualiza a tabela
+            atualizarTabelaDetalhes();
+
+            // Atualiza a tabela de recebidos
+            atualizarTabelaRecebidos();
+
+            document.getElementById("janelaRecebimento").style.display = "none";
+
+            alert("Material recebido com sucesso!");
+        });
+
+        // Função para atualizar a tabela de materiais recebidos
+        const recebidosTable = document.getElementById("recebidosTable")?.querySelector("tbody");
+
+        function atualizarTabelaRecebidos() {
+            const recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+            recebidos.forEach((item, index) => {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.dataAtual}</td>
+                    <td>${item.horario}</td>
+                    <td>${item.recebido}</td>
+                    <td>${item.guardado}</td>
+                `;
+                recebidosTable.appendChild(newRow);
+            });
+        }
+
+        atualizarTabelaRecebidos();
+
+        // Função para excluir itens da tabela de materiais recebidos
+        const excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
+
+        excluirRecebidosButton.addEventListener("click", function () {
+            const checkboxes = document.querySelectorAll("#recebidosTable .delete-checkbox");
             const checkboxesVisible = checkboxes[0]?.style.display === "inline-block";
 
             if (checkboxesVisible) {
-                const selectedCheckboxes = document.querySelectorAll(".delete-checkbox:checked");
+                const selectedCheckboxes = document.querySelectorAll("#recebidosTable .delete-checkbox:checked");
 
                 if (selectedCheckboxes.length === 0) {
                     alert("Selecione os itens que deseja excluir.");
@@ -126,18 +226,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
                     selectedCheckboxes.forEach((checkbox) => {
                         const row = checkbox.closest("tr");
+                        const index = Array.from(recebidosTable.rows).indexOf(row);
                         row.remove();
+                        // Remove do array recebidos
+                        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+                        recebidos.splice(index, 1);
+                        localStorage.setItem("recebidos", JSON.stringify(recebidos));
                     });
 
-                    const detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
-                        local: row.cells[1].innerText,
-                        item: row.cells[2].innerText,
-                        quantidade: row.cells[3].innerText,
-                        destino: row.cells[4].innerText,
-                        dataAtual: row.cells[5].innerText,
-                        horario: row.cells[6].innerText,
-                    }));
-                    localStorage.setItem("detalhes", JSON.stringify(detalhesAtualizados));
+                    alert("Itens excluídos com sucesso!");
+                }
+
+                checkboxes.forEach((checkbox) => {
+                    checkbox.style.display = "none";
+                });
+                excluirRecebidosButton.textContent = "Excluir Itens";
+            } else {
+                checkboxes.forEach((checkbox) => {
+                    checkbox.style.display = "inline-block";
+                });
+                excluirRecebidosButton.textContent = "Confirmar Exclusão";
+            }
+        });
+
+        // Função de exclusão de itens na tabela de detalhes (já existente)
+        excluirItensButton.addEventListener("click", function () {
+            const checkboxes = document.querySelectorAll("#detalhesTable .delete-checkbox");
+            const checkboxesVisible = checkboxes[0]?.style.display === "inline-block";
+
+            if (checkboxesVisible) {
+                const selectedCheckboxes = document.querySelectorAll("#detalhesTable .delete-checkbox:checked");
+
+                if (selectedCheckboxes.length === 0) {
+                    alert("Selecione os itens que deseja excluir.");
+                    return;
+                }
+
+                if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                    selectedCheckboxes.forEach((checkbox) => {
+                        const row = checkbox.closest("tr");
+                        const index = Array.from(detalhesTable.rows).indexOf(row);
+                        row.remove();
+                        // Remove do array detalhes
+                        detalhes.splice(index, 1);
+                        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                    });
 
                     alert("Itens excluídos com sucesso!");
                 }
