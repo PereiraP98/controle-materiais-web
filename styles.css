@@ -36,28 +36,28 @@ header h1 {
 /* Layout principal */
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-gap: 20px;
-    padding: 20px;
+    grid-template-columns: 1fr 1fr 1fr; /* Ajustado para colunas iguais */
+    grid-gap: 30px; /* Aumentado o espaçamento entre as colunas */
+    padding: 30px; /* Aumentado o padding geral */
 }
 
 /* Seções e janelas */
 .detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
     background: white;
-    padding: 20px;
+    padding: 25px; /* Aumentado o padding interno */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Títulos */
 h2 {
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Aumentado o espaçamento abaixo dos títulos */
     color: #215C98;
 }
 
 /* Botões */
 button {
-    padding: 10px 15px;
+    padding: 12px 18px; /* Aumentado o tamanho dos botões */
     font-size: 1em;
     background-color: #215C98;
     color: white;
