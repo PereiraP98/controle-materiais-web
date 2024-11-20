@@ -35,20 +35,22 @@ document.getElementById("janelaForm").addEventListener("submit", function (event
         month: "2-digit",
     });
 
-    // Adicionar o item à tabela de materiais solicitados
+    // Adicionar o item à tabela de materiais solicitados na página inicial
     const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
     const newRow = document.createElement("tr");
 
     newRow.innerHTML = `
         <td>${local}</td>
         <td>${item}</td>
-        <td>${quantidade}</td>
         <td>${destino}</td>
-        <td>${dataAtual}</td>
-        <td>${horario}</td>
     `;
 
     solicitadosTable.appendChild(newRow);
+
+    // Salvar os detalhes completos no localStorage para exibição na página de detalhes
+    let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+    detalhes.push({ local, item, quantidade, destino, dataAtual, horario });
+    localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
     // Fechar a janela flutuante
     document.getElementById("janelaSolicitacao").style.display = "none";
@@ -82,3 +84,34 @@ document.getElementById("reservarButton").addEventListener("click", function () 
 
     alert("Material reservado com sucesso!");
 });
+
+// Carregar os detalhes armazenados na página "detalhes.html"
+if (window.location.pathname.includes("detalhes.html")) {
+    document.addEventListener("DOMContentLoaded", function () {
+        const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+
+        detalhes.forEach((detalhe) => {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${detalhe.local}</td>
+                <td>${detalhe.item}</td>
+                <td>${detalhe.quantidade}</td>
+                <td>${detalhe.destino}</td>
+                <td>${detalhe.dataAtual}</td>
+                <td>${detalhe.horario}</td>
+                <td><button class="receberButton">Receber</button></td>
+                <td style="color: yellow; text-align: center;">REPORT</td>
+            `;
+            detalhesTable.appendChild(newRow);
+        });
+
+        // Ação para o botão "Receber"
+        document.querySelectorAll(".receberButton").forEach((button) => {
+            button.addEventListener("click", function () {
+                alert("Material recebido com sucesso!");
+                // Aqui você pode adicionar lógica para registrar o recebimento.
+            });
+        });
+    });
+}
