@@ -16,22 +16,19 @@ body {
 header {
     background-color: #215C98;
     padding: 10px 20px;
-}
-
-.header-container {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
 .logo {
-    width: 50px; /* Ajuste do tamanho da logo */
+    width: 50px;
     height: auto;
 }
 
 header h1 {
     color: white;
-    font-size: 1.2em; /* Tamanho reduzido do título */
+    font-size: 1.2em;
     font-weight: bold;
     margin: 0;
 }
@@ -44,21 +41,62 @@ header h1 {
     padding: 20px;
 }
 
-/* Seções e contêineres */
-.detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
+/* Seções e janelas */
+.detalhes-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Títulos */
-h2 {
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+}
+
+.title-container h2 {
+    margin: 0;
     color: #215C98;
 }
 
-/* Inputs e selects */
+/* Botões */
+button {
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #215C98;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #17406d;
+    transform: scale(1.03);
+}
+
+button.excluir-button {
+    background-color: #f44336;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+button.excluir-button:hover {
+    background-color: #d32f2f;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Inputs */
 select, input[type="text"], input[type="number"], input[type="time"] {
     width: 100%;
     padding: 12px;
@@ -74,55 +112,39 @@ select:focus, input:focus {
     box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
 }
 
-/* Botões */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-button {
-    padding: 12px 20px;
-    font-size: 1em;
-    background-color: #215C98;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #17406d;
-    transform: scale(1.03);
-}
-
-button.excluir-button {
-    background-color: #f44336;
-    padding: 10px 15px;
-    font-size: 1em;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-button.excluir-button:hover {
-    background-color: #d32f2f;
-}
-
 /* Estilo para tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 0.9em;
-    text-align: left;
+    margin-top: 20px;
+    font-size: 0.95em;
 }
 
 th, td {
     border: 1px solid #ccc;
     padding: 10px;
+    text-align: center;
 }
+
+/* Coluna de seleção dinâmica */
+.checkbox-column {
+    width: 40px;
+    text-align: center;
+}
+
+.checkbox-column.hidden {
+    display: none;
+}
+
+/* Configuração de largura das colunas */
+th:nth-child(2), td:nth-child(2) { width: 10%; } /* LOCAL */
+th:nth-child(3), td:nth-child(3) { width: 15%; } /* ITEM */
+th:nth-child(4), td:nth-child(4) { width: 10%; } /* QTD */
+th:nth-child(5), td:nth-child(5) { width: 15%; } /* DESTINO */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* DATA */
+th:nth-child(7), td:nth-child(7) { width: 10%; } /* HORA */
+th:nth-child(8), td:nth-child(8) { width: 10%; } /* RECEBER */
+th:nth-child(9), td:nth-child(9) { width: 10%; } /* REPORT */
 
 th {
     background-color: #215C98;
@@ -130,20 +152,20 @@ th {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f3f4f6;
+    background-color: #f9f9f9;
 }
 
 tbody tr:hover {
     background-color: #d3e4f7;
 }
 
-/* Coluna REPORT */
-th:nth-child(8), td:nth-child(8) {
-    color: yellow; /* Define a cor do texto da coluna REPORT */
+/* Estilo REPORT */
+th:nth-child(9), td:nth-child(9) {
+    color: yellow;
     font-weight: bold;
 }
 
-/* Janela Flutuante */
+/* Janela flutuante */
 .janela-flutuante {
     display: none;
     position: fixed;
@@ -156,44 +178,23 @@ th:nth-child(8), td:nth-child(8) {
     border-radius: 10px;
     z-index: 1000;
     width: 300px;
+    text-align: center;
 }
 
 .janela-flutuante h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.2em;
     color: #215C98;
-}
-
-.janela-flutuante .button-container {
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .janela-flutuante button {
-    padding: 10px 15px;
-    font-size: 1em;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 45%;
-}
-
-.janela-flutuante button#cancelarSolicitacaoButton {
-    background-color: #f5a5a5;
-    color: white;
-}
-
-.janela-flutuante button#confirmarSolicitacaoButton {
-    background-color: #a5f5a5;
-    color: white;
+    margin: 10px;
 }
 
 /* Rodapé */
 footer {
-    text-align: center;
-    padding: 10px;
     background-color: #215C98;
     color: white;
+    padding: 10px;
+    text-align: center;
     font-size: 0.9em;
 }
