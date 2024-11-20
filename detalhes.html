@@ -17,7 +17,9 @@
     <main>
         <section class="detalhes-container">
             <h2>Detalhes de Materiais Solicitados</h2>
-            <table id="detalhesTable">
+            <!-- Botão Excluir Itens -->
+            <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
+            <table id="detalhesTable" class="">
                 <thead>
                     <tr>
                         <th></th> <!-- Coluna para caixas de seleção -->
@@ -40,17 +42,9 @@
             <div class="button-container">
                 <button type="button" onclick="location.href='index.html'">Voltar</button>
                 <button type="button" id="materiaisRecebidosButton">Materiais Recebidos</button>
-                <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
             </div>
         </section>
     </main>
-
-    <!-- Janela de Informação -->
-    <div class="janela-flutuante" id="janelaInformacao">
-        <h2>Selecione os Itens</h2>
-        <p>Marque as caixas de seleção ao lado dos itens que deseja excluir.</p>
-        <button id="fecharJanelaButton">Fechar</button>
-    </div>
 
     <!-- Janela de Confirmação -->
     <div class="janela-flutuante" id="janelaConfirmacao">
@@ -66,16 +60,24 @@
 
     <script>
         const excluirItensButton = document.getElementById("excluirItensButton");
-        const fecharJanelaButton = document.getElementById("fecharJanelaButton");
         const confirmarButton = document.getElementById("confirmarButton");
         const cancelarButton = document.getElementById("cancelarButton");
 
-        const janelaInformacao = document.getElementById("janelaInformacao");
         const janelaConfirmacao = document.getElementById("janelaConfirmacao");
-
-        const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
-
+        const detalhesTable = document.getElementById("detalhesTable");
         let selecionandoItens = false;
+
+        // Ocultar/Mostrar coluna de seleção
+        function toggleSelectionColumn(show) {
+            const columnIndex = 0; // Index da coluna de checkboxes
+            const rows = detalhesTable.querySelectorAll("tr");
+            rows.forEach((row) => {
+                const cell = row.children[columnIndex];
+                if (cell) {
+                    cell.style.display = show ? "table-cell" : "none";
+                }
+            });
+        }
 
         // Carregar dados armazenados
         document.addEventListener("DOMContentLoaded", function () {
@@ -94,31 +96,22 @@
                     <td><button class="receberButton">Receber</button></td>
                     <td style="color: yellow; text-align: center;">REPORT</td>
                 `;
-                detalhesTable.appendChild(newRow);
+                detalhesTable.querySelector("tbody").appendChild(newRow);
             });
 
-            // Ação para o botão "Receber"
-            document.querySelectorAll(".receberButton").forEach((button) => {
-                button.addEventListener("click", function () {
-                    alert("Material recebido com sucesso!");
-                });
-            });
+            toggleSelectionColumn(false); // Ocultar coluna de seleção inicialmente
         });
 
-        // Abrir janela de seleção de itens
+        // Alternar modo de seleção
         excluirItensButton.addEventListener("click", () => {
-            if (!selecionandoItens) {
-                janelaInformacao.style.display = "block";
-                selecionandoItens = true;
+            selecionandoItens = !selecionandoItens;
+            toggleSelectionColumn(selecionandoItens);
+
+            if (selecionandoItens) {
                 excluirItensButton.textContent = "Confirmar Exclusão";
             } else {
                 janelaConfirmacao.style.display = "block";
             }
-        });
-
-        // Fechar janela de informação
-        fecharJanelaButton.addEventListener("click", () => {
-            janelaInformacao.style.display = "none";
         });
 
         // Confirmar exclusão de itens
@@ -126,16 +119,33 @@
             const checkboxes = document.querySelectorAll(".item-checkbox:checked");
             checkboxes.forEach((checkbox) => {
                 const row = checkbox.closest("tr");
-                detalhesTable.removeChild(row);
+                detalhesTable.querySelector("tbody").removeChild(row);
             });
+
+            const linhasAtualizadas = Array.from(detalhesTable.querySelectorAll("tbody tr")).map((row) => ({
+                local: row.cells[1].innerText,
+                item: row.cells[2].innerText,
+                quantidade: row.cells[3].innerText,
+                destino: row.cells[4].innerText,
+                dataAtual: row.cells[5].innerText,
+                horario: row.cells[6].innerText,
+            }));
+
+            localStorage.setItem("detalhes", JSON.stringify(linhasAtualizadas));
+
             janelaConfirmacao.style.display = "none";
+            toggleSelectionColumn(false);
             selecionandoItens = false;
             excluirItensButton.textContent = "Excluir Itens";
+            alert("Itens excluídos com sucesso!");
         });
 
         // Cancelar exclusão de itens
         cancelarButton.addEventListener("click", () => {
             janelaConfirmacao.style.display = "none";
+            toggleSelectionColumn(false);
+            selecionandoItens = false;
+            excluirItensButton.textContent = "Excluir Itens";
         });
     </script>
 </body>
