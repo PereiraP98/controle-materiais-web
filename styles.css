@@ -52,12 +52,11 @@ header h1 {
 }
 
 /* Estilo das janelas */
-.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados, .detalhes-container {
+.solicitacao-container, .materiais-reservados, .graficos-container, .materiais-solicitados {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Títulos das seções */
@@ -116,25 +115,25 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    font-size: 0.85em; /* Tamanho ajustado para melhor leitura */
+    font-size: 0.85em;
     text-align: center;
-    table-layout: fixed; /* Ajusta largura fixa das colunas */
+    table-layout: fixed;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Efeito janela */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 th, td {
     border: 1px solid #ccc;
-    padding: 8px 5px; /* Ajuste para um espaçamento mais compacto */
-    white-space: nowrap; /* Impede quebras de linha */
+    padding: 8px 5px;
+    white-space: nowrap;
 }
 
 th {
     background-color: #215C98;
     color: white;
     font-size: 0.9em;
-    text-overflow: ellipsis; /* Aplica reticências se o texto for muito longo */
+    text-overflow: ellipsis;
 }
 
 /* Ajuste de largura por coluna */
