@@ -126,7 +126,7 @@ table {
 th, td {
     border: 1px solid #ccc;
     padding: 10px;
-    width: 95px; /* Ajuste da largura das colunas */
+    width: 55px; /* Ajuste da largura das colunas */
 }
 
 th {
