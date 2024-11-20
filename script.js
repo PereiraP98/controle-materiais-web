@@ -14,31 +14,24 @@ document.getElementById("cancelarSolicitacaoButton").addEventListener("click", f
 document.getElementById("janelaForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
-    // Obter os dados da janela flutuante
     const quantidade = document.getElementById("quantidade").value;
     const horario = document.getElementById("horario").value;
-
-    // Obter os dados do formulário principal
     const local = document.getElementById("local").value;
     const item = document.getElementById("item").value;
     const destino = document.getElementById("destino").value;
 
-    // Validar o código do item
     if (!/^\d{5}$/.test(item)) {
         alert("O código do item deve ter exatamente 5 dígitos.");
         return;
     }
 
-    // Obter a data atual no formato DD/MM
     const dataAtual = new Date().toLocaleDateString("pt-BR", {
         day: "2-digit",
         month: "2-digit",
     });
 
-    // Adicionar o item à tabela de materiais solicitados na página index
     const solicitadosTable = document.getElementById("solicitadosTable").querySelector("tbody");
     const newRow = document.createElement("tr");
-
     newRow.innerHTML = `
         <td>${local}</td>
         <td>${item}</td>
@@ -46,17 +39,14 @@ document.getElementById("janelaForm").addEventListener("submit", function (event
     `;
     solicitadosTable.appendChild(newRow);
 
-    // Salvar os itens solicitados no localStorage
     let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     solicitados.push({ local, item, destino });
     localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
-    // Salvar os detalhes completos no localStorage para exibição na página de detalhes
     let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
     detalhes.push({ local, item, quantidade, destino, dataAtual, horario });
     localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-    // Fechar a janela flutuante
     document.getElementById("janelaSolicitacao").style.display = "none";
 
     alert("Material solicitado com sucesso!");
@@ -68,22 +58,18 @@ document.getElementById("reservarButton").addEventListener("click", function () 
     const item = document.getElementById("item").value;
     const destino = document.getElementById("destino").value;
 
-    // Validar o código do item
     if (!/^\d{5}$/.test(item)) {
         alert("O código do item deve ter exatamente 5 dígitos.");
         return;
     }
 
-    // Adicionar o item à tabela de materiais reservados
     const reservadosTable = document.getElementById("reservadosTable").querySelector("tbody");
     const newRow = document.createElement("tr");
-
     newRow.innerHTML = `
         <td>${local}</td>
         <td>${item}</td>
         <td>${destino}</td>
     `;
-
     reservadosTable.appendChild(newRow);
 
     alert("Material reservado com sucesso!");
@@ -104,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTable.appendChild(newRow);
     });
 
-    // Carregar os detalhes na página de detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
         const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
@@ -112,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         detalhes.forEach((detalhe) => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
+                <td><input type="checkbox" class="delete-checkbox"></td>
                 <td>${detalhe.local}</td>
                 <td>${detalhe.item}</td>
                 <td>${detalhe.quantidade}</td>
@@ -122,6 +108,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td style="color: yellow; text-align: center;">REPORT</td>
             `;
             detalhesTable.appendChild(newRow);
+        });
+
+        document.getElementById("excluirItensButton").addEventListener("click", function () {
+            const checkboxes = document.querySelectorAll(".delete-checkbox:checked");
+            if (checkboxes.length === 0) {
+                alert("Selecione os itens que deseja excluir.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                checkboxes.forEach((checkbox) => {
+                    const row = checkbox.closest("tr");
+                    row.remove();
+                });
+
+                let detalhesAtualizados = Array.from(detalhesTable.rows).map((row) => ({
+                    local: row.cells[1].innerText,
+                    item: row.cells[2].innerText,
+                    quantidade: row.cells[3].innerText,
+                    destino: row.cells[4].innerText,
+                    dataAtual: row.cells[5].innerText,
+                    horario: row.cells[6].innerText,
+                }));
+                localStorage.setItem("detalhes", JSON.stringify(detalhesAtualizados));
+
+                alert("Itens excluídos com sucesso!");
+            }
         });
     }
 });
