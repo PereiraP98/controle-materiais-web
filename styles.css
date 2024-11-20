@@ -37,18 +37,48 @@ header h1 {
 }
 
 /* Layout principal */
-.main-container {
+main {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-gap: 20px;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
     padding: 20px;
 }
 
 /* Seções e contêineres */
-.detalhes-container, .solicitacao-container, .materiais-reservados, .graficos-container {
+.solicitacao-container {
+    grid-column: 1 / span 1;
+    grid-row: 1;
     background: white;
-    padding: 20px;
     border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.materiais-reservados {
+    grid-column: 1 / span 1;
+    grid-row: 2;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.graficos-container {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.materiais-solicitados {
+    grid-column: 3 / span 1;
+    grid-row: 1 / span 2;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
