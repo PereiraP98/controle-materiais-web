@@ -125,27 +125,15 @@ table {
 
 th, td {
     border: 1px solid #ccc;
-    padding: 8px; /* Reduzido para tornar mais compacto */
-    text-align: center;
-    white-space: nowrap; /* Impede quebra de texto */
+    padding: 10px;
+    width: 75px; /* Ajuste da largura das colunas */
 }
-
-/* Reduzindo a largura das colunas */
-th:nth-child(1), td:nth-child(1) { width: 60px; } /* LOCAL */
-th:nth-child(2), td:nth-child(2) { width: 80px; } /* ITEM */
-th:nth-child(3), td:nth-child(3) { width: 60px; } /* QTD */
-th:nth-child(4), td:nth-child(4) { width: 90px; } /* DESTINO */
-th:nth-child(5), td:nth-child(5) { width: 70px; } /* DATA */
-th:nth-child(6), td:nth-child(6) { width: 70px; } /* HORA */
-th:nth-child(7), td:nth-child(7) { width: 100px; } /* RECEBER */
-th:nth-child(8), td:nth-child(8) { width: 80px; } /* REPORT */
 
 th {
     background-color: #215C98;
     color: white;
 }
 
-/* Linhas alternadas e hover */
 tbody tr:nth-child(even) {
     background-color: #f3f4f6;
 }
@@ -222,4 +210,42 @@ footer {
 .janela-flutuante button#confirmarSolicitacaoButton {
     background-color: #a5f5a5;
     color: white;
+}
+
+/* Detalhes de materiais */
+.detalhes-container {
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+th:nth-child(8), td:nth-child(8) {
+    color: yellow; /* Define a cor do texto da coluna REPORT */
+    font-weight: bold;
+}
+
+/* Botões de navegação */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1em;
+    background-color: #215C98;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #17406d;
+    transform: scale(1.05);
 }
