@@ -69,17 +69,9 @@
             // Ação para o botão "Receber"
             document.querySelectorAll(".receberButton").forEach((button) => {
                 button.addEventListener("click", function () {
-                    const row = this.closest("tr");
-                    alert(`Material do item ${row.cells[1].textContent} recebido com sucesso!`);
-                    // Aqui você pode adicionar lógica para remover ou registrar o recebimento do material
+                    alert("Material recebido com sucesso!");
                 });
             });
-        });
-
-        // Ação do botão "Materiais Recebidos"
-        document.getElementById("materiaisRecebidosButton").addEventListener("click", function () {
-            alert("Página de Materiais Recebidos será implementada em breve.");
-            // Adicione o redirecionamento ou lógica para a página de materiais recebidos
         });
     </script>
 </body>
