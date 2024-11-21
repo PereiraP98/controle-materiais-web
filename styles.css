@@ -327,7 +327,7 @@ footer {
 
 .tool-card {
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     width: 250px;
@@ -336,13 +336,22 @@ footer {
     cursor: pointer;
 }
 
+.tool-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
 .tool-card h2 {
     color: #215C98;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
 }
 
 .tool-card p {
     color: #555;
+    font-size: 0.95em;
 }
 
 .tool-card:hover {
@@ -360,5 +369,3 @@ footer {
 }
 
 /* Outros estilos existentes permanecem inalterados */
-
-
