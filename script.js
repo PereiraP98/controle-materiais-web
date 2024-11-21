@@ -1,26 +1,29 @@
 // script.js
 
 // Lógica de login
-document.getElementById("loginForm")?.addEventListener("submit", function (event) {
-    event.preventDefault();
+var loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
 
-    // Validação simples de usuário e senha
-    if (username === "admin" && password === "admin") {
-        // Armazena o estado de autenticação no localStorage
-        localStorage.setItem("authenticated", "true");
-        // Redireciona para a página index.html
-        window.location.href = "painel.html";
-    } else {
-        alert("Usuário ou senha incorretos. Tente novamente.");
-    }
-});
+        // Validação simples de usuário e senha
+        if (username === "admin" && password === "admin") {
+            // Armazena o estado de autenticação no localStorage
+            localStorage.setItem("authenticated", "true");
+            // Redireciona para a página painel.html
+            window.location.href = "painel.html";
+        } else {
+            alert("Usuário ou senha incorretos. Tente novamente.");
+        }
+    });
+}
 
 // Verifica a autenticação nas páginas protegidas
 function checkAuthentication() {
-    const isAuthenticated = localStorage.getItem("authenticated");
+    var isAuthenticated = localStorage.getItem("authenticated");
     if (isAuthenticated !== "true") {
         // Redireciona para a página de login se não estiver autenticado
         window.location.href = "login.html";
@@ -30,116 +33,153 @@ function checkAuthentication() {
 // Chama a função de verificação nas páginas protegidas
 if (
     window.location.pathname.endsWith("index.html") ||
-    window.location.pathname.endsWith("detalhes.html")
+    window.location.pathname.endsWith("detalhes.html") ||
     window.location.pathname.endsWith("painel.html")
 ) {
     checkAuthentication();
 }
 
+// Função de logout
+function logout() {
+    // Remove o estado de autenticação
+    localStorage.removeItem("authenticated");
+    // Redireciona para a página de login
+    window.location.href = "login.html";
+}
+
+// Adiciona o evento de clique ao botão de logout
+var logoutButton = document.getElementById("logoutButton");
+if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+        logout();
+    });
+}
+
 // Abrir a janela flutuante para solicitação de material (Página Index)
-document.getElementById("abrirSolicitacaoButton")?.addEventListener("click", function () {
-    const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById("horario").value = horarioAtual; // Preenche o horário atual
-    document.getElementById("janelaSolicitacao").style.display = "block";
-});
+var abrirSolicitacaoButton = document.getElementById("abrirSolicitacaoButton");
+if (abrirSolicitacaoButton) {
+    abrirSolicitacaoButton.addEventListener("click", function () {
+        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById("horario").value = horarioAtual; // Preenche o horário atual
+        document.getElementById("janelaSolicitacao").style.display = "block";
+    });
+}
 
 // Cancelar a solicitação e fechar a janela flutuante (Página Index)
-document.getElementById("cancelarSolicitacaoButton")?.addEventListener("click", function () {
-    document.getElementById("janelaSolicitacao").style.display = "none";
-});
+var cancelarSolicitacaoButton = document.getElementById("cancelarSolicitacaoButton");
+if (cancelarSolicitacaoButton) {
+    cancelarSolicitacaoButton.addEventListener("click", function () {
+        document.getElementById("janelaSolicitacao").style.display = "none";
+    });
+}
 
 // Confirmar a solicitação e registrar os dados (Página Index)
-document.getElementById("janelaForm")?.addEventListener("submit", function (event) {
-    event.preventDefault();
+var janelaForm = document.getElementById("janelaForm");
+if (janelaForm) {
+    janelaForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    const quantidade = document.getElementById("quantidade").value;
-    const horario = document.getElementById("horario").value;
-    const local = document.getElementById("local").value;
-    const item = document.getElementById("item").value;
-    const destino = document.getElementById("destino").value;
+        var quantidade = document.getElementById("quantidade").value;
+        var horario = document.getElementById("horario").value;
+        var local = document.getElementById("local").value;
+        var item = document.getElementById("item").value;
+        var destino = document.getElementById("destino").value;
 
-    if (!/^\d{5}$/.test(item)) {
-        alert("O código do item deve ter exatamente 5 dígitos.");
-        return;
-    }
+        if (!/^\d{5}$/.test(item)) {
+            alert("O código do item deve ter exatamente 5 dígitos.");
+            return;
+        }
 
-    const dataAtual = new Date().toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
+        var dataAtual = new Date().toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+        });
+
+        var solicitadosTable = document.getElementById("solicitadosTable");
+        var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${local}</td>
+            <td>${item}</td>
+            <td>${destino}</td>
+        `;
+        if (solicitadosTableBody) {
+            solicitadosTableBody.appendChild(newRow);
+        }
+
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        solicitados.push({ local: local, item: item, destino: destino });
+        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        detalhes.push({ local: local, item: item, quantidade: quantidade, destino: destino, dataAtual: dataAtual, horario: horario });
+        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+        document.getElementById("janelaSolicitacao").style.display = "none";
+
+        alert("Material solicitado com sucesso!");
     });
-
-    const solicitadosTable = document.getElementById("solicitadosTable")?.querySelector("tbody");
-    const newRow = document.createElement("tr");
-    newRow.innerHTML = `
-        <td>${local}</td>
-        <td>${item}</td>
-        <td>${destino}</td>
-    `;
-    solicitadosTable?.appendChild(newRow);
-
-    let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    solicitados.push({ local, item, destino });
-    localStorage.setItem("solicitados", JSON.stringify(solicitados));
-
-    let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    detalhes.push({ local, item, quantidade, destino, dataAtual, horario });
-    localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-    document.getElementById("janelaSolicitacao").style.display = "none";
-
-    alert("Material solicitado com sucesso!");
-});
+}
 
 // Reservar um item (Página Index)
-document.getElementById("reservarButton")?.addEventListener("click", function () {
-    const local = document.getElementById("local").value;
-    const item = document.getElementById("item").value;
-    const destino = document.getElementById("destino").value;
+var reservarButton = document.getElementById("reservarButton");
+if (reservarButton) {
+    reservarButton.addEventListener("click", function () {
+        var local = document.getElementById("local").value;
+        var item = document.getElementById("item").value;
+        var destino = document.getElementById("destino").value;
 
-    if (!/^\d{5}$/.test(item)) {
-        alert("O código do item deve ter exatamente 5 dígitos.");
-        return;
-    }
+        if (!/^\d{5}$/.test(item)) {
+            alert("O código do item deve ter exatamente 5 dígitos.");
+            return;
+        }
 
-    const reservadosTable = document.getElementById("reservadosTable")?.querySelector("tbody");
-    const newRow = document.createElement("tr");
-    newRow.innerHTML = `
-        <td>${local}</td>
-        <td>${item}</td>
-        <td>${destino}</td>
-    `;
-    reservadosTable?.appendChild(newRow);
+        var reservadosTable = document.getElementById("reservadosTable");
+        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${local}</td>
+            <td>${item}</td>
+            <td>${destino}</td>
+        `;
+        if (reservadosTableBody) {
+            reservadosTableBody.appendChild(newRow);
+        }
 
-    alert("Material reservado com sucesso!");
-});
+        alert("Material reservado com sucesso!");
+    });
+}
 
 // Carregar os itens solicitados armazenados no localStorage na página index
 document.addEventListener("DOMContentLoaded", function () {
-    const solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    const solicitadosTable = document.getElementById("solicitadosTable")?.querySelector("tbody");
+    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+    var solicitadosTable = document.getElementById("solicitadosTable");
+    var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
-    solicitados.forEach((item) => {
-        const newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${item.local}</td>
-            <td>${item.item}</td>
-            <td>${item.destino}</td>
-        `;
-        solicitadosTable?.appendChild(newRow);
-    });
+    if (solicitadosTableBody) {
+        solicitados.forEach(function(item) {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.destino}</td>
+            `;
+            solicitadosTableBody.appendChild(newRow);
+        });
+    }
 
     // Código específico para detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
-        let detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        const detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
-        const excluirItensButton = document.getElementById("excluirItensButton");
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        var detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+        var excluirItensButton = document.getElementById("excluirItensButton");
 
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
             detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-            detalhes.forEach((detalhe, index) => {
-                const newRow = document.createElement("tr");
+            detalhes.forEach(function(detalhe, index) {
+                var newRow = document.createElement("tr");
                 newRow.innerHTML = `
                     <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                     <td>${detalhe.local}</td>
@@ -154,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 detalhesTable.appendChild(newRow);
 
                 // Adiciona o evento de clique ao botão Receber
-                const receberButton = newRow.querySelector(".receberButton");
+                var receberButton = newRow.querySelector(".receberButton");
                 receberButton.addEventListener("click", function () {
                     abrirJanelaRecebimento(index);
                 });
@@ -165,81 +205,87 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Função para abrir a janela flutuante de recebimento
         function abrirJanelaRecebimento(index) {
-            const detalhe = detalhes[index];
+            var detalhe = detalhes[index];
             // Preenche os campos da janela com os dados atuais
             document.getElementById("recebimentoQuantidade").value = detalhe.quantidade;
-            const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             document.getElementById("recebimentoHorario").value = horarioAtual;
             document.getElementById("recebimentoIndex").value = index; // Armazena o índice para uso posterior
             document.getElementById("janelaRecebimento").style.display = "block";
         }
 
         // Fecha a janela de recebimento
-        document.getElementById("cancelarRecebimentoButton")?.addEventListener("click", function () {
-            document.getElementById("janelaRecebimento").style.display = "none";
-        });
+        var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
+        if (cancelarRecebimentoButton) {
+            cancelarRecebimentoButton.addEventListener("click", function () {
+                document.getElementById("janelaRecebimento").style.display = "none";
+            });
+        }
 
         // Confirma o recebimento
-        document.getElementById("recebimentoForm")?.addEventListener("submit", function (event) {
-            event.preventDefault();
+        var recebimentoForm = document.getElementById("recebimentoForm");
+        if (recebimentoForm) {
+            recebimentoForm.addEventListener("submit", function (event) {
+                event.preventDefault();
 
-            const index = parseInt(document.getElementById("recebimentoIndex").value);
-            const quantidadeRecebida = document.getElementById("recebimentoQuantidade").value;
-            const horarioRecebido = document.getElementById("recebimentoHorario").value;
+                var index = parseInt(document.getElementById("recebimentoIndex").value);
+                var quantidadeRecebida = document.getElementById("recebimentoQuantidade").value;
+                var horarioRecebido = document.getElementById("recebimentoHorario").value;
 
-            const detalhe = detalhes[index];
+                var detalhe = detalhes[index];
 
-            // Cria um novo objeto para materiais recebidos
-            let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-            recebidos.push({
-                local: detalhe.local,
-                item: detalhe.item,
-                quantidade: quantidadeRecebida,
-                destino: detalhe.destino,
-                dataAtual: detalhe.dataAtual,
-                horario: detalhe.horario,
-                recebido: horarioRecebido,
-                guardado: '' // Pode ser preenchido posteriormente
+                // Cria um novo objeto para materiais recebidos
+                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+                recebidos.push({
+                    local: detalhe.local,
+                    item: detalhe.item,
+                    quantidade: quantidadeRecebida,
+                    destino: detalhe.destino,
+                    dataAtual: detalhe.dataAtual,
+                    horario: detalhe.horario,
+                    recebido: horarioRecebido,
+                    guardado: '' // Pode ser preenchido posteriormente
+                });
+                localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                // Remove o item da lista de detalhes
+                detalhes.splice(index, 1);
+                localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+                // Também remove o item correspondente de 'solicitados'
+                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+                var solicitadosIndex = solicitados.findIndex(function(item) {
+                    return item.local === detalhe.local &&
+                        item.item === detalhe.item &&
+                        item.destino === detalhe.destino;
+                });
+
+                if (solicitadosIndex !== -1) {
+                    solicitados.splice(solicitadosIndex, 1);
+                    localStorage.setItem("solicitados", JSON.stringify(solicitados));
+                }
+
+                // Atualiza a tabela
+                atualizarTabelaDetalhes();
+
+                // Atualiza a tabela de recebidos
+                atualizarTabelaRecebidos();
+
+                document.getElementById("janelaRecebimento").style.display = "none";
+
+                alert("Material recebido com sucesso!");
             });
-            localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-            // Remove o item da lista de detalhes
-            detalhes.splice(index, 1);
-            localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-            // Também remove o item correspondente de 'solicitados'
-            let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-            const solicitadosIndex = solicitados.findIndex(item =>
-                item.local === detalhe.local &&
-                item.item === detalhe.item &&
-                item.destino === detalhe.destino
-            );
-
-            if (solicitadosIndex !== -1) {
-                solicitados.splice(solicitadosIndex, 1);
-                localStorage.setItem("solicitados", JSON.stringify(solicitados));
-            }
-
-            // Atualiza a tabela
-            atualizarTabelaDetalhes();
-
-            // Atualiza a tabela de recebidos
-            atualizarTabelaRecebidos();
-
-            document.getElementById("janelaRecebimento").style.display = "none";
-
-            alert("Material recebido com sucesso!");
-        });
+        }
 
         // Função para atualizar a tabela de materiais recebidos
-        const recebidosTable = document.getElementById("recebidosTable")?.querySelector("tbody");
+        var recebidosTable = document.getElementById("recebidosTable").querySelector("tbody");
 
         function atualizarTabelaRecebidos() {
-            const recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
             recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-            recebidos.forEach((item, index) => {
-                const newRow = document.createElement("tr");
+            recebidos.forEach(function(item, index) {
+                var newRow = document.createElement("tr");
                 newRow.innerHTML = `
                     <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                     <td>${item.local}</td>
@@ -258,115 +304,101 @@ document.addEventListener("DOMContentLoaded", function () {
         atualizarTabelaRecebidos();
 
         // Função para excluir itens da tabela de materiais recebidos
-        const excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
+        var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
 
-        excluirRecebidosButton.addEventListener("click", function () {
-            const checkboxes = document.querySelectorAll("#recebidosTable .delete-checkbox");
-            const checkboxesVisible = checkboxes[0]?.style.display === "inline-block";
+        if (excluirRecebidosButton) {
+            excluirRecebidosButton.addEventListener("click", function () {
+                var checkboxes = document.querySelectorAll("#recebidosTable .delete-checkbox");
+                var checkboxesVisible = checkboxes.length > 0 && checkboxes[0].style.display === "inline-block";
 
-            if (checkboxesVisible) {
-                const selectedCheckboxes = document.querySelectorAll("#recebidosTable .delete-checkbox:checked");
+                if (checkboxesVisible) {
+                    var selectedCheckboxes = document.querySelectorAll("#recebidosTable .delete-checkbox:checked");
 
-                if (selectedCheckboxes.length === 0) {
-                    alert("Selecione os itens que deseja excluir.");
-                    return;
-                }
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
 
-                if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                    selectedCheckboxes.forEach((checkbox) => {
-                        const row = checkbox.closest("tr");
-                        const index = Array.from(recebidosTable.rows).indexOf(row);
-                        row.remove();
-                        // Remove do array recebidos
-                        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-                        recebidos.splice(index, 1);
-                        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        selectedCheckboxes.forEach(function(checkbox) {
+                            var row = checkbox.closest("tr");
+                            var index = Array.from(recebidosTable.rows).indexOf(row);
+                            row.remove();
+                            // Remove do array recebidos
+                            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+                            recebidos.splice(index, 1);
+                            localStorage.setItem("recebidos", JSON.stringify(recebidos));
+                        });
+
+                        alert("Itens excluídos com sucesso!");
+                    }
+
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.style.display = "none";
                     });
-
-                    alert("Itens excluídos com sucesso!");
+                    excluirRecebidosButton.textContent = "Excluir Itens";
+                } else {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.style.display = "inline-block";
+                    });
+                    excluirRecebidosButton.textContent = "Confirmar Exclusão";
                 }
-
-                checkboxes.forEach((checkbox) => {
-                    checkbox.style.display = "none";
-                });
-                excluirRecebidosButton.textContent = "Excluir Itens";
-            } else {
-                checkboxes.forEach((checkbox) => {
-                    checkbox.style.display = "inline-block";
-                });
-                excluirRecebidosButton.textContent = "Confirmar Exclusão";
-            }
-        });
+            });
+        }
 
         // Função de exclusão de itens na tabela de detalhes (já existente)
-        excluirItensButton.addEventListener("click", function () {
-            const checkboxes = document.querySelectorAll("#detalhesTable .delete-checkbox");
-            const checkboxesVisible = checkboxes[0]?.style.display === "inline-block";
+        if (excluirItensButton) {
+            excluirItensButton.addEventListener("click", function () {
+                var checkboxes = document.querySelectorAll("#detalhesTable .delete-checkbox");
+                var checkboxesVisible = checkboxes.length > 0 && checkboxes[0].style.display === "inline-block";
 
-            if (checkboxesVisible) {
-                const selectedCheckboxes = document.querySelectorAll("#detalhesTable .delete-checkbox:checked");
+                if (checkboxesVisible) {
+                    var selectedCheckboxes = document.querySelectorAll("#detalhesTable .delete-checkbox:checked");
 
-                if (selectedCheckboxes.length === 0) {
-                    alert("Selecione os itens que deseja excluir.");
-                    return;
-                }
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
 
-                if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                    selectedCheckboxes.forEach((checkbox) => {
-                        const row = checkbox.closest("tr");
-                        const index = Array.from(detalhesTable.rows).indexOf(row);
-                        const detalhe = detalhes[index];
-                        row.remove();
-                        // Remove do array detalhes
-                        detalhes.splice(index, 1);
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        selectedCheckboxes.forEach(function(checkbox) {
+                            var row = checkbox.closest("tr");
+                            var index = Array.from(detalhesTable.rows).indexOf(row);
+                            var detalhe = detalhes[index];
+                            row.remove();
+                            // Remove do array detalhes
+                            detalhes.splice(index, 1);
 
-                        // Também remove o item correspondente de 'solicitados'
-                        let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-                        const solicitadosIndex = solicitados.findIndex(item =>
-                            item.local === detalhe.local &&
-                            item.item === detalhe.item &&
-                            item.destino === detalhe.destino
-                        );
+                            // Também remove o item correspondente de 'solicitados'
+                            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+                            var solicitadosIndex = solicitados.findIndex(function(item) {
+                                return item.local === detalhe.local &&
+                                    item.item === detalhe.item &&
+                                    item.destino === detalhe.destino;
+                            });
 
-                        if (solicitadosIndex !== -1) {
-                            solicitados.splice(solicitadosIndex, 1);
-                            localStorage.setItem("solicitados", JSON.stringify(solicitados));
-                        }
+                            if (solicitadosIndex !== -1) {
+                                solicitados.splice(solicitadosIndex, 1);
+                                localStorage.setItem("solicitados", JSON.stringify(solicitados));
+                            }
 
-                        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                            localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                        });
+
+                        alert("Itens excluídos com sucesso!");
+                    }
+
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.style.display = "none";
                     });
-
-                    alert("Itens excluídos com sucesso!");
+                    excluirItensButton.textContent = "Excluir Itens";
+                } else {
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.style.display = "inline-block";
+                    });
+                    excluirItensButton.textContent = "Confirmar Exclusão";
                 }
-
-                checkboxes.forEach((checkbox) => {
-                    checkbox.style.display = "none";
-                });
-                excluirItensButton.textContent = "Excluir Itens";
-            } else {
-                checkboxes.forEach((checkbox) => {
-                    checkbox.style.display = "inline-block";
-                });
-                excluirItensButton.textContent = "Confirmar Exclusão";
-            }
-        });
+            });
+        }
     }
 });
-
-// script.js
-
-// Função de logout
-function logout() {
-    // Remove o estado de autenticação
-    localStorage.removeItem("authenticated");
-    // Redireciona para a página de login
-    window.location.href = "login.html";
-}
-
-// Adiciona o evento de clique ao botão de logout
-document.getElementById("logoutButton")?.addEventListener("click", function () {
-    logout();
-});
-
-// O restante do código permanece o mesmo...
-
