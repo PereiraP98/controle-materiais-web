@@ -233,3 +233,80 @@ footer {
     text-align: center;
     font-size: 0.9em;
 }
+
+
+/* Estilos para a página de login */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f3f4f6;
+}
+
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-logo img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.login-container h2 {
+    margin-bottom: 30px;
+    color: #215C98;
+}
+
+.login-container form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.login-container form input[type="text"],
+.login-container form input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+.login-container form input:focus {
+    border-color: #215C98;
+    box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
+}
+
+.login-container form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    background-color: #215C98;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-container form button:hover {
+    background-color: #17406d;
+}
+
+/* Estilo do rodapé na página de login */
+.login-page footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
