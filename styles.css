@@ -405,7 +405,6 @@ footer {
     height: 30px;
 }
 
-/* Opcional: Estilo para o ícone de logout */
-.logout-container button img:hover {
+.logout-container button:hover {
     opacity: 0.8;
 }
