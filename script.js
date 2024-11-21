@@ -1,5 +1,40 @@
 // script.js
 
+// Lógica de login
+document.getElementById("loginForm")?.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // Validação simples de usuário e senha
+    if (username === "admin" && password === "admin") {
+        // Armazena o estado de autenticação no localStorage
+        localStorage.setItem("authenticated", "true");
+        // Redireciona para a página index.html
+        window.location.href = "index.html";
+    } else {
+        alert("Usuário ou senha incorretos. Tente novamente.");
+    }
+});
+
+// Verifica a autenticação nas páginas protegidas
+function checkAuthentication() {
+    const isAuthenticated = localStorage.getItem("authenticated");
+    if (isAuthenticated !== "true") {
+        // Redireciona para a página de login se não estiver autenticado
+        window.location.href = "login.html";
+    }
+}
+
+// Chama a função de verificação nas páginas protegidas
+if (
+    window.location.pathname.endsWith("index.html") ||
+    window.location.pathname.endsWith("detalhes.html")
+) {
+    checkAuthentication();
+}
+
 // Abrir a janela flutuante para solicitação de material (Página Index)
 document.getElementById("abrirSolicitacaoButton")?.addEventListener("click", function () {
     const horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -171,11 +206,8 @@ document.addEventListener("DOMContentLoaded", function () {
             detalhes.splice(index, 1);
             localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-            // **Novo código para remover o item de 'solicitados'**
-            // Carrega o array 'solicitados' do localStorage
+            // Também remove o item correspondente de 'solicitados'
             let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-
-            // Encontra o índice do item correspondente em 'solicitados'
             const solicitadosIndex = solicitados.findIndex(item =>
                 item.local === detalhe.local &&
                 item.item === detalhe.item &&
@@ -183,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             if (solicitadosIndex !== -1) {
-                // Remove o item de 'solicitados' e atualiza o localStorage
                 solicitados.splice(solicitadosIndex, 1);
                 localStorage.setItem("solicitados", JSON.stringify(solicitados));
             }
@@ -288,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Remove do array detalhes
                         detalhes.splice(index, 1);
 
-                        // **Também remove o item correspondente de 'solicitados'**
+                        // Também remove o item correspondente de 'solicitados'
                         let solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
                         const solicitadosIndex = solicitados.findIndex(item =>
                             item.local === detalhe.local &&
