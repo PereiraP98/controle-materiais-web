@@ -352,3 +352,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// script.js
+
+// Função de logout
+function logout() {
+    // Remove o estado de autenticação
+    localStorage.removeItem("authenticated");
+    // Redireciona para a página de login
+    window.location.href = "login.html";
+}
+
+// Adiciona o evento de clique ao botão de logout
+document.getElementById("logoutButton")?.addEventListener("click", function () {
+    logout();
+});
+
+// O restante do código permanece o mesmo...
+
