@@ -12,7 +12,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function (event
         // Armazena o estado de autenticação no localStorage
         localStorage.setItem("authenticated", "true");
         // Redireciona para a página index.html
-        window.location.href = "index.html";
+        window.location.href = "painel.html";
     } else {
         alert("Usuário ou senha incorretos. Tente novamente.");
     }
@@ -31,6 +31,7 @@ function checkAuthentication() {
 if (
     window.location.pathname.endsWith("index.html") ||
     window.location.pathname.endsWith("detalhes.html")
+    window.location.pathname.endsWith("painel.html")
 ) {
     checkAuthentication();
 }
