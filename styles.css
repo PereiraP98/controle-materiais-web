@@ -369,3 +369,43 @@ footer {
 }
 
 /* Outros estilos existentes permanecem inalterados */
+
+
+/* Estilos para o header com o botão de logout */
+.header-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-container .logo {
+    margin-right: 10px;
+}
+
+.header-container h1 {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.logout-container {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.logout-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-container button img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Opcional: Estilo para o ícone de logout */
+.logout-container button img:hover {
+    opacity: 0.8;
+}
