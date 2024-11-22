@@ -370,6 +370,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                     } else {
                                         tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
                                     }
+                                    // Atualiza as classes de estilo
+                                    tempoCell.classList.add('elapsed');
+                                    tempoCell.classList.remove('countdown');
                                 } else {
                                     // Atualiza a contagem regressiva
                                     if (tempoCell.dataset.hovered === "true") {
@@ -394,6 +397,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Inicia a contagem regressiva a cada segundo
                             var countdownInterval = setInterval(updateTimeCell, 1000);
                             intervalMap.set(index, countdownInterval);
+                            // Adiciona classe para estilização
+                            tempoCell.classList.add('countdown');
                         } else {
                             // Inicia a contagem do tempo decorrido a cada segundo
                             var elapsedInterval = setInterval(function() {
@@ -405,6 +410,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             }, 1000);
                             intervalMap.set(index, elapsedInterval);
+                            // Adiciona classe para estilização
+                            tempoCell.classList.add('elapsed');
                         }
 
                         // Exibição inicial
