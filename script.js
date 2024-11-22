@@ -143,7 +143,15 @@ if (janelaForm) {
         localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
         var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        detalhes.push({ local: local, item: item, quantidade: quantidade, destino: destino, dataAtual: dataAtual, horario: horario });
+        detalhes.push({
+            local: local,
+            item: item,
+            quantidade: quantidade,
+            destino: destino,
+            dataAtual: dataAtual,
+            horario: horario,
+            timestamp: Date.now() // Armazena o timestamp atual
+        });
         localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
         var janelaSolicitacao = document.getElementById("janelaSolicitacao");
@@ -213,6 +221,30 @@ document.addEventListener("DOMContentLoaded", function () {
         var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
         var excluirItensButton = document.getElementById("excluirItensButton");
 
+        // Função para formatar o tempo decorrido
+        function formatElapsedTime(timestamp, showSeconds = false) {
+            var now = Date.now();
+            var elapsed = now - timestamp;
+
+            var totalSeconds = Math.floor(elapsed / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+
+            if (showSeconds) {
+                return (
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0')
+                );
+            } else {
+                return (
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0')
+                );
+            }
+        }
+
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
             if (detalhesTable) {
@@ -220,6 +252,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 detalhes.forEach(function(detalhe, index) {
                     var newRow = document.createElement("tr");
+
+                    // Calcula o tempo decorrido inicial
+                    var tempoDisplay = formatElapsedTime(detalhe.timestamp);
+
                     newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${detalhe.local}</td>
@@ -229,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${detalhe.dataAtual}</td>
                         <td>${detalhe.horario}</td>
                         <td><button class="receberButton">Receber</button></td>
-                        <td style="color: yellow; text-align: center;">REPORT</td>
+                        <td class="tempo-cell">${tempoDisplay}</td>
                     `;
                     detalhesTable.appendChild(newRow);
 
@@ -238,6 +274,39 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (receberButton) {
                         receberButton.addEventListener("click", function () {
                             abrirJanelaRecebimento(index);
+                        });
+                    }
+
+                    // Manipulação do tempo e eventos de hover
+                    var tempoCell = newRow.querySelector(".tempo-cell");
+                    if (tempoCell) {
+                        // Atualiza o tempo a cada minuto
+                        detalhe.interval = setInterval(function() {
+                            tempoCell.textContent = formatElapsedTime(detalhe.timestamp);
+                        }, 60000);
+
+                        // Exibição inicial
+                        tempoCell.textContent = formatElapsedTime(detalhe.timestamp);
+
+                        // Eventos de hover
+                        tempoCell.addEventListener("mouseover", function() {
+                            clearInterval(detalhe.interval);
+
+                            tempoCell.textContent = formatElapsedTime(detalhe.timestamp, true);
+
+                            detalhe.hoverInterval = setInterval(function() {
+                                tempoCell.textContent = formatElapsedTime(detalhe.timestamp, true);
+                            }, 1000);
+                        });
+
+                        tempoCell.addEventListener("mouseout", function() {
+                            clearInterval(detalhe.hoverInterval);
+
+                            tempoCell.textContent = formatElapsedTime(detalhe.timestamp);
+
+                            detalhe.interval = setInterval(function() {
+                                tempoCell.textContent = formatElapsedTime(detalhe.timestamp);
+                            }, 60000);
                         });
                     }
                 });
@@ -295,6 +364,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value : "";
 
                 var detalhe = detalhes[index];
+
+                // Limpa os intervals do cronômetro
+                if (detalhe.interval) {
+                    clearInterval(detalhe.interval);
+                }
+                if (detalhe.hoverInterval) {
+                    clearInterval(detalhe.hoverInterval);
+                }
 
                 // Cria um novo objeto para materiais recebidos
                 var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
@@ -433,6 +510,15 @@ document.addEventListener("DOMContentLoaded", function () {
                             var row = checkbox.closest("tr");
                             var index = Array.from(detalhesTable.rows).indexOf(row);
                             var detalhe = detalhes[index];
+
+                            // Limpa os intervals do cronômetro
+                            if (detalhe.interval) {
+                                clearInterval(detalhe.interval);
+                            }
+                            if (detalhe.hoverInterval) {
+                                clearInterval(detalhe.hoverInterval);
+                            }
+
                             row.remove();
                             // Remove do array detalhes
                             detalhes.splice(index, 1);
