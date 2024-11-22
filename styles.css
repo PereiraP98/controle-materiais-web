@@ -338,7 +338,7 @@ footer {
 /* Efeito de hover para escurecer o fundo levemente */
 .tool-card:hover {
     background-color: rgba(0, 0, 0, 0.05); /* Fundo levemente escurecido */
-
+}
 .tool-card img {
     width: 100%;
     height: auto;
