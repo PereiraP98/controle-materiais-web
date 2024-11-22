@@ -1,6 +1,6 @@
 // script.js
 
-// Map para armazenar os IDs dos intervalos para cada detalhe
+// Map para armazenar os IDs dos intervals para cada detalhe
 const intervalMap = new Map();
 
 // Lógica de login
@@ -12,8 +12,8 @@ if (loginForm) {
         var usernameInput = document.getElementById("username");
         var passwordInput = document.getElementById("password");
 
-        var username = usernameInput ? usernameInput.value : "";
-        var password = passwordInput ? passwordInput.value : "";
+        var username = usernameInput ? usernameInput.value.trim() : "";
+        var password = passwordInput ? passwordInput.value.trim() : "";
 
         // Validação simples de usuário e senha
         if (username === "admin" && password === "admin") {
@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 detalhes.forEach(function(detalhe, index) {
                     var newRow = document.createElement("tr");
 
-                    // Determina se o horário é no futuro
+                    // Determina se o horário é no futuro ou no passado
                     var agora = Date.now();
                     detalhe.isFuture = detalhe.timestamp > agora;
 
@@ -354,11 +354,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                     detalhe.timestamp = now;
                                     clearInterval(intervalMap.get(index));
                                     intervalMap.delete(index);
-                                    // Inicia a contagem do tempo decorrido a cada minuto
+                                    // Inicia a contagem do tempo decorrido a cada segundo
                                     var elapsedInterval = setInterval(function() {
                                         var elapsed = Date.now() - detalhe.timestamp;
                                         tempoCell.textContent = formatTime(elapsed, false);
-                                    }, 60000);
+                                    }, 1000);
                                     intervalMap.set(index, elapsedInterval);
                                     tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
                                 } else {
@@ -378,11 +378,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             var countdownInterval = setInterval(updateTimeCell, 1000);
                             intervalMap.set(index, countdownInterval);
                         } else {
-                            // Inicia a contagem do tempo decorrido a cada minuto
+                            // Inicia a contagem do tempo decorrido a cada segundo
                             var elapsedInterval = setInterval(function() {
                                 var elapsed = Date.now() - detalhe.timestamp;
                                 tempoCell.textContent = formatTime(elapsed, false);
-                            }, 60000);
+                            }, 1000);
                             intervalMap.set(index, elapsedInterval);
                         }
 
@@ -466,6 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
                 var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
 
+                // Validações
                 if (index === -1 || isNaN(index)) {
                     alert("Erro ao identificar o item a ser recebido.");
                     return;
@@ -616,6 +617,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Função de exclusão de itens na tabela de detalhes
+        var excluirItensButton = document.getElementById("excluirItensButton");
         if (excluirItensButton) {
             excluirItensButton.addEventListener("click", function () {
                 var checkboxes = document.querySelectorAll("#detalhesTable .delete-checkbox");
