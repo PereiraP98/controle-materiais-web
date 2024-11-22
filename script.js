@@ -177,10 +177,10 @@ if (janelaForm) {
             0  // milissegundos
         );
 
-        // Se o horário inserido já passou no dia atual, considerar o próximo dia
-        if (timestampDate.getTime() <= dataAtualObj.getTime()) {
-            timestampDate.setDate(timestampDate.getDate() + 1);
-        }
+        // NÃO adiciona um dia se o horário for no passado ou igual ao atual
+        // Isso garante que o horário seja tratado como do mesmo dia
+        // Se precisar tratar como próximo dia apenas para horários futuros, mantenha a lógica abaixo
+        // Porém, pelo seu feedback, removemos a adição de um dia para horários passados
 
         // Obter o timestamp (em milissegundos)
         var timestamp = timestampDate.getTime();
