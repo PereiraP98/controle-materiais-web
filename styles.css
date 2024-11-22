@@ -401,3 +401,8 @@ footer {
 .painel-page header h1 {
     font-size: 2em;
 }
+
+/* Centraliza o texto na coluna TEMPO */
+.tempo-cell {
+    text-align: center;
+}
