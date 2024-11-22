@@ -6,8 +6,11 @@ if (loginForm) {
     loginForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
+        var usernameInput = document.getElementById("username");
+        var passwordInput = document.getElementById("password");
+
+        var username = usernameInput ? usernameInput.value : "";
+        var password = passwordInput ? passwordInput.value : "";
 
         // Validação simples de usuário e senha
         if (username === "admin" && password === "admin") {
@@ -55,13 +58,32 @@ if (logoutButton) {
     });
 }
 
+// Função para voltar ao painel
+function backToPanel() {
+    window.location.href = "painel.html";
+}
+
+// Adiciona o evento de clique ao botão de voltar ao painel
+var backToPanelButton = document.getElementById("backToPanelButton");
+if (backToPanelButton) {
+    backToPanelButton.addEventListener("click", function () {
+        backToPanel();
+    });
+}
+
 // Abrir a janela flutuante para solicitação de material (Página Index)
 var abrirSolicitacaoButton = document.getElementById("abrirSolicitacaoButton");
 if (abrirSolicitacaoButton) {
     abrirSolicitacaoButton.addEventListener("click", function () {
         var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        document.getElementById("horario").value = horarioAtual; // Preenche o horário atual
-        document.getElementById("janelaSolicitacao").style.display = "block";
+        var horarioInput = document.getElementById("horario");
+        if (horarioInput) {
+            horarioInput.value = horarioAtual; // Preenche o horário atual
+        }
+        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+        if (janelaSolicitacao) {
+            janelaSolicitacao.style.display = "block";
+        }
     });
 }
 
@@ -69,7 +91,10 @@ if (abrirSolicitacaoButton) {
 var cancelarSolicitacaoButton = document.getElementById("cancelarSolicitacaoButton");
 if (cancelarSolicitacaoButton) {
     cancelarSolicitacaoButton.addEventListener("click", function () {
-        document.getElementById("janelaSolicitacao").style.display = "none";
+        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+        if (janelaSolicitacao) {
+            janelaSolicitacao.style.display = "none";
+        }
     });
 }
 
@@ -79,11 +104,17 @@ if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        var quantidade = document.getElementById("quantidade").value;
-        var horario = document.getElementById("horario").value;
-        var local = document.getElementById("local").value;
-        var item = document.getElementById("item").value;
-        var destino = document.getElementById("destino").value;
+        var quantidadeInput = document.getElementById("quantidade");
+        var horarioInput = document.getElementById("horario");
+        var localSelect = document.getElementById("local");
+        var itemInput = document.getElementById("item");
+        var destinoSelect = document.getElementById("destino");
+
+        var quantidade = quantidadeInput ? quantidadeInput.value : "";
+        var horario = horarioInput ? horarioInput.value : "";
+        var local = localSelect ? localSelect.value : "";
+        var item = itemInput ? itemInput.value : "";
+        var destino = destinoSelect ? destinoSelect.value : "";
 
         if (!/^\d{5}$/.test(item)) {
             alert("O código do item deve ter exatamente 5 dígitos.");
@@ -115,7 +146,10 @@ if (janelaForm) {
         detalhes.push({ local: local, item: item, quantidade: quantidade, destino: destino, dataAtual: dataAtual, horario: horario });
         localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-        document.getElementById("janelaSolicitacao").style.display = "none";
+        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+        if (janelaSolicitacao) {
+            janelaSolicitacao.style.display = "none";
+        }
 
         alert("Material solicitado com sucesso!");
     });
@@ -125,9 +159,13 @@ if (janelaForm) {
 var reservarButton = document.getElementById("reservarButton");
 if (reservarButton) {
     reservarButton.addEventListener("click", function () {
-        var local = document.getElementById("local").value;
-        var item = document.getElementById("item").value;
-        var destino = document.getElementById("destino").value;
+        var localSelect = document.getElementById("local");
+        var itemInput = document.getElementById("item");
+        var destinoSelect = document.getElementById("destino");
+
+        var local = localSelect ? localSelect.value : "";
+        var item = itemInput ? itemInput.value : "";
+        var destino = destinoSelect ? destinoSelect.value : "";
 
         if (!/^\d{5}$/.test(item)) {
             alert("O código do item deve ter exatamente 5 dígitos.");
@@ -171,34 +209,39 @@ document.addEventListener("DOMContentLoaded", function () {
     // Código específico para detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
         var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        var detalhesTable = document.getElementById("detalhesTable").querySelector("tbody");
+        var detalhesTableElement = document.getElementById("detalhesTable");
+        var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
         var excluirItensButton = document.getElementById("excluirItensButton");
 
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
-            detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+            if (detalhesTable) {
+                detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-            detalhes.forEach(function(detalhe, index) {
-                var newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                    <td>${detalhe.local}</td>
-                    <td>${detalhe.item}</td>
-                    <td>${detalhe.quantidade}</td>
-                    <td>${detalhe.destino}</td>
-                    <td>${detalhe.dataAtual}</td>
-                    <td>${detalhe.horario}</td>
-                    <td><button class="receberButton">Receber</button></td>
-                    <td style="color: yellow; text-align: center;">REPORT</td>
-                `;
-                detalhesTable.appendChild(newRow);
+                detalhes.forEach(function(detalhe, index) {
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${detalhe.local}</td>
+                        <td>${detalhe.item}</td>
+                        <td>${detalhe.quantidade}</td>
+                        <td>${detalhe.destino}</td>
+                        <td>${detalhe.dataAtual}</td>
+                        <td>${detalhe.horario}</td>
+                        <td><button class="receberButton">Receber</button></td>
+                        <td style="color: yellow; text-align: center;">REPORT</td>
+                    `;
+                    detalhesTable.appendChild(newRow);
 
-                // Adiciona o evento de clique ao botão Receber
-                var receberButton = newRow.querySelector(".receberButton");
-                receberButton.addEventListener("click", function () {
-                    abrirJanelaRecebimento(index);
+                    // Adiciona o evento de clique ao botão Receber
+                    var receberButton = newRow.querySelector(".receberButton");
+                    if (receberButton) {
+                        receberButton.addEventListener("click", function () {
+                            abrirJanelaRecebimento(index);
+                        });
+                    }
                 });
-            });
+            }
         }
 
         atualizarTabelaDetalhes();
@@ -207,18 +250,33 @@ document.addEventListener("DOMContentLoaded", function () {
         function abrirJanelaRecebimento(index) {
             var detalhe = detalhes[index];
             // Preenche os campos da janela com os dados atuais
-            document.getElementById("recebimentoQuantidade").value = detalhe.quantidade;
+            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+            if (recebimentoQuantidadeInput) {
+                recebimentoQuantidadeInput.value = detalhe.quantidade;
+            }
             var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById("recebimentoHorario").value = horarioAtual;
-            document.getElementById("recebimentoIndex").value = index; // Armazena o índice para uso posterior
-            document.getElementById("janelaRecebimento").style.display = "block";
+            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+            if (recebimentoHorarioInput) {
+                recebimentoHorarioInput.value = horarioAtual;
+            }
+            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+            if (recebimentoIndexInput) {
+                recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
+            }
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            if (janelaRecebimento) {
+                janelaRecebimento.style.display = "block";
+            }
         }
 
         // Fecha a janela de recebimento
         var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
         if (cancelarRecebimentoButton) {
             cancelarRecebimentoButton.addEventListener("click", function () {
-                document.getElementById("janelaRecebimento").style.display = "none";
+                var janelaRecebimento = document.getElementById("janelaRecebimento");
+                if (janelaRecebimento) {
+                    janelaRecebimento.style.display = "none";
+                }
             });
         }
 
@@ -228,9 +286,13 @@ document.addEventListener("DOMContentLoaded", function () {
             recebimentoForm.addEventListener("submit", function (event) {
                 event.preventDefault();
 
-                var index = parseInt(document.getElementById("recebimentoIndex").value);
-                var quantidadeRecebida = document.getElementById("recebimentoQuantidade").value;
-                var horarioRecebido = document.getElementById("recebimentoHorario").value;
+                var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+                var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+                var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+
+                var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : 0);
+                var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value : "";
+                var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value : "";
 
                 var detalhe = detalhes[index];
 
@@ -271,34 +333,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Atualiza a tabela de recebidos
                 atualizarTabelaRecebidos();
 
-                document.getElementById("janelaRecebimento").style.display = "none";
+                var janelaRecebimento = document.getElementById("janelaRecebimento");
+                if (janelaRecebimento) {
+                    janelaRecebimento.style.display = "none";
+                }
 
                 alert("Material recebido com sucesso!");
             });
         }
 
         // Função para atualizar a tabela de materiais recebidos
-        var recebidosTable = document.getElementById("recebidosTable").querySelector("tbody");
+        var recebidosTableElement = document.getElementById("recebidosTable");
+        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
         function atualizarTabelaRecebidos() {
             var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-            recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+            if (recebidosTable) {
+                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-            recebidos.forEach(function(item, index) {
-                var newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                    <td>${item.local}</td>
-                    <td>${item.item}</td>
-                    <td>${item.quantidade}</td>
-                    <td>${item.destino}</td>
-                    <td>${item.dataAtual}</td>
-                    <td>${item.horario}</td>
-                    <td>${item.recebido}</td>
-                    <td>${item.guardado}</td>
-                `;
-                recebidosTable.appendChild(newRow);
-            });
+                recebidos.forEach(function(item, index) {
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.dataAtual}</td>
+                        <td>${item.horario}</td>
+                        <td>${item.recebido}</td>
+                        <td>${item.guardado}</td>
+                    `;
+                    recebidosTable.appendChild(newRow);
+                });
+            }
         }
 
         atualizarTabelaRecebidos();
