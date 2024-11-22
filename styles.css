@@ -335,6 +335,9 @@ footer {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
+/* Efeito de hover para escurecer o fundo levemente */
+.tool-card:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Fundo levemente escurecido */
 
 .tool-card img {
     width: 100%;
