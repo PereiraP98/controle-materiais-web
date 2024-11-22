@@ -406,3 +406,11 @@ footer {
 .tempo-cell {
     text-align: center;
 }
+
+.tempo-cell.countdown {
+    color: red;
+}
+
+.tempo-cell.elapsed {
+    color: green;
+}
