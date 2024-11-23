@@ -339,34 +339,66 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Manipulação do tempo e eventos de hover
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
-    // Função para atualizar o tempo na célula
-    function updateTimeCell(showSeconds = false) {
-        var now = Date.now();
-        if (detalhe.isFuture) {
-            var remaining = detalhe.timestamp - now;
-            if (remaining <= 0) {
-                // Tempo alcançado, mudar para tempo decorrido
-                detalhe.isFuture = false;
-                detalhe.timestamp = now;
-                clearInterval(intervalMap.get(index));
-                intervalMap.delete(index);
-                // Inicia a contagem do tempo decorrido a cada segundo
-                var elapsedInterval = setInterval(() => {
-                    var elapsed = Date.now() - detalhe.timestamp;
-                    tempoCell.textContent = formatTime(elapsed, showSeconds);
-                }, 1000);
-                intervalMap.set(index, elapsedInterval);
-                tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, showSeconds);
-            } else {
-                // Atualiza a contagem regressiva
-                tempoCell.textContent = formatTime(remaining, showSeconds);
-            }
-        } else {
-            // Atualiza o tempo decorrido
-            var elapsed = now - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, showSeconds);
-        }
-    }
+                        function updateTimeCell(showSeconds = false) {
+                            var now = Date.now();
+                            var elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+                        
+                            // Definir tempos limites
+                            var maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+                            var midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+                        
+                            // Calcula o progresso em relação ao tempo máximo
+                            var progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
+                        
+                            // Definição das cores RGB
+                            var green = { r: 0, g: 255, b: 0 }; // Verde
+                            var yellow = { r: 255, g: 255, b: 0 }; // Amarelo
+                            var red = { r: 255, g: 0, b: 0 }; // Vermelho
+                        
+                            // Cálculo da cor atual com base no progresso
+                            var currentColor;
+                            if (elapsed <= midTime) {
+                                // Transição de verde para amarelo
+                                var ratio = elapsed / midTime;
+                                currentColor = {
+                                    r: Math.floor(green.r + ratio * (yellow.r - green.r)),
+                                    g: Math.floor(green.g + ratio * (yellow.g - green.g)),
+                                    b: Math.floor(green.b + ratio * (yellow.b - green.b)),
+                                };
+                            } else if (elapsed > midTime && elapsed <= maxTime) {
+                                // Transição de amarelo para vermelho
+                                var ratio = (elapsed - midTime) / (maxTime - midTime);
+                                currentColor = {
+                                    r: Math.floor(yellow.r + ratio * (red.r - yellow.r)),
+                                    g: Math.floor(yellow.g + ratio * (red.g - yellow.g)),
+                                    b: Math.floor(yellow.b + ratio * (red.b - yellow.b)),
+                                };
+                            } else {
+                                // Oscilação no vermelho após o tempo máximo
+                                var oscillation = Math.sin(Date.now() / 200) * 20 + 235; // Oscilação de brilho
+                                currentColor = {
+                                    r: oscillation,
+                                    g: 0,
+                                    b: 0,
+                                };
+                            }
+                        
+                            // Aplica a cor à linha inteira
+                            newRow.style.backgroundColor = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+                        
+                            // Atualiza o tempo no campo
+                            if (detalhe.isFuture) {
+                                var remaining = detalhe.timestamp - now;
+                                if (remaining <= 0) {
+                                    detalhe.isFuture = false;
+                                    detalhe.timestamp = now;
+                                }
+                                tempoCell.textContent = formatTime(remaining, showSeconds);
+                            } else {
+                                tempoCell.textContent = formatTime(elapsed, showSeconds);
+                            }
+                        }
+                        
 
     // Inicializa a contagem
     if (detalhe.isFuture) {
