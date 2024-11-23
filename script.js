@@ -390,28 +390,29 @@ document.addEventListener("DOMContentLoaded", function () {
                         updateTimeCell();
                         var hoverInterval = null;
 
-                        tempoCell.addEventListener("mouseover", function () {
-                            clearInterval(intervalMap.get(index)); // Pausa a atualização padrão
-                            updateTimeCell(true); // Atualiza imediatamente com segundos
-                            hoverInterval = setInterval(() => updateTimeCell(true), 1000); // Continua a atualização em tempo real com segundos
-                        });
+// Adiciona eventos à linha inteira
+newRow.addEventListener("mouseover", function () {
+    clearInterval(intervalMap.get(index)); // Pausa a atualização padrão
+    updateTimeCell(true); // Atualiza imediatamente com segundos
+    hoverInterval = setInterval(() => updateTimeCell(true), 1000); // Continua a atualização em tempo real com segundos
+});
 
-                        tempoCell.addEventListener("mouseout", function () {
-                            clearInterval(hoverInterval); // Para a atualização com segundos
-                            updateTimeCell(false); // Atualiza novamente no formato padrão imediatamente
-                            if (detalhe.isFuture) {
-                                // Reinicia a contagem regressiva
-                                var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                                intervalMap.set(index, countdownInterval);
-                            } else {
-                                // Reinicia a contagem do tempo decorrido
-                                var elapsedInterval = setInterval(() => {
-                                    var elapsed = Date.now() - detalhe.timestamp;
-                                    tempoCell.textContent = formatTime(elapsed, false);
-                                }, 1000);
-                                intervalMap.set(index, elapsedInterval);
-                            }
-                        });
+newRow.addEventListener("mouseout", function () {
+    clearInterval(hoverInterval); // Para a atualização com segundos
+    updateTimeCell(false); // Atualiza novamente no formato padrão imediatamente
+    if (detalhe.isFuture) {
+        // Reinicia a contagem regressiva
+        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+        intervalMap.set(index, countdownInterval);
+    } else {
+        // Reinicia a contagem do tempo decorrido
+        var elapsedInterval = setInterval(function () {
+            var elapsed = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsed, false);
+        }, 1000);
+        intervalMap.set(index, elapsedInterval);
+    }
+});
                     }
                 });
             }
