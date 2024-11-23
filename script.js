@@ -340,54 +340,56 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
 
-                    // Manipulação do tempo e eventos de hover
-                    var tempoCell = newRow.querySelector(".tempo-cell");
-                    if (tempoCell) {
-                        // Função para atualizar o tempo na célula
-                        function updateTimeCell() {
-                            var now = Date.now();
-                            if (detalhe.isFuture) {
-                                var remaining = detalhe.timestamp - now;
-                                if (remaining <= 0) {
-                                    // Tempo alcançado, mudar para tempo decorrido
-                                    detalhe.isFuture = false;
-                                    detalhe.timestamp = now;
-                                    clearInterval(intervalMap.get(index));
-                                    intervalMap.delete(index);
-                                    // Inicia a contagem do tempo decorrido a cada segundo
-                                    var elapsedInterval = setInterval(function() {
-                                        var elapsed = Date.now() - detalhe.timestamp;
-                                        tempoCell.textContent = formatTime(elapsed, false);
-                                    }, 1000);
-                                    intervalMap.set(index, elapsedInterval);
-                                    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
-                                } else {
-                                    // Atualiza a contagem regressiva
-                                    tempoCell.textContent = formatTime(remaining, true);
-                                }
-                            } else {
-                                // Atualiza o tempo decorrido
-                                var elapsed = now - detalhe.timestamp;
-                                tempoCell.textContent = formatTime(elapsed, false);
-                            }
-                        }
+// Manipulação do tempo e eventos de hover
+var tempoCell = newRow.querySelector(".tempo-cell");
+if (tempoCell) {
+    // Função para atualizar o tempo na célula
+    function updateTimeCell() {
+        var now = Date.now();
+        if (detalhe.isFuture) {
+            var remaining = detalhe.timestamp - now;
+            if (remaining <= 0) {
+                // Tempo alcançado, mudar para tempo decorrido
+                detalhe.isFuture = false;
+                detalhe.timestamp = now;
+                clearInterval(intervalMap.get(index));
+                intervalMap.delete(index);
+                // Inicia a contagem do tempo decorrido a cada segundo
+                var elapsedInterval = setInterval(function () {
+                    var elapsed = Date.now() - detalhe.timestamp;
+                    tempoCell.textContent = formatTime(elapsed, false);
+                }, 1000);
+                intervalMap.set(index, elapsedInterval);
+                tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
+            } else {
+                // Atualiza a contagem regressiva
+                tempoCell.textContent = formatTime(remaining, true);
+            }
+        } else {
+            // Atualiza o tempo decorrido
+            var elapsed = now - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsed, false);
+        }
+    }
 
-                        // Inicializa a contagem
-                        if (detalhe.isFuture) {
-                            // Inicia a contagem regressiva a cada segundo
-                            var countdownInterval = setInterval(updateTimeCell, 1000);
-                            intervalMap.set(index, countdownInterval);
-                        } else {
-                            // Inicia a contagem do tempo decorrido a cada segundo
-                            var elapsedInterval = setInterval(function() {
-                                var elapsed = Date.now() - detalhe.timestamp;
-                                tempoCell.textContent = formatTime(elapsed, false);
-                            }, 1000);
-                            intervalMap.set(index, elapsedInterval);
-                        }
 
-                        // Exibição inicial
-                        updateTimeCell();
+    // Inicializa a contagem
+    if (detalhe.isFuture) {
+        // Inicia a contagem regressiva a cada segundo
+        var countdownInterval = setInterval(updateTimeCell, 1000);
+        intervalMap.set(index, countdownInterval);
+    } else {
+        // Inicia a contagem do tempo decorrido a cada segundo
+        var elapsedInterval = setInterval(function () {
+            var elapsed = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsed, false);
+        }, 1000);
+        intervalMap.set(index, elapsedInterval);
+    }
+
+
+    // Exibição inicial
+    updateTimeCell();
                         var hoverInterval = null;
 
 // Adiciona eventos à linha inteira
