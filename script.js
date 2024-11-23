@@ -329,6 +329,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     detalhesTable.appendChild(newRow);
 
+                                // Inicia a atualização em tempo real
+            startRealTimeUpdate(index, detalhe, tempoCell, newRow);
+
+
                                 // Define a cor inicial
             newRow.style.background = "rgb(0, 255, 0)";
 
@@ -343,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Manipulação do tempo e eventos de hover
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
-                        function updateTimeCell(showSeconds = false) {
+                        function updateTimeCell(detalhe, tempoCell, newRow, showSeconds = false) {
                             const now = Date.now();
                             const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
                         
@@ -386,17 +390,17 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         }
                         
-                        // Inicializar a atualização em tempo real
+                        // Função para iniciar a atualização em tempo real
                         function startRealTimeUpdate(index, detalhe, tempoCell, newRow) {
                             // Garante que não haja intervalos duplicados
                             if (intervalMap.has(index)) {
                                 clearInterval(intervalMap.get(index));
                             }
                         
-                            // Configura o intervalo para atualizar o gradiente e o tempo
+                            // Configura o intervalo para atualizar a barra em tempo real
                             const intervalId = setInterval(() => {
-                                updateTimeCell(false); // Atualiza a célula de tempo e a barra em tempo real
-                            }, 1000);
+                                updateTimeCell(detalhe, tempoCell, newRow, false);
+                            }, 1000); // Atualiza a cada 1 segundo
                         
                             // Armazena o ID do intervalo no mapa
                             intervalMap.set(index, intervalId);
