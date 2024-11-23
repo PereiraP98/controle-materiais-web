@@ -348,31 +348,30 @@ if (tempoCell) {
         const now = Date.now();
         const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
     
-        // Definir tempos limites
+        // Define tempos limites
         const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
-        // Calcula o progresso do preenchimento
-        let progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
-    
-        // Gradiente dinâmico para preencher a barra da esquerda para a direita
-        let backgroundGradient;
-        if (elapsed <= midTime) {
-            // Transição de verde para amarelo (0 a 15 minutos)
-            const percentage = (elapsed / midTime) * 100; // Progresso da barra
-            backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
-        } else if (elapsed > midTime && elapsed <= maxTime) {
-            // Transição de amarelo para vermelho (15 a 30 minutos)
-            const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-            backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+        if (elapsed > maxTime) {
+            // Após 30 minutos, adiciona a classe de oscilação
+            newRow.classList.add("oscillation");
         } else {
-            // Oscilação em vermelho após 30 minutos
-            const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
-            backgroundGradient = `rgb(${oscillation}, 0, 0)`;
-        }
+            // Remove a classe de oscilação se o tempo estiver dentro do limite
+            newRow.classList.remove("oscillation");
     
-        // Atualiza o fundo da linha inteira com o gradiente
-        newRow.style.background = backgroundGradient;
+            // Gradiente dinâmico para preenchimento da barra
+            let backgroundGradient;
+            if (elapsed <= midTime) {
+                const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+            } else {
+                const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+            }
+    
+            // Atualiza o fundo da linha inteira
+            newRow.style.background = backgroundGradient;
+        }
     
         // Atualiza o campo de tempo
         if (detalhe.isFuture) {
@@ -386,6 +385,11 @@ if (tempoCell) {
             tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
     }
+    
+
+
+
+
     if (detalhe.isFuture) {
         // Inicializa a atualização contínua do tempo e do gradiente
         const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
