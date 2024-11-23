@@ -428,36 +428,38 @@ if (tempoCell) {
 
 // Adiciona eventos à linha inteira
 newRow.addEventListener("mouseover", function () {
-    // Pausa o intervalo padrão, se existir
+    // Garante que o intervalo padrão está parado antes de iniciar o hover
     if (intervalMap.has(index)) {
         clearInterval(intervalMap.get(index));
-        intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+        intervalMap.delete(index); // Remove a referência para evitar conflitos
     }
 
-    // Atualiza imediatamente com segundos e inicia um intervalo de hover
-    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, true); // Exibe HH:MM:SS
+    // Atualiza imediatamente com o formato HH:MM:SS
+    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, true);
+
+    // Inicia um intervalo de hover para atualizar a cada segundo
     if (!tempoCell._hoverInterval) {
         tempoCell._hoverInterval = setInterval(() => {
             const elapsedHover = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+            tempoCell.textContent = formatTime(elapsedHover, true); // Exibe HH:MM:SS
         }, 1000);
     }
 });
 
 newRow.addEventListener("mouseout", function () {
-    // Para o intervalo de hover, se existir
+    // Para e limpa o intervalo de hover
     if (tempoCell._hoverInterval) {
         clearInterval(tempoCell._hoverInterval);
-        delete tempoCell._hoverInterval; // Limpa a referência ao intervalo de hover
+        delete tempoCell._hoverInterval;
     }
 
-    // Volta ao formato HH:MM imediatamente
+    // Atualiza imediatamente para o formato HH:MM
     tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
 
-    // Retoma o intervalo padrão (contagem regressiva ou decorrido)
+    // Reinicia o intervalo padrão
     if (!intervalMap.has(index)) {
         const standardInterval = setInterval(() => {
-            updateTimeCell(false);
+            updateTimeCell(false); // Atualiza com HH:MM
         }, 1000);
         intervalMap.set(index, standardInterval);
     }
