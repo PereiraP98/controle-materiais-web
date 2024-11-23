@@ -455,17 +455,9 @@ newRow.addEventListener("mouseout", function () {
     tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false); // Exibe HH:MM
 
     // Retoma o intervalo padrão (contagem regressiva ou decorrido)
-    if (detalhe.isFuture) {
-        // Reinicia a contagem regressiva para o futuro
-        const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, countdownInterval);
-    } else {
-        // Reinicia a contagem do tempo decorrido para o passado
-        const elapsedInterval = setInterval(() => {
-            const elapsedNormal = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsedNormal, false);
-        }, 1000);
-        intervalMap.set(index, elapsedInterval);
+    if (!intervalMap.has(index)) {
+        const newInterval = setInterval(() => updateTimeCell(false), 1000);
+        intervalMap.set(index, newInterval);
     }
 });
                     }
