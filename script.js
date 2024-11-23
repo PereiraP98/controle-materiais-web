@@ -434,8 +434,8 @@ newRow.addEventListener("mouseover", function () {
 });
 
 newRow.addEventListener("mouseout", function () {
-    clearInterval(hoverInterval); // Para a atualização com segundos
-    updateTimeCell(false); // Atualiza novamente no formato padrão imediatamente
+    clearInterval(tempoCell._hoverInterval); // Para a contagem dos segundos
+    delete tempoCell._hoverInterval; // Remove a referência ao intervalo
     if (detalhe.isFuture) {
         // Reinicia a contagem regressiva
         var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
