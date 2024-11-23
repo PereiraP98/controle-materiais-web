@@ -458,19 +458,15 @@ newRow.addEventListener("mouseout", function () {
     // Retoma o intervalo padrão (contagem regressiva ou decorrido)
     if (detalhe.isFuture) {
         // Reinicia a contagem regressiva para o futuro
-        if (!intervalMap.has(index)) {
-            const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-            intervalMap.set(index, countdownInterval);
-        }
+        const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+        intervalMap.set(index, countdownInterval);
     } else {
         // Reinicia a contagem do tempo decorrido para o passado
-        if (!intervalMap.has(index)) {
-            const elapsedInterval = setInterval(() => {
-                const elapsedNormal = Date.now() - detalhe.timestamp;
-                tempoCell.textContent = formatTime(elapsedNormal, false);
-            }, 1000);
-            intervalMap.set(index, elapsedInterval);
-        }
+        const elapsedInterval = setInterval(() => {
+            const elapsedNormal = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsedNormal, false);
+        }, 1000);
+        intervalMap.set(index, elapsedInterval);
     }
 });
                     }
