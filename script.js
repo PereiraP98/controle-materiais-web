@@ -387,15 +387,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Exibição inicial
     updateTimeCell(false);
 
-                        // Eventos de hover
-                        var hoverInterval = null;
-                        tempoCell.addEventListener("mouseover", function () {
-                            clearInterval(intervalMap.get(index)); // Pausa a atualização padrão
-                            updateTimeCell(true); // Atualiza imediatamente com segundos
-                            hoverInterval = setInterval(() => updateTimeCell(true), 1000); // Continua a atualização em tempo real com segundos
-                        });
+// Adiciona eventos à linha inteira
+newRow.addEventListener("mouseover", function () {
+    clearInterval(intervalMap.get(index)); // Pausa a atualização padrão
+    updateTimeCell(true); // Atualiza imediatamente com segundos
+    hoverInterval = setInterval(() => updateTimeCell(true), 1000); // Continua a atualização em tempo real com segundos
+});
 
-tempoCell.addEventListener("mouseout", function () {
+newRow.addEventListener("mouseout", function () {
     clearInterval(hoverInterval); // Para a atualização com segundos
     updateTimeCell(false); // Atualiza novamente no formato padrão imediatamente
     if (detalhe.isFuture) {
@@ -404,7 +403,7 @@ tempoCell.addEventListener("mouseout", function () {
         intervalMap.set(index, countdownInterval);
     } else {
         // Reinicia a contagem do tempo decorrido
-        var elapsedInterval = setInterval(() => {
+        var elapsedInterval = setInterval(function () {
             var elapsed = Date.now() - detalhe.timestamp;
             tempoCell.textContent = formatTime(elapsed, false);
         }, 1000);
