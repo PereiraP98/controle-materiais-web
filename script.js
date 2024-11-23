@@ -145,11 +145,11 @@ if (janelaForm) {
         var solicitadosTable = document.getElementById("solicitadosTable");
         var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (solicitadosTableBody) {
             solicitadosTableBody.appendChild(newRow);
         }
@@ -241,11 +241,11 @@ if (reservarButton) {
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (reservadosTableBody) {
             reservadosTableBody.appendChild(newRow);
         }
@@ -267,11 +267,11 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTableBody.innerHTML = "";
         solicitados.forEach(function(item) {
             var newRow = document.createElement("tr");
-            newRow.innerHTML = `
+            newRow.innerHTML = 
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-            `;
+            ;
             solicitadosTableBody.appendChild(newRow);
         });
     }
@@ -292,9 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var minutes = Math.floor((totalSeconds % 3600) / 60);
             var seconds = totalSeconds % 60;
         
-            var timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+            var timeString = ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')};
             if (showSeconds) {
-                timeString += `:${String(seconds).padStart(2, '0')}`;
+                timeString += :${String(seconds).padStart(2, '0')};
             }
             return timeString;
         }
@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Calcula o tempo restante ou decorrido
                     var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
 
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${detalhe.local}</td>
                         <td>${detalhe.item}</td>
@@ -325,10 +325,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${detalhe.horario}</td>
                         <td><button class="receberButton">Receber</button></td>
                         <td class="tempo-cell">${tempoDisplay}</td>
-                    `;
-
+                    ;
                     detalhesTable.appendChild(newRow);
-
 
                                 // Define a cor inicial
             newRow.style.background = "rgb(0, 255, 0)";
@@ -386,10 +384,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
                         }
-                        
-                        
-                        
-                        
                         
                         
                         
@@ -573,7 +567,7 @@ newRow.addEventListener("mouseout", function () {
 
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
@@ -583,7 +577,7 @@ newRow.addEventListener("mouseout", function () {
                         <td>${item.horario}</td>
                         <td>${item.recebido}</td>
                         <td>${item.guardado}</td>
-                    `;
+                    ;
                     recebidosTable.appendChild(newRow);
                 });
             }
