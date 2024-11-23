@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     // Manipulação do tempo e eventos de hover
-                    const tempoCell = newRow.querySelector(".tempo-cell");
+                    var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
                         function updateTimeCell(detalhe, tempoCell, newRow, showSeconds = false) {
                             const now = Date.now();
