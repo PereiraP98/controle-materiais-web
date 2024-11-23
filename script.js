@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Calcula o progresso do preenchimento
                             let progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
                         
-                            // Gradiente dinâmico para preencher a barra da direita para a esquerda
+                            // Gradiente dinâmico para preencher a barra da esquerda para a direita
                             let backgroundGradient;
                             if (elapsed <= midTime) {
                                 // Transição de verde para amarelo (0 a 15 minutos)
@@ -384,6 +384,23 @@ document.addEventListener("DOMContentLoaded", function () {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
                         }
+                        
+                        // Inicializar a atualização em tempo real
+                        function startRealTimeUpdate(index, detalhe, tempoCell, newRow) {
+                            // Garante que não haja intervalos duplicados
+                            if (intervalMap.has(index)) {
+                                clearInterval(intervalMap.get(index));
+                            }
+                        
+                            // Configura o intervalo para atualizar o gradiente e o tempo
+                            const intervalId = setInterval(() => {
+                                updateTimeCell(false); // Atualiza a célula de tempo e a barra em tempo real
+                            }, 1000);
+                        
+                            // Armazena o ID do intervalo no mapa
+                            intervalMap.set(index, intervalId);
+                        }
+                        
                         
                         
                         
