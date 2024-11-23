@@ -360,7 +360,7 @@ if (tempoCell) {
         if (elapsed <= midTime) {
             // Transição de verde para amarelo (0 a 15 minutos)
             const percentage = (elapsed / midTime) * 100; // Progresso da barra
-            backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+            backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
         } else if (elapsed > midTime && elapsed <= maxTime) {
             // Transição de amarelo para vermelho (15 a 30 minutos)
             const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
