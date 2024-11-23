@@ -340,38 +340,38 @@ document.addEventListener("DOMContentLoaded", function () {
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
                         function updateTimeCell(showSeconds = false) {
-                            var now = Date.now();
-                            var elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+                            const now = Date.now();
+                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
                         
                             // Definir tempos limites
-                            var maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                            var midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
                         
-                            // Calcula o progresso em relação ao tempo máximo
-                            var progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
+                            // Calcula o progresso do preenchimento
+                            let progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
                         
-                            // Barra dinâmica com gradiente
-                            var backgroundGradient;
+                            // Gradiente dinâmico para preencher a barra
+                            let backgroundGradient;
                             if (elapsed <= midTime) {
-                                // Barra verde para amarela
-                                var percentage = (elapsed / midTime) * 100; // Percentual preenchido
-                                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${percentage}%, rgb(255, 255, 0) ${percentage}%)`;
+                                // Barra de verde para amarelo
+                                const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
                             } else if (elapsed > midTime && elapsed <= maxTime) {
-                                // Barra amarela para vermelha
-                                var percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Percentual preenchido
-                                backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${percentage}%, rgb(255, 0, 0) ${percentage}%)`;
+                                // Barra de amarelo para vermelho
+                                const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                                backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
                             } else {
                                 // Oscilação na cor vermelha após o tempo máximo
-                                var oscillation = Math.sin(Date.now() / 200) * 20 + 235; // Oscilação de brilho
+                                const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
                                 backgroundGradient = `rgb(${oscillation}, 0, 0)`;
                             }
                         
-                            // Aplica o gradiente à linha inteira
+                            // Atualiza o fundo da linha inteira com o gradiente
                             newRow.style.background = backgroundGradient;
                         
-                            // Atualiza o tempo no campo
+                            // Atualiza o campo de tempo
                             if (detalhe.isFuture) {
-                                var remaining = detalhe.timestamp - now;
+                                const remaining = detalhe.timestamp - now;
                                 if (remaining <= 0) {
                                     detalhe.isFuture = false;
                                     detalhe.timestamp = now;
@@ -381,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
                         }
+                        
                         
                         
 
