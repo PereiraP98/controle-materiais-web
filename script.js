@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
 var tempoCell = newRow.querySelector(".tempo-cell");
 if (tempoCell) {
     // Função para atualizar o tempo na célula
-    function updateTimeCell() {
+    function updateTimeCell(showSeconds = false) {
         var now = Date.now();
         if (detalhe.isFuture) {
             var remaining = detalhe.timestamp - now;
@@ -355,20 +355,20 @@ if (tempoCell) {
                 clearInterval(intervalMap.get(index));
                 intervalMap.delete(index);
                 // Inicia a contagem do tempo decorrido a cada segundo
-                var elapsedInterval = setInterval(function () {
+                var elapsedInterval = setInterval(() => {
                     var elapsed = Date.now() - detalhe.timestamp;
-                    tempoCell.textContent = formatTime(elapsed, false);
+                    tempoCell.textContent = formatTime(elapsed, showSeconds);
                 }, 1000);
                 intervalMap.set(index, elapsedInterval);
-                tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
+                tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, showSeconds);
             } else {
                 // Atualiza a contagem regressiva
-                tempoCell.textContent = formatTime(remaining, true);
+                tempoCell.textContent = formatTime(remaining, showSeconds);
             }
         } else {
             // Atualiza o tempo decorrido
             var elapsed = now - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, false);
+            tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
     }
 
@@ -376,11 +376,11 @@ if (tempoCell) {
     // Inicializa a contagem
     if (detalhe.isFuture) {
         // Inicia a contagem regressiva a cada segundo
-        var countdownInterval = setInterval(updateTimeCell, 1000);
+        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
         intervalMap.set(index, countdownInterval);
     } else {
         // Inicia a contagem do tempo decorrido a cada segundo
-        var elapsedInterval = setInterval(function () {
+        var elapsedInterval = setInterval(() => {
             var elapsed = Date.now() - detalhe.timestamp;
             tempoCell.textContent = formatTime(elapsed, false);
         }, 1000);
@@ -389,8 +389,9 @@ if (tempoCell) {
 
 
     // Exibição inicial
-    updateTimeCell();
-                        var hoverInterval = null;
+    updateTimeCell(false);
+    // Eventos de hover para exibir e ocultar os segundos
+    var hoverInterval = null;
 
 // Adiciona eventos à linha inteira
 newRow.addEventListener("mouseover", function () {
