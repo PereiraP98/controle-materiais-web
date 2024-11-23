@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Manipulação do tempo e eventos de hover
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
-                        function updateTimeCell(detalhe, tempoCell, newRow, showSeconds = false) {
+                        function updateTimeCell(showSeconds = false) {
                             const now = Date.now();
                             const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
                         
@@ -360,15 +360,15 @@ document.addEventListener("DOMContentLoaded", function () {
                             if (elapsed <= midTime) {
                                 // Transição de verde para amarelo (0 a 15 minutos)
                                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                                backgroundGradient = linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%);
                             } else if (elapsed > midTime && elapsed <= maxTime) {
                                 // Transição de amarelo para vermelho (15 a 30 minutos)
                                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                                backgroundGradient = linear-gradient(to right, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%);
                             } else {
                                 // Oscilação em vermelho após 30 minutos
                                 const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
-                                backgroundGradient = `rgb(${oscillation}, 0, 0)`;
+                                backgroundGradient = rgb(${oscillation}, 0, 0);
                             }
                         
                             // Atualiza o fundo da linha inteira com o gradiente
@@ -385,22 +385,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             } else {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
-                        }
-                        
-                        // Função para iniciar a atualização em tempo real
-                        function startRealTimeUpdate(index, detalhe, tempoCell, newRow) {
-                            // Garante que não haja intervalos duplicados
-                            if (intervalMap.has(index)) {
-                                clearInterval(intervalMap.get(index));
-                            }
-                        
-                            // Configura o intervalo para atualizar a barra em tempo real
-                            const intervalId = setInterval(() => {
-                                updateTimeCell(detalhe, tempoCell, newRow, false);
-                            }, 1000); // Atualiza a cada 1 segundo
-                        
-                            // Armazena o ID do intervalo no mapa
-                            intervalMap.set(index, intervalId);
                         }
                         
                         
