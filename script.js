@@ -358,11 +358,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             if (elapsed <= midTime) {
                                 // Transição de verde para amarelo (0 a 15 minutos)
                                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(0, 255, 0) ${100 - percentage}%)`;
                             } else if (elapsed > midTime && elapsed <= maxTime) {
                                 // Transição de amarelo para vermelho (15 a 30 minutos)
                                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                                backgroundGradient = `linear-gradient(to left, rgb(255, 0, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
                             } else {
                                 // Oscilação em vermelho após 30 minutos
                                 const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
@@ -385,15 +385,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         }
                         
-                        if (detalhe.isFuture) {
-                            // Inicializa a atualização contínua do tempo e do gradiente
-                            const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                            intervalMap.set(index, countdownInterval);
-                        } else {
-                            // Inicializa a contagem de tempo decorrido e o gradiente após o tempo máximo
-                            const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                            intervalMap.set(index, elapsedInterval);
-                        }
                         
                         
                         
