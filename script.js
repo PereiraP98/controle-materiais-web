@@ -385,6 +385,16 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         }
                         
+                        if (detalhe.isFuture) {
+                            // Inicializa a atualização contínua do tempo e do gradiente
+                            const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, countdownInterval);
+                        } else {
+                            // Inicializa a contagem de tempo decorrido e o gradiente após o tempo máximo
+                            const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, elapsedInterval);
+                        }
+                        
                         
                         
                         
