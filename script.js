@@ -350,41 +350,24 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Calcula o progresso em relação ao tempo máximo
                             var progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
                         
-                            // Definição das cores RGB
-                            var green = { r: 0, g: 255, b: 0 }; // Verde
-                            var yellow = { r: 255, g: 255, b: 0 }; // Amarelo
-                            var red = { r: 255, g: 0, b: 0 }; // Vermelho
-                        
-                            // Cálculo da cor atual com base no progresso
-                            var currentColor;
+                            // Barra dinâmica com gradiente
+                            var backgroundGradient;
                             if (elapsed <= midTime) {
-                                // Transição de verde para amarelo
-                                var ratio = elapsed / midTime;
-                                currentColor = {
-                                    r: Math.floor(green.r + ratio * (yellow.r - green.r)),
-                                    g: Math.floor(green.g + ratio * (yellow.g - green.g)),
-                                    b: Math.floor(green.b + ratio * (yellow.b - green.b)),
-                                };
+                                // Barra verde para amarela
+                                var percentage = (elapsed / midTime) * 100; // Percentual preenchido
+                                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${percentage}%, rgb(255, 255, 0) ${percentage}%)`;
                             } else if (elapsed > midTime && elapsed <= maxTime) {
-                                // Transição de amarelo para vermelho
-                                var ratio = (elapsed - midTime) / (maxTime - midTime);
-                                currentColor = {
-                                    r: Math.floor(yellow.r + ratio * (red.r - yellow.r)),
-                                    g: Math.floor(yellow.g + ratio * (red.g - yellow.g)),
-                                    b: Math.floor(yellow.b + ratio * (red.b - yellow.b)),
-                                };
+                                // Barra amarela para vermelha
+                                var percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Percentual preenchido
+                                backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${percentage}%, rgb(255, 0, 0) ${percentage}%)`;
                             } else {
-                                // Oscilação no vermelho após o tempo máximo
+                                // Oscilação na cor vermelha após o tempo máximo
                                 var oscillation = Math.sin(Date.now() / 200) * 20 + 235; // Oscilação de brilho
-                                currentColor = {
-                                    r: oscillation,
-                                    g: 0,
-                                    b: 0,
-                                };
+                                backgroundGradient = `rgb(${oscillation}, 0, 0)`;
                             }
                         
-                            // Aplica a cor à linha inteira
-                            newRow.style.backgroundColor = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+                            // Aplica o gradiente à linha inteira
+                            newRow.style.background = backgroundGradient;
                         
                             // Atualiza o tempo no campo
                             if (detalhe.isFuture) {
@@ -398,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
                         }
+                        
                         
 
     // Inicializa a contagem
