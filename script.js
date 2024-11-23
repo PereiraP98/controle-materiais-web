@@ -350,18 +350,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Calcula o progresso do preenchimento
                             let progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
                         
-                            // Gradiente dinâmico para preencher a barra
+                            // Gradiente dinâmico para preencher a barra da esquerda para a direita
                             let backgroundGradient;
                             if (elapsed <= midTime) {
-                                // Barra de verde para amarelo
+                                // Transição de verde para amarelo (0 a 15 minutos)
                                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
                                 backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
                             } else if (elapsed > midTime && elapsed <= maxTime) {
-                                // Barra de amarelo para vermelho
+                                // Transição de amarelo para vermelho (15 a 30 minutos)
                                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
                                 backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
                             } else {
-                                // Oscilação na cor vermelha após o tempo máximo
+                                // Oscilação em vermelho após 30 minutos
                                 const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
                                 backgroundGradient = `rgb(${oscillation}, 0, 0)`;
                             }
@@ -381,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 tempoCell.textContent = formatTime(elapsed, showSeconds);
                             }
                         }
+                        
                         
                         
                         
