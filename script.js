@@ -435,7 +435,7 @@ newRow.addEventListener("mouseover", function () {
     }
 
     // Atualiza imediatamente com segundos e inicia um intervalo de hover
-    updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, true); // Exibe HH:MM:SS
     if (!tempoCell._hoverInterval) {
         tempoCell._hoverInterval = setInterval(() => {
             const elapsedHover = Date.now() - detalhe.timestamp;
@@ -448,12 +448,11 @@ newRow.addEventListener("mouseout", function () {
     // Para o intervalo de hover, se existir
     if (tempoCell._hoverInterval) {
         clearInterval(tempoCell._hoverInterval);
-        delete tempoCell._hoverInterval;
+        delete tempoCell._hoverInterval; // Limpa a referência ao intervalo de hover
     }
 
     // Volta ao formato HH:MM imediatamente
-    const elapsed = Date.now() - detalhe.timestamp;
-    tempoCell.textContent = formatTime(elapsed, false);
+    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false); // Exibe HH:MM
 
     // Retoma o intervalo padrão (contagem regressiva ou decorrido)
     if (detalhe.isFuture) {
