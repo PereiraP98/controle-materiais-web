@@ -414,3 +414,20 @@ footer {
 .tempo-cell.elapsed {
     color: green;
 }
+
+@keyframes smoothPulse {
+    0% {
+        background-color: rgb(255, 0, 0); /* Vermelho */
+    }
+    50% {
+        background-color: rgb(255, 50, 50); /* Vermelho mais claro */
+    }
+    100% {
+        background-color: rgb(255, 0, 0); /* Retorna ao vermelho */
+    }
+}
+
+.oscillation {
+    animation: smoothPulse 1s infinite ease-in-out; /* Oscilação suave */
+}
+
