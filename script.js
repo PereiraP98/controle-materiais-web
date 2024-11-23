@@ -353,7 +353,7 @@ if (tempoCell) {
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
         if (elapsed > maxTime) {
-            // Após 30 minutos, adiciona a classe de oscilação
+            // Após 30 minutos, aplica a oscilação suave em vermelho
             newRow.classList.add("oscillation");
         } else {
             // Remove a classe de oscilação se o tempo estiver dentro do limite
@@ -363,7 +363,7 @@ if (tempoCell) {
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
             } else {
                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
                 backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
@@ -386,6 +386,7 @@ if (tempoCell) {
         }
     }
     
+
 
 
 
