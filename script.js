@@ -145,11 +145,11 @@ if (janelaForm) {
         var solicitadosTable = document.getElementById("solicitadosTable");
         var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (solicitadosTableBody) {
             solicitadosTableBody.appendChild(newRow);
         }
@@ -241,11 +241,11 @@ if (reservarButton) {
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (reservadosTableBody) {
             reservadosTableBody.appendChild(newRow);
         }
@@ -267,11 +267,11 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTableBody.innerHTML = "";
         solicitados.forEach(function(item) {
             var newRow = document.createElement("tr");
-            newRow.innerHTML = `
+            newRow.innerHTML = 
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-            `;
+            ;
             solicitadosTableBody.appendChild(newRow);
         });
     }
@@ -292,9 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var minutes = Math.floor((totalSeconds % 3600) / 60);
             var seconds = totalSeconds % 60;
         
-            var timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+            var timeString = ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')};
             if (showSeconds) {
-                timeString += `:${String(seconds).padStart(2, '0')}`;
+                timeString += :${String(seconds).padStart(2, '0')};
             }
             return timeString;
         }
@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Calcula o tempo restante ou decorrido
                     var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
 
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${detalhe.local}</td>
                         <td>${detalhe.item}</td>
@@ -325,8 +325,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${detalhe.horario}</td>
                         <td><button class="receberButton">Receber</button></td>
                         <td class="tempo-cell">${tempoDisplay}</td>
-                    `;
+                    ;
                     detalhesTable.appendChild(newRow);
+
+                                // Define a cor inicial
+            newRow.style.background = "rgb(0, 255, 0)";
 
                     // Adiciona o evento de clique ao botão Receber
                     var receberButton = newRow.querySelector(".receberButton");
@@ -339,34 +342,53 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Manipulação do tempo e eventos de hover
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
-    // Função para atualizar o tempo na célula
-    function updateTimeCell(showSeconds = false) {
-        var now = Date.now();
-        if (detalhe.isFuture) {
-            var remaining = detalhe.timestamp - now;
-            if (remaining <= 0) {
-                // Tempo alcançado, mudar para tempo decorrido
-                detalhe.isFuture = false;
-                detalhe.timestamp = now;
-                clearInterval(intervalMap.get(index));
-                intervalMap.delete(index);
-                // Inicia a contagem do tempo decorrido a cada segundo
-                var elapsedInterval = setInterval(() => {
-                    var elapsed = Date.now() - detalhe.timestamp;
-                    tempoCell.textContent = formatTime(elapsed, showSeconds);
-                }, 1000);
-                intervalMap.set(index, elapsedInterval);
-                tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, showSeconds);
-            } else {
-                // Atualiza a contagem regressiva
-                tempoCell.textContent = formatTime(remaining, showSeconds);
-            }
-        } else {
-            // Atualiza o tempo decorrido
-            var elapsed = now - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, showSeconds);
-        }
+function updateTimeCell(showSeconds = false) {
+    const now = Date.now();
+    const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+
+    // Definir tempos limites
+    const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+    const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+
+    // Calcula o progresso do preenchimento
+    let progress = Math.min(elapsed / maxTime, 1); // Entre 0 (verde) e 1 (vermelho)
+
+    // Gradiente dinâmico para preencher a barra da esquerda para a direita
+    let backgroundGradient;
+    if (elapsed <= midTime) {
+        // Transição de verde para amarelo (0 a 15 minutos)
+        const percentage = (elapsed / midTime) * 100; // Progresso da barra
+        backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+    } else if (elapsed > midTime && elapsed <= maxTime) {
+        // Transição de amarelo para vermelho (15 a 30 minutos)
+        const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+        backgroundGradient = `linear-gradient(to right, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+    } else {
+        // Oscilação em vermelho após 30 minutos
+        const oscillation = Math.sin(now / 200) * 20 + 235; // Oscilação de brilho
+        backgroundGradient = `rgb(${oscillation}, 0, 0)`;
     }
+
+    // Atualiza o fundo da linha inteira com o gradiente
+    newRow.style.background = backgroundGradient;
+
+    // Atualiza o campo de tempo
+    if (detalhe.isFuture) {
+        const remaining = detalhe.timestamp - now;
+        if (remaining <= 0) {
+            detalhe.isFuture = false;
+            detalhe.timestamp = now;
+        }
+        tempoCell.textContent = formatTime(remaining, showSeconds);
+    } else {
+        tempoCell.textContent = formatTime(elapsed, showSeconds);
+    }
+}
+
+                        
+                        
+                        
+                        
 
     // Inicializa a contagem
     if (detalhe.isFuture) {
@@ -546,7 +568,7 @@ newRow.addEventListener("mouseout", function () {
 
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
@@ -556,7 +578,7 @@ newRow.addEventListener("mouseout", function () {
                         <td>${item.horario}</td>
                         <td>${item.recebido}</td>
                         <td>${item.guardado}</td>
-                    `;
+                    ;
                     recebidosTable.appendChild(newRow);
                 });
             }
