@@ -326,6 +326,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td><button class="receberButton">Receber</button></td>
                         <td class="tempo-cell">${tempoDisplay}</td>
                     `;
+
+    // Inicia a atualização em tempo real para esta linha
+    startRealTimeUpdate(index, detalhe, tempoCell, newRow);
+
+
+
                     detalhesTable.appendChild(newRow);
 
                                 // Define a cor inicial
