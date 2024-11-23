@@ -353,21 +353,18 @@ if (tempoCell) {
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
         if (elapsed > maxTime) {
-            // Após 30 minutos, adiciona a classe de oscilação
-            if (!newRow.classList.contains("oscillation")) {
-                newRow.classList.add("oscillation");
-            }
+            console.log("Adicionando classe oscillation para a linha:", newRow);
+            newRow.classList.add("oscillation");
+            newRow.style.background = ""; // Remove estilos inline conflitantes
         } else {
-            // Remove a classe de oscilação se o tempo estiver dentro do limite
-            if (newRow.classList.contains("oscillation")) {
-                newRow.classList.remove("oscillation");
-            }
+            console.log("Removendo classe oscillation para a linha:", newRow);
+            newRow.classList.remove("oscillation");
     
             // Gradiente dinâmico para preenchimento da barra
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
             } else {
                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
                 backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
@@ -389,6 +386,7 @@ if (tempoCell) {
             tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
     }
+    
     
     
 
