@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
@@ -10,28 +9,21 @@
 </head>
 <body>
     <header>
-        <!-- Ajuste no header-container -->
         <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <img src="assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
-            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
-                <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                    <img src="assets/painel.png" alt="Painel" width="30" height="30">
                 </button>
-                <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout (imagem fornecida) -->
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                    <img src="assets/logout.png" alt="Logout" width="30" height="30">
                 </button>
             </div>
         </div>
     </header>
     <main class="main-container">
-        <!-- Coluna Esquerda -->
         <div class="column">
-            <!-- Janela de Solicitação -->
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
                 <form id="materialForm">
@@ -61,7 +53,6 @@
                 </form>
             </section>
 
-            <!-- Materiais Reservados -->
             <section class="materiais-reservados">
                 <h2>Materiais Reservados</h2>
                 <table id="reservadosTable">
@@ -73,27 +64,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Registros de materiais reservados -->
                     </tbody>
                 </table>
             </section>
         </div>
 
-        <!-- Coluna Central -->
         <div class="column">
-            <!-- Gráficos -->
             <section class="graficos-container">
                 <h2>Gráficos</h2>
                 <div id="graficoPlaceholder">
-                    <!-- Placeholder para futuros gráficos -->
                     <p>Gráficos serão exibidos aqui.</p>
                 </div>
             </section>
         </div>
 
-        <!-- Coluna Direita -->
         <div class="column">
-            <!-- Materiais Solicitados -->
             <section class="materiais-solicitados">
                 <h2>Materiais Solicitados</h2>
                 <table id="solicitadosTable">
@@ -105,7 +90,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Registros de materiais solicitados -->
                     </tbody>
                 </table>
                 <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
@@ -113,15 +97,14 @@
         </div>
     </main>
 
-    <!-- Janela Flutuante -->
     <div id="janelaSolicitacao" class="janela-flutuante">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
             <label for="quantidade">Quantidade do Material:</label>
             <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
 
-            <label for="horario">Horário de Solicitação:</label>
-            <input type="time" id="horario" name="horario">
+            <label for="horarioSolicitacao">Horário de Solicitação:</label>
+            <input type="time" id="horarioSolicitacao" name="horarioSolicitacao">
 
             <div class="button-container">
                 <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
@@ -133,5 +116,7 @@
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>
