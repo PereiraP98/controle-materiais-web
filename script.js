@@ -434,21 +434,35 @@ newRow.addEventListener("mouseover", function () {
 });
 
 newRow.addEventListener("mouseout", function () {
-    clearInterval(tempoCell._hoverInterval); // Para a contagem dos segundos
-    delete tempoCell._hoverInterval; // Remove a referência ao intervalo
-    if (detalhe.isFuture) {
-        // Reinicia a contagem regressiva
-        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, countdownInterval);
-    } else {
-        // Reinicia a contagem do tempo decorrido
-        var elapsedInterval = setInterval(function () {
-            var elapsed = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, false);
-        }, 1000);
-        intervalMap.set(index, elapsedInterval);
+    // Para a contagem dos segundos durante o hover
+    if (tempoCell._hoverInterval) {
+        clearInterval(tempoCell._hoverInterval);
+        delete tempoCell._hoverInterval; // Remove a referência ao intervalo
     }
+
+    // Verifica se o item é futuro ou passado e retoma a contagem normal
+    if (detalhe.isFuture) {
+        if (!intervalMap.has(index)) {
+            // Reinicia a contagem regressiva apenas se não estiver já ativa
+            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+            intervalMap.set(index, countdownInterval);
+        }
+    } else {
+        if (!intervalMap.has(index)) {
+            // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
+            var elapsedInterval = setInterval(() => {
+                var elapsed = Date.now() - detalhe.timestamp;
+                tempoCell.textContent = formatTime(elapsed, false);
+            }, 1000);
+            intervalMap.set(index, elapsedInterval);
+        }
+    }
+
+    // Volta para o formato HH:MM
+    const elapsed = Date.now() - detalhe.timestamp;
+    tempoCell.textContent = formatTime(elapsed, false);
 });
+
                     }
                 });
             }
