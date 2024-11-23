@@ -328,6 +328,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
                     detalhesTable.appendChild(newRow);
 
+                                // Define a cor inicial
+            newRow.style.background = "rgb(0, 255, 0)";
+
                     // Adiciona o evento de clique ao botão Receber
                     var receberButton = newRow.querySelector(".receberButton");
                     if (receberButton) {
