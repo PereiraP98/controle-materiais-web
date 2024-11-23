@@ -452,12 +452,14 @@ newRow.addEventListener("mouseout", function () {
     }
 
     // Volta ao formato HH:MM imediatamente
-    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false); // Exibe HH:MM
+    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
 
     // Retoma o intervalo padrão (contagem regressiva ou decorrido)
     if (!intervalMap.has(index)) {
-        const newInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, newInterval);
+        const standardInterval = setInterval(() => {
+            updateTimeCell(false);
+        }, 1000);
+        intervalMap.set(index, standardInterval);
     }
 });
                     }
