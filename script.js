@@ -329,9 +329,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     detalhesTable.appendChild(newRow);
 
-                                // Inicia a atualização em tempo real
-            startRealTimeUpdate(index, detalhe, tempoCell, newRow);
-
 
                                 // Define a cor inicial
             newRow.style.background = "rgb(0, 255, 0)";
@@ -345,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     // Manipulação do tempo e eventos de hover
-                    var tempoCell = newRow.querySelector(".tempo-cell");
+                    const tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
                         function updateTimeCell(detalhe, tempoCell, newRow, showSeconds = false) {
                             const now = Date.now();
