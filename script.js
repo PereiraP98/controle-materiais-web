@@ -353,11 +353,15 @@ if (tempoCell) {
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
         if (elapsed > maxTime) {
-            // Após 30 minutos, aplica a oscilação suave em vermelho
-            newRow.classList.add("oscillation");
+            // Após 30 minutos, adiciona a classe de oscilação
+            if (!newRow.classList.contains("oscillation")) {
+                newRow.classList.add("oscillation");
+            }
         } else {
             // Remove a classe de oscilação se o tempo estiver dentro do limite
-            newRow.classList.remove("oscillation");
+            if (newRow.classList.contains("oscillation")) {
+                newRow.classList.remove("oscillation");
+            }
     
             // Gradiente dinâmico para preenchimento da barra
             let backgroundGradient;
@@ -385,6 +389,7 @@ if (tempoCell) {
             tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
     }
+    
     
 
 
