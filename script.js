@@ -374,17 +374,17 @@ if (tempoCell) {
             newRow.style.background = backgroundGradient;
         }
     
-        // Atualiza o campo de tempo
-        if (detalhe.isFuture) {
-            const remaining = detalhe.timestamp - now;
-            if (remaining <= 0) {
-                detalhe.isFuture = false;
-                detalhe.timestamp = now;
-            }
-            tempoCell.textContent = formatTime(remaining, showSeconds);
-        } else {
-            tempoCell.textContent = formatTime(elapsed, showSeconds);
+    // Atualiza o campo de tempo
+    if (detalhe.isFuture) {
+        const remaining = detalhe.timestamp - now;
+        if (remaining <= 0) {
+            detalhe.isFuture = false;
+            detalhe.timestamp = now;
         }
+        tempoCell.textContent = formatTime(remaining, showSeconds);
+    } else {
+        tempoCell.textContent = formatTime(elapsed, showSeconds);
+    }
     }
     
     
@@ -428,41 +428,51 @@ if (tempoCell) {
 
 // Adiciona eventos à linha inteira
 newRow.addEventListener("mouseover", function () {
-    clearInterval(intervalMap.get(index)); // Pausa a atualização padrão
-    updateTimeCell(true); // Atualiza imediatamente com segundos
-    hoverInterval = setInterval(() => updateTimeCell(true), 1000); // Continua a atualização em tempo real com segundos
+    // Pausa o intervalo padrão, se existir
+    if (intervalMap.has(index)) {
+        clearInterval(intervalMap.get(index));
+        intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+    }
+
+    // Atualiza imediatamente com segundos e inicia um intervalo de hover
+    updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+    if (!tempoCell._hoverInterval) {
+        tempoCell._hoverInterval = setInterval(() => {
+            const elapsedHover = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+        }, 1000);
+    }
 });
 
 newRow.addEventListener("mouseout", function () {
-    // Para a contagem dos segundos durante o hover
+    // Para o intervalo de hover, se existir
     if (tempoCell._hoverInterval) {
         clearInterval(tempoCell._hoverInterval);
-        delete tempoCell._hoverInterval; // Remove a referência ao intervalo
+        delete tempoCell._hoverInterval;
     }
 
-    // Verifica se o item é futuro ou passado e retoma a contagem normal
+    // Volta ao formato HH:MM imediatamente
+    const elapsed = Date.now() - detalhe.timestamp;
+    tempoCell.textContent = formatTime(elapsed, false);
+
+    // Retoma o intervalo padrão (contagem regressiva ou decorrido)
     if (detalhe.isFuture) {
+        // Reinicia a contagem regressiva para o futuro
         if (!intervalMap.has(index)) {
-            // Reinicia a contagem regressiva apenas se não estiver já ativa
-            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+            const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
             intervalMap.set(index, countdownInterval);
         }
     } else {
+        // Reinicia a contagem do tempo decorrido para o passado
         if (!intervalMap.has(index)) {
-            // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
-            var elapsedInterval = setInterval(() => {
-                var elapsed = Date.now() - detalhe.timestamp;
-                tempoCell.textContent = formatTime(elapsed, false);
+            const elapsedInterval = setInterval(() => {
+                const elapsedNormal = Date.now() - detalhe.timestamp;
+                tempoCell.textContent = formatTime(elapsedNormal, false);
             }, 1000);
             intervalMap.set(index, elapsedInterval);
         }
     }
-
-    // Volta para o formato HH:MM
-    const elapsed = Date.now() - detalhe.timestamp;
-    tempoCell.textContent = formatTime(elapsed, false);
 });
-
                     }
                 });
             }
