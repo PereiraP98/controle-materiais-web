@@ -431,6 +431,5 @@ footer {
     animation: smoothPulse 1s infinite ease-in-out; /* Oscilação suave */
 }
 .hidden {
-    display: table-cell !important; /* Mostra a célula mesmo que escondida por outras regras */
-    visibility: visible; /* Garante visibilidade */
+    display: none;
 }
