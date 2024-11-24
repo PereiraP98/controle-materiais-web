@@ -430,9 +430,6 @@ footer {
 .oscillation {
     animation: smoothPulse 1s infinite ease-in-out; /* Oscilação suave */
 }
-.hidden {
-    display: none;
-}
 
 /* Janela de Atenção */
 #janelaAtencao {
