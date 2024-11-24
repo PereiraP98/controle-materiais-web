@@ -10,20 +10,19 @@
 <body>
     <header>
         <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+            <img src="assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
             <div class="header-buttons">
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                    <img src="assets/painel.png" alt="Painel" width="30" height="30">
                 </button>
                 <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                    <img src="assets/logout.png" alt="Logout" width="30" height="30">
                 </button>
             </div>
         </div>
     </header>
     <main class="main-container">
-        <!-- Coluna Esquerda -->
         <div class="column">
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
@@ -62,17 +61,14 @@
                             <th>LOCAL</th>
                             <th>ITEM</th>
                             <th>DESTINO</th>
-                            <th>SOLICITAR</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Registros de materiais reservados -->
                     </tbody>
                 </table>
             </section>
         </div>
 
-        <!-- Coluna Central -->
         <div class="column">
             <section class="graficos-container">
                 <h2>Gráficos</h2>
@@ -82,7 +78,6 @@
             </section>
         </div>
 
-        <!-- Coluna Direita -->
         <div class="column">
             <section class="materiais-solicitados">
                 <h2>Materiais Solicitados</h2>
@@ -95,7 +90,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Registros de materiais solicitados -->
                     </tbody>
                 </table>
                 <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
@@ -103,15 +97,14 @@
         </div>
     </main>
 
-    <!-- Janela de Solicitação -->
-    <div id="janelaSolicitacao" class="janela-flutuante hidden">
+    <div id="janelaSolicitacao" class="janela-flutuante">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
             <label for="quantidade">Quantidade do Material:</label>
             <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
 
-            <label for="horario">Horário de Solicitação:</label>
-            <input type="time" id="horario" name="horario">
+            <label for="horarioSolicitacao">Horário de Solicitação:</label>
+            <input type="time" id="horarioSolicitacao" name="horarioSolicitacao">
 
             <div class="button-container">
                 <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
@@ -120,28 +113,10 @@
         </form>
     </div>
 
-    <!-- Janela de Atenção -->
-    <div id="janelaAtencao" class="janela-flutuante hidden">
-        <div class="atencao-header">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/atencao.png?raw=true" alt="Atenção" class="atencao-icon">
-            <h2>Atenção</h2>
-        </div>
-        <p id="atencaoMensagem" class="atencao-mensagem">
-            <!-- Mensagem será preenchida dinamicamente -->
-        </p>
-        <div class="button-container">
-            <button id="confirmarAtencao" class="confirmar-button">Sim</button>
-            <button id="cancelarAtencao" class="cancelar-button">Não</button>
-        </div>
-    </div>
-
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <script src="script.js"></script>
-    <script>
-        checkAuthentication();
-    </script>
+    <script src="script.js" defer></script>
 </body>
 </html>
