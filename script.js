@@ -629,6 +629,7 @@ newRow.addEventListener("mouseout", function () {
         atualizarTabelaRecebidos();
 
 // Função para excluir itens da tabela de materiais recebidos
+// Função para excluir itens da tabela de materiais recebidos
 var excluirItensButton = document.getElementById("excluirItensButton");
 
 if (excluirItensButton) {
@@ -642,18 +643,23 @@ if (excluirItensButton) {
         }
 
         // Seleciona todas as colunas de checkbox
-        var checkboxes = detalhesTableBody.querySelectorAll(".checkbox-column .delete-checkbox");
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
 
-        if (!checkboxes.length) {
-            alert("Nenhum checkbox foi encontrado. A coluna 'SELECIONE' pode não ter sido criada corretamente.");
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
             return;
         }
 
-        // Verifica se os checkboxes estão visíveis
-        var checkboxesVisible = !checkboxes[0].closest("td").classList.contains("hidden");
+        // Verifica se a coluna está oculta
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
 
-        if (checkboxesVisible) {
-            // Excluir itens selecionados
+        if (isHidden) {
+            // Exibir a coluna "SELECIONE"
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            excluirItensButton.textContent = "Confirmar Exclusão";
+        } else {
+            // Processar exclusão
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
             if (selectedCheckboxes.length === 0) {
@@ -662,7 +668,6 @@ if (excluirItensButton) {
             }
 
             if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                // Excluir os itens da tabela e do localStorage
                 var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
 
                 selectedCheckboxes.forEach((checkbox) => {
@@ -681,17 +686,14 @@ if (excluirItensButton) {
 
                 alert("Itens excluídos com sucesso!");
 
-                // Ocultar a coluna "SELECIONE"
-                detalhesTableBody.querySelectorAll(".checkbox-column").forEach((td) => td.classList.add("hidden"));
+                // Ocultar a coluna "SELECIONE" novamente
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
                 excluirItensButton.textContent = "Excluir Itens";
             }
-        } else {
-            // Exibir a coluna "SELECIONE"
-            detalhesTableBody.querySelectorAll(".checkbox-column").forEach((td) => td.classList.remove("hidden"));
-            excluirItensButton.textContent = "Confirmar Exclusão";
         }
     });
 }
+
 
         
     }
