@@ -611,7 +611,7 @@ newRow.addEventListener("mouseout", function () {
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
-                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td class="checkbox-column hidden">SELECIONE</td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
                         <td>${item.quantidade}</td>
@@ -629,129 +629,59 @@ newRow.addEventListener("mouseout", function () {
         atualizarTabelaRecebidos();
 
         // Função para excluir itens da tabela de materiais recebidos
-        var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
-
-        if (excluirRecebidosButton) {
-            excluirRecebidosButton.addEventListener("click", function () {
-                var checkboxes = document.querySelectorAll("#recebidosTable .delete-checkbox");
-                var checkboxesVisible = checkboxes.length > 0 && checkboxes[0].style.display === "inline-block";
-
-                if (checkboxesVisible) {
-                    var selectedCheckboxes = document.querySelectorAll("#recebidosTable .delete-checkbox:checked");
-
-                    if (selectedCheckboxes.length === 0) {
-                        alert("Selecione os itens que deseja excluir.");
-                        return;
-                    }
-
-                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                        // Para evitar conflitos de índice ao remover múltiplos itens, percorrer de trás para frente
-                        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-                        selectedCheckboxes = Array.from(selectedCheckboxes).sort(function(a, b) {
-                            return Array.from(recebidosTable.rows).indexOf(a.closest("tr")) - 
-                                   Array.from(recebidosTable.rows).indexOf(b.closest("tr"));
-                        }).reverse();
-
-                        selectedCheckboxes.forEach(function(checkbox) {
-                            var row = checkbox.closest("tr");
-                            var rowIndex = Array.from(recebidosTable.rows).indexOf(row);
-                            row.remove();
-                            // Remove do array recebidos
-                            recebidos.splice(rowIndex, 1);
-                        });
-
-                        localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-                        alert("Itens excluídos com sucesso!");
-                    }
-
-                    // Esconde os checkboxes após a operação
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.style.display = "none";
-                    });
-                    excluirRecebidosButton.textContent = "Excluir Itens";
-                } else {
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.style.display = "inline-block";
-                    });
-                    excluirRecebidosButton.textContent = "Confirmar Exclusão";
-                }
-            });
-        }
-
-        // Função de exclusão de itens na tabela de detalhes
         var excluirItensButton = document.getElementById("excluirItensButton");
+
         if (excluirItensButton) {
             excluirItensButton.addEventListener("click", function () {
-                var checkboxes = document.querySelectorAll("#detalhesTable .delete-checkbox");
-                var checkboxesVisible = checkboxes.length > 0 && checkboxes[0].style.display === "inline-block";
-
+                var detalhesTable = document.getElementById("detalhesTable");
+                var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+        
+                if (!detalhesTableBody) return;
+        
+                // Verifica se os checkboxes estão visíveis
+                var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+                var checkboxesVisible = checkboxes.length > 0 && !checkboxes[0].closest("td").classList.contains("hidden");
+        
                 if (checkboxesVisible) {
-                    var selectedCheckboxes = document.querySelectorAll("#detalhesTable .delete-checkbox:checked");
-
+                    // Excluir itens selecionados
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+        
                     if (selectedCheckboxes.length === 0) {
                         alert("Selecione os itens que deseja excluir.");
                         return;
                     }
-
+        
                     if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                        // Para evitar conflitos de índice ao remover múltiplos itens, percorrer de trás para frente
-                        var detalhesClone = [...detalhes];
-                        selectedCheckboxes = Array.from(selectedCheckboxes).sort(function(a, b) {
-                            return Array.from(detalhesTable.rows).indexOf(a.closest("tr")) - 
-                                   Array.from(detalhesTable.rows).indexOf(b.closest("tr"));
-                        }).reverse();
-
-                        selectedCheckboxes.forEach(function(checkbox) {
+                        // Excluir os itens da tabela e do localStorage
+                        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        
+                        selectedCheckboxes.forEach((checkbox) => {
                             var row = checkbox.closest("tr");
-                            var rowIndex = Array.from(detalhesTable.rows).indexOf(row);
-                            var detalhe = detalhesClone[rowIndex];
-
-                            // Limpa os intervals do cronômetro
-                            if (detalhe.isFuture && intervalMap.has(rowIndex)) {
-                                clearInterval(intervalMap.get(rowIndex));
-                                intervalMap.delete(rowIndex);
-                            }
-                            if (!detalhe.isFuture && intervalMap.has(rowIndex)) {
-                                clearInterval(intervalMap.get(rowIndex));
-                                intervalMap.delete(rowIndex);
-                            }
-
-                            row.remove();
-                            // Remove do array detalhes
+                            var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
+        
+                            // Remove do array de detalhes
                             detalhes.splice(rowIndex, 1);
-
-                            // Também remove o item correspondente de 'solicitados'
-                            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-                            var solicitadosIndex = solicitados.findIndex(function(itemSolicitado) {
-                                return itemSolicitado.local === detalhe.local &&
-                                    itemSolicitado.item === detalhe.item &&
-                                    itemSolicitado.destino === detalhe.destino;
-                            });
-
-                            if (solicitadosIndex !== -1) {
-                                solicitados.splice(solicitadosIndex, 1);
-                                localStorage.setItem("solicitados", JSON.stringify(solicitados));
-                            }
+        
+                            // Remove a linha da tabela
+                            row.remove();
                         });
-
+        
+                        // Atualiza o localStorage
                         localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
+        
                         alert("Itens excluídos com sucesso!");
+        
+                        // Ocultar a coluna "SELECIONE"
+                        detalhesTableBody.querySelectorAll(".checkbox-column").forEach((td) => td.classList.add("hidden"));
+                        excluirItensButton.textContent = "Excluir Itens";
                     }
-
-                    // Esconde os checkboxes após a operação
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.style.display = "none";
-                    });
-                    excluirItensButton.textContent = "Excluir Itens";
                 } else {
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.style.display = "inline-block";
-                    });
+                    // Exibir a coluna "SELECIONE"
+                    detalhesTableBody.querySelectorAll(".checkbox-column").forEach((td) => td.classList.remove("hidden"));
                     excluirItensButton.textContent = "Confirmar Exclusão";
                 }
             });
         }
+        
     }
 });
