@@ -318,8 +318,6 @@ if (reservarButton) {
 
                 // Remover a linha da tabela
                 newRow.remove();
-
-                alert("Material removido da lista de reservados!");
             });
         }
 
