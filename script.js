@@ -346,7 +346,7 @@ if (tempoCell) {
     // Função para atualizar o tempo na célula
     function updateTimeCell(showSeconds = false) {
         const now = Date.now();
-        const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+        let elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
     
         // Define tempos limites
         const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
@@ -376,15 +376,21 @@ if (tempoCell) {
     
         // Atualiza o campo de tempo
         if (detalhe.isFuture) {
+            // Calcula o tempo restante
             const remaining = detalhe.timestamp - now;
+    
+            // Se o horário chegou ao atual, altera o estado para "passado"
             if (remaining <= 0) {
                 detalhe.isFuture = false;
-                detalhe.timestamp = now;
+                elapsed = 0; // Reseta o tempo decorrido para iniciar a contagem
             }
             tempoCell.textContent = formatTime(remaining, showSeconds);
         } else {
             tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
+
+            // Atualiza a barra de cores
+    updateColor(newRow, elapsed);
     }
     
     
@@ -409,17 +415,27 @@ if (tempoCell) {
 
     // Inicializa a contagem
     if (detalhe.isFuture) {
-        // Inicia a contagem regressiva a cada segundo
-        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+        // Inicializa a contagem regressiva
+        const countdownInterval = setInterval(() => {
+            updateTimeCell(false);
+    
+            // Verifica se a contagem regressiva terminou
+            if (!detalhe.isFuture) {
+                clearInterval(countdownInterval);
+    
+                // Inicia a contagem do tempo decorrido
+                const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                intervalMap.set(index, elapsedInterval);
+            }
+        }, 1000);
+    
         intervalMap.set(index, countdownInterval);
     } else {
-        // Inicia a contagem do tempo decorrido a cada segundo
-        var elapsedInterval = setInterval(() => {
-            var elapsed = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, false);
-        }, 1000);
+        // Inicializa a contagem de tempo decorrido
+        const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
         intervalMap.set(index, elapsedInterval);
     }
+    
 
 
     // Exibição inicial
