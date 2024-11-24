@@ -694,6 +694,16 @@ if (excluirItensButton) {
     });
 }
 
+// Garantir que a coluna "SELECIONE" esteja oculta no carregamento inicial
+document.addEventListener("DOMContentLoaded", function () {
+    var detalhesTable = document.getElementById("detalhesTable");
+    if (detalhesTable) {
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+    }
+});
+
+
 
         
     }
