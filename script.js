@@ -224,15 +224,13 @@ if (reservarButton) {
         var localSelect = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
-        var quantidadeInput = document.getElementById("quantidade");
 
         var local = localSelect ? localSelect.value.trim() : "";
         var item = itemInput ? itemInput.value.trim() : "";
         var destino = destinoSelect ? destinoSelect.value.trim() : "";
-        var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
 
         // Validação dos campos
-        if (!local || !item || !destino || !quantidade) {
+        if (!local || !item || !destino) {
             alert("Por favor, preencha todos os campos para reservar.");
             return;
         }
@@ -255,7 +253,6 @@ if (reservarButton) {
         newRow.innerHTML = `
             <td>${local}</td>
             <td>${item}</td>
-            <td>${quantidade}</td>
             <td>${destino}</td>
             <td><button class="solicitarButton">Solicitar</button></td>
         `;
@@ -265,10 +262,9 @@ if (reservarButton) {
         var solicitarButton = newRow.querySelector(".solicitarButton");
         if (solicitarButton) {
             solicitarButton.addEventListener("click", function () {
-                iniciarProcessoDeSolicitacao({
+                abrirJanelaSolicitacao({
                     local: local,
                     item: item,
-                    quantidade: quantidade,
                     destino: destino,
                 });
             });
@@ -276,52 +272,35 @@ if (reservarButton) {
 
         // Adicionar ao localStorage
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        reservados.push({ local, item, quantidade, destino });
+        reservados.push({ local, item, destino });
         localStorage.setItem("reservados", JSON.stringify(reservados));
 
         alert("Material reservado com sucesso!");
     });
 }
 
-// Função para iniciar o processo de solicitação
-function iniciarProcessoDeSolicitacao(dados) {
-    // Exibe os dados do material que será solicitado
-    var confirmar = confirm(
-        `Você está prestes a solicitar o material:\n\n` +
-        `Local: ${dados.local}\n` +
-        `Item: ${dados.item}\n` +
-        `Quantidade: ${dados.quantidade}\n` +
-        `Destino: ${dados.destino}\n\n` +
-        `Deseja continuar?`
-    );
 
-    if (confirmar) {
-        // Adiciona o item na tabela de solicitados
-        var solicitadosTable = document.getElementById("solicitadosTable");
-        var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
-        if (!solicitadosTableBody) {
-            alert("Tabela de materiais solicitados não encontrada.");
-            return;
-        }
+// Função para abrir a janela de solicitação com dados preenchidos
+function abrirJanelaSolicitacao(dados) {
+    var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${dados.local}</td>
-            <td>${dados.item}</td>
-            <td>${dados.quantidade}</td>
-            <td>${dados.destino}</td>
-        `;
-        solicitadosTableBody.appendChild(newRow);
+    var localInput = document.getElementById("local");
+    var itemInput = document.getElementById("item");
+    var destinoSelect = document.getElementById("destino");
+    var horarioInput = document.getElementById("horario");
 
-        // Adicionar ao localStorage
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        solicitados.push(dados);
-        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+    if (localInput) localInput.value = dados.local || "";
+    if (itemInput) itemInput.value = dados.item || "";
+    if (destinoSelect) destinoSelect.value = dados.destino || "";
+    if (horarioInput) horarioInput.value = horarioAtual;
 
-        alert("Material solicitado com sucesso!");
+    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+    if (janelaSolicitacao) {
+        janelaSolicitacao.style.display = "block";
     }
 }
+
 
 
 
