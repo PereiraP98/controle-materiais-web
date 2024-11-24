@@ -348,19 +348,34 @@ if (tempoCell) {
         const now = Date.now();
         const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
     
-        // Define tempos limites
+        // Atualiza o campo de tempo
+        if (detalhe.isFuture) {
+            const remaining = detalhe.timestamp - now;
+            if (remaining <= 0) {
+                detalhe.isFuture = false;
+                detalhe.timestamp = now;
+            }
+            tempoCell.textContent = formatTime(remaining, showSeconds);
+        } else {
+            tempoCell.textContent = formatTime(elapsed, showSeconds);
+        }
+    
+        // Atualiza a barra de cores se não estiver em hover
+        if (!tempoCell.isHover) {
+            updateColor(newRow, elapsed);
+        }
+    }
+    function updateColor(row, elapsed) {
         const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
         if (elapsed > maxTime) {
-            console.log("Adicionando classe oscillation para a linha:", newRow);
-            newRow.classList.add("oscillation");
-            newRow.style.background = ""; // Remove estilos inline conflitantes
+            row.classList.add("oscillation");
+            row.style.background = ""; // Remove estilos inline conflitantes
         } else {
-            console.log("Removendo classe oscillation para a linha:", newRow);
-            newRow.classList.remove("oscillation");
+            row.classList.remove("oscillation");
     
-            // Gradiente dinâmico para preenchimento da barra
+            // Gradiente dinâmico para a barra de cores
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
@@ -371,21 +386,10 @@ if (tempoCell) {
             }
     
             // Atualiza o fundo da linha inteira
-            newRow.style.background = backgroundGradient;
+            row.style.background = backgroundGradient;
         }
-    
-    // Atualiza o campo de tempo
-    if (detalhe.isFuture) {
-        const remaining = detalhe.timestamp - now;
-        if (remaining <= 0) {
-            detalhe.isFuture = false;
-            detalhe.timestamp = now;
-        }
-        tempoCell.textContent = formatTime(remaining, showSeconds);
-    } else {
-        tempoCell.textContent = formatTime(elapsed, showSeconds);
     }
-    }
+        
     
     
     
@@ -431,22 +435,20 @@ newRow.addEventListener("mouseover", function () {
     // Marca o estado de hover
     tempoCell.isHover = true;
 
-    // Interrompe o intervalo padrão, se existir
-    if (tempoCell.defaultInterval) {
-        clearInterval(tempoCell.defaultInterval);
-        delete tempoCell.defaultInterval;
+    // Pausa a atualização da barra de cores
+    if (tempoCell.colorInterval) {
+        clearInterval(tempoCell.colorInterval);
+        delete tempoCell.colorInterval;
     }
 
     // Atualiza imediatamente para HH:MM:SS
     tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, true);
 
-    // Inicia um intervalo exclusivo para hover
+    // Inicia o intervalo para exibir o tempo no formato HH:MM:SS
     if (!tempoCell.hoverInterval) {
         tempoCell.hoverInterval = setInterval(() => {
-            if (tempoCell.isHover) {
-                const elapsedHover = Date.now() - detalhe.timestamp;
-                tempoCell.textContent = formatTime(elapsedHover, true);
-            }
+            const elapsedHover = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
         }, 1000);
     }
 });
@@ -455,22 +457,21 @@ newRow.addEventListener("mouseout", function () {
     // Desmarca o estado de hover
     tempoCell.isHover = false;
 
-    // Interrompe o intervalo de hover, se existir
+    // Para o intervalo de hover
     if (tempoCell.hoverInterval) {
         clearInterval(tempoCell.hoverInterval);
         delete tempoCell.hoverInterval;
     }
 
-    // Atualiza imediatamente para HH:MM
+    // Volta ao formato HH:MM imediatamente
     tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
 
-    // Reinicia o intervalo padrão
-    if (!tempoCell.defaultInterval) {
-        tempoCell.defaultInterval = setInterval(() => {
-            if (!tempoCell.isHover) {
-                const elapsedDefault = Date.now() - detalhe.timestamp;
-                tempoCell.textContent = formatTime(elapsedDefault, false);
-            }
+    // Reinicia a barra de cores
+    if (!tempoCell.colorInterval) {
+        tempoCell.colorInterval = setInterval(() => {
+            const elapsed = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsed, false); // Atualiza o tempo
+            updateColor(newRow, elapsed); // Atualiza a barra de cores
         }, 1000);
     }
 });
