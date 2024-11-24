@@ -347,7 +347,7 @@ function atualizarTabelaReservados() {
 }
 
 
-// Função para abrir a janela de solicitação com dados preenchidos
+// Função para abrir a janela de solicitação
 function abrirJanelaSolicitacao(dados) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
