@@ -433,6 +433,7 @@ footer {
 
 /* Janela de Atenção */
 #janelaAtencao {
+    outline: 2px solid red; /* Para visualizar os limites do elemento */
     position: fixed;
     top: 50%;
     left: 50%;
