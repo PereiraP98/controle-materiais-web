@@ -375,6 +375,7 @@ function atualizarTabelaReservados() {
     }
 }
 
+// Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -383,7 +384,6 @@ function abrirJanelaSolicitacao(dados) {
     var destinoSelect = document.getElementById("destino");
     var horarioInput = document.getElementById("horario");
 
-    // Preenche os campos da janela de solicitação
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
@@ -391,13 +391,48 @@ function abrirJanelaSolicitacao(dados) {
 
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     if (janelaSolicitacao) {
-        console.log("Exibindo a janela de solicitação"); // Log para depuração
-        janelaSolicitacao.style.display = "block"; // Exibe a janela
-    } else {
-        console.error("Elemento 'janelaSolicitacao' não encontrado.");
+        janelaSolicitacao.style.display = "block";
     }
 }
 
+// Função para atualizar a tabela de materiais reservados
+function atualizarTabelaReservados() {
+    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
+
+    if (reservadosTableBody) {
+        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        reservados.forEach(function (item) {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.destino}</td>
+                <td><button class="solicitar-button" data-item="${item.item}">Solicitar</button></td>
+            `;
+
+            reservadosTableBody.appendChild(newRow);
+
+            // Adiciona evento ao botão de "Solicitar"
+            var solicitarButton = newRow.querySelector(".solicitar-button");
+            if (solicitarButton) {
+                solicitarButton.addEventListener("click", function () {
+                    abrirJanelaSolicitacao(item);
+                    // Remove o item da lista de reservados
+                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
+                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
+                    atualizarTabelaReservados();
+                });
+            }
+        });
+    }
+}
+
+// Carrega os dados ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+});
 
 // Chamada inicial para atualizar a tabela ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
