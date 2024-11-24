@@ -629,29 +629,24 @@ newRow.addEventListener("mouseout", function () {
         atualizarTabelaRecebidos();
 
 // Função para excluir itens da tabela de materiais recebidos
-// Função para excluir itens da tabela de materiais recebidos
-var excluirItensButton = document.getElementById("excluirItensButton");
+document.addEventListener("DOMContentLoaded", function () {
+    // Ocultar a coluna "SELECIONE" no carregamento inicial
+    var detalhesTable = document.getElementById("detalhesTable");
+    if (detalhesTable) {
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+    }
+});
 
+// Função para gerenciar a exclusão de itens
+var excluirItensButton = document.getElementById("excluirItensButton");
 if (excluirItensButton) {
     excluirItensButton.addEventListener("click", function () {
         var detalhesTable = document.getElementById("detalhesTable");
-        var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
-
-        if (!detalhesTableBody) {
-            alert("Tabela de detalhes não encontrada.");
-            return;
-        }
-
-        // Seleciona todas as colunas de checkbox
         var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
-        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+        var checkboxes = detalhesTable.querySelectorAll(".delete-checkbox");
 
-        if (!checkboxColumns.length) {
-            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
-            return;
-        }
-
-        // Verifica se a coluna está oculta
+        // Verifica se a coluna está visível ou oculta
         var isHidden = checkboxColumns[0].classList.contains("hidden");
 
         if (isHidden) {
@@ -659,7 +654,7 @@ if (excluirItensButton) {
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
             excluirItensButton.textContent = "Confirmar Exclusão";
         } else {
-            // Processar exclusão
+            // Processar exclusão dos itens selecionados
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
             if (selectedCheckboxes.length === 0) {
@@ -668,13 +663,14 @@ if (excluirItensButton) {
             }
 
             if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                var detalhesTableBody = detalhesTable.querySelector("tbody");
                 var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
 
                 selectedCheckboxes.forEach((checkbox) => {
                     var row = checkbox.closest("tr");
                     var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
 
-                    // Remove do array de detalhes
+                    // Remove o item do array de detalhes
                     detalhes.splice(rowIndex, 1);
 
                     // Remove a linha da tabela
@@ -686,7 +682,7 @@ if (excluirItensButton) {
 
                 alert("Itens excluídos com sucesso!");
 
-                // Ocultar a coluna "SELECIONE" novamente
+                // Ocultar novamente a coluna "SELECIONE"
                 checkboxColumns.forEach((column) => column.classList.add("hidden"));
                 excluirItensButton.textContent = "Excluir Itens";
             }
@@ -694,14 +690,6 @@ if (excluirItensButton) {
     });
 }
 
-// Garantir que a coluna "SELECIONE" esteja oculta no carregamento inicial
-document.addEventListener("DOMContentLoaded", function () {
-    var detalhesTable = document.getElementById("detalhesTable");
-    if (detalhesTable) {
-        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
-        checkboxColumns.forEach((column) => column.classList.add("hidden"));
-    }
-});
 
 
 
