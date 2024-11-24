@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
@@ -10,19 +9,14 @@
 </head>
 <body>
     <header>
-        <!-- Ajuste no header-container -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
-            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
-                <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
                 </button>
-                <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
@@ -31,7 +25,6 @@
     <main class="main-container">
         <!-- Coluna Esquerda -->
         <div class="column">
-            <!-- Janela de Solicitação -->
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
                 <form id="materialForm">
@@ -61,7 +54,6 @@
                 </form>
             </section>
 
-            <!-- Materiais Reservados -->
             <section class="materiais-reservados">
                 <h2>Materiais Reservados</h2>
                 <table id="reservadosTable">
@@ -71,7 +63,6 @@
                             <th>ITEM</th>
                             <th>DESTINO</th>
                             <th>SOLICITAR</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -83,11 +74,9 @@
 
         <!-- Coluna Central -->
         <div class="column">
-            <!-- Gráficos -->
             <section class="graficos-container">
                 <h2>Gráficos</h2>
                 <div id="graficoPlaceholder">
-                    <!-- Placeholder para futuros gráficos -->
                     <p>Gráficos serão exibidos aqui.</p>
                 </div>
             </section>
@@ -95,7 +84,6 @@
 
         <!-- Coluna Direita -->
         <div class="column">
-            <!-- Materiais Solicitados -->
             <section class="materiais-solicitados">
                 <h2>Materiais Solicitados</h2>
                 <table id="solicitadosTable">
@@ -115,8 +103,8 @@
         </div>
     </main>
 
-    <!-- Janela Flutuante -->
-    <div id="janelaSolicitacao" class="janela-flutuante">
+    <!-- Janela de Solicitação -->
+    <div id="janelaSolicitacao" class="janela-flutuante hidden">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
             <label for="quantidade">Quantidade do Material:</label>
@@ -132,31 +120,28 @@
         </form>
     </div>
 
+    <!-- Janela de Atenção -->
+    <div id="janelaAtencao" class="janela-flutuante hidden">
+        <div class="atencao-header">
+            <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/atencao.png?raw=true" alt="Atenção" class="atencao-icon">
+            <h2>Atenção</h2>
+        </div>
+        <p id="atencaoMensagem" class="atencao-mensagem">
+            <!-- Mensagem será preenchida dinamicamente -->
+        </p>
+        <div class="button-container">
+            <button id="confirmarAtencao" class="confirmar-button">Sim</button>
+            <button id="cancelarAtencao" class="cancelar-button">Não</button>
+        </div>
+    </div>
+
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts -->
     <script src="script.js"></script>
     <script>
-        // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
-<!-- Janela de Atenção -->
-<div id="janelaAtencao" class="janela-flutuante hidden">
-    <div class="atencao-header">
-        <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/atencao.png?raw=true" alt="Atenção" class="atencao-icon">
-        <h2>Atenção</h2>
-    </div>
-    <p id="atencaoMensagem" class="atencao-mensagem">
-        <!-- Mensagem será preenchida dinamicamente -->
-    </p>
-    <div class="button-container">
-        <button id="confirmarAtencao" class="confirmar-button">Sim</button>
-        <button id="cancelarAtencao" class="cancelar-button">Não</button>
-    </div>
-</div>
-
-    
 </body>
 </html>
