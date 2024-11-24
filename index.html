@@ -142,5 +142,21 @@
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
+<!-- Janela de Atenção -->
+<div id="janelaAtencao" class="janela-flutuante hidden">
+    <div class="atencao-header">
+        <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/atencao.png?raw=true" alt="Atenção" class="atencao-icon">
+        <h2>Atenção</h2>
+    </div>
+    <p id="atencaoMensagem" class="atencao-mensagem">
+        <!-- Mensagem será preenchida dinamicamente -->
+    </p>
+    <div class="button-container">
+        <button id="confirmarAtencao" class="confirmar-button">Sim</button>
+        <button id="cancelarAtencao" class="cancelar-button">Não</button>
+    </div>
+</div>
+
+    
 </body>
 </html>
