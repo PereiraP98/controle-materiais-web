@@ -145,11 +145,11 @@ if (janelaForm) {
         var solicitadosTable = document.getElementById("solicitadosTable");
         var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (solicitadosTableBody) {
             solicitadosTableBody.appendChild(newRow);
         }
@@ -241,11 +241,11 @@ if (reservarButton) {
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = `
+        newRow.innerHTML = 
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        `;
+        ;
         if (reservadosTableBody) {
             reservadosTableBody.appendChild(newRow);
         }
@@ -267,11 +267,11 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTableBody.innerHTML = "";
         solicitados.forEach(function(item) {
             var newRow = document.createElement("tr");
-            newRow.innerHTML = `
+            newRow.innerHTML = 
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-            `;
+            ;
             solicitadosTableBody.appendChild(newRow);
         });
     }
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Calcula o tempo restante ou decorrido
                     var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
 
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${detalhe.local}</td>
                         <td>${detalhe.item}</td>
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${detalhe.horario}</td>
                         <td><button class="receberButton">Receber</button></td>
                         <td class="tempo-cell">${tempoDisplay}</td>
-                    `;
+                    ;
                     detalhesTable.appendChild(newRow);
 
                     // Adiciona o evento de clique ao botão Receber
@@ -348,48 +348,44 @@ if (tempoCell) {
         const now = Date.now();
         const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
     
-        // Atualiza o campo de tempo
-        if (detalhe.isFuture) {
-            const remaining = detalhe.timestamp - now;
-            if (remaining <= 0) {
-                detalhe.isFuture = false;
-                detalhe.timestamp = now;
-            }
-            tempoCell.textContent = formatTime(remaining, showSeconds);
-        } else {
-            tempoCell.textContent = formatTime(elapsed, showSeconds);
-        }
-    
-        // Atualiza a barra de cores se não estiver em hover
-        if (!tempoCell.isHover) {
-            updateColor(newRow, elapsed);
-        }
-    }
-    function updateColor(row, elapsed) {
+        // Define tempos limites
         const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
         const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
     
         if (elapsed > maxTime) {
-            row.classList.add("oscillation");
-            row.style.background = ""; // Remove estilos inline conflitantes
+            console.log("Adicionando classe oscillation para a linha:", newRow);
+            newRow.classList.add("oscillation");
+            newRow.style.background = ""; // Remove estilos inline conflitantes
         } else {
-            row.classList.remove("oscillation");
+            console.log("Removendo classe oscillation para a linha:", newRow);
+            newRow.classList.remove("oscillation");
     
-            // Gradiente dinâmico para a barra de cores
+            // Gradiente dinâmico para preenchimento da barra
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                backgroundGradient = linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%);
             } else {
                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                backgroundGradient = linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%);
             }
     
             // Atualiza o fundo da linha inteira
-            row.style.background = backgroundGradient;
+            newRow.style.background = backgroundGradient;
         }
+    
+    // Atualiza o campo de tempo
+    if (detalhe.isFuture) {
+        const remaining = detalhe.timestamp - now;
+        if (remaining <= 0) {
+            detalhe.isFuture = false;
+            detalhe.timestamp = now;
+        }
+        tempoCell.textContent = formatTime(remaining, showSeconds);
+    } else {
+        tempoCell.textContent = formatTime(elapsed, showSeconds);
     }
-        
+    }
     
     
     
@@ -432,21 +428,16 @@ if (tempoCell) {
 
 // Adiciona eventos à linha inteira
 newRow.addEventListener("mouseover", function () {
-    // Marca o estado de hover
-    tempoCell.isHover = true;
-
-    // Pausa a atualização da barra de cores
-    if (tempoCell.colorInterval) {
-        clearInterval(tempoCell.colorInterval);
-        delete tempoCell.colorInterval;
+    // Pausa o intervalo padrão, se existir
+    if (intervalMap.has(index)) {
+        clearInterval(intervalMap.get(index));
+        intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
     }
 
-    // Atualiza imediatamente para HH:MM:SS
-    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, true);
-
-    // Inicia o intervalo para exibir o tempo no formato HH:MM:SS
-    if (!tempoCell.hoverInterval) {
-        tempoCell.hoverInterval = setInterval(() => {
+    // Atualiza imediatamente com segundos e inicia um intervalo de hover
+    updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+    if (!tempoCell._hoverInterval) {
+        tempoCell._hoverInterval = setInterval(() => {
             const elapsedHover = Date.now() - detalhe.timestamp;
             tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
         }, 1000);
@@ -454,25 +445,28 @@ newRow.addEventListener("mouseover", function () {
 });
 
 newRow.addEventListener("mouseout", function () {
-    // Desmarca o estado de hover
-    tempoCell.isHover = false;
-
-    // Para o intervalo de hover
-    if (tempoCell.hoverInterval) {
-        clearInterval(tempoCell.hoverInterval);
-        delete tempoCell.hoverInterval;
+    // Para o intervalo de hover, se existir
+    if (tempoCell._hoverInterval) {
+        clearInterval(tempoCell._hoverInterval);
+        delete tempoCell._hoverInterval;
     }
 
     // Volta ao formato HH:MM imediatamente
-    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
+    const elapsed = Date.now() - detalhe.timestamp;
+    tempoCell.textContent = formatTime(elapsed, false);
 
-    // Reinicia a barra de cores
-    if (!tempoCell.colorInterval) {
-        tempoCell.colorInterval = setInterval(() => {
-            const elapsed = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, false); // Atualiza o tempo
-            updateColor(newRow, elapsed); // Atualiza a barra de cores
+    // Retoma o intervalo padrão (contagem regressiva ou decorrido)
+    if (detalhe.isFuture) {
+        // Reinicia a contagem regressiva para o futuro
+        const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+        intervalMap.set(index, countdownInterval);
+    } else {
+        // Reinicia a contagem do tempo decorrido para o passado
+        const elapsedInterval = setInterval(() => {
+            const elapsedNormal = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsedNormal, false);
         }, 1000);
+        intervalMap.set(index, elapsedInterval);
     }
 });
                     }
@@ -611,7 +605,7 @@ newRow.addEventListener("mouseout", function () {
 
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
-                    newRow.innerHTML = `
+                    newRow.innerHTML = 
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
@@ -621,7 +615,7 @@ newRow.addEventListener("mouseout", function () {
                         <td>${item.horario}</td>
                         <td>${item.recebido}</td>
                         <td>${item.guardado}</td>
-                    `;
+                    ;
                     recebidosTable.appendChild(newRow);
                 });
             }
