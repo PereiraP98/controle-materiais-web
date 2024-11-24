@@ -1,3 +1,4 @@
+
 // script.js
 
 // Map para armazenar os IDs dos intervals para cada detalhe
@@ -215,6 +216,7 @@ if (janelaForm) {
     });
 }
 
+// Função para exibir a janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
     var atencaoMensagem = document.getElementById("atencaoMensagem");
@@ -222,273 +224,69 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var cancelarAtencao = document.getElementById("cancelarAtencao");
 
     if (janelaAtencao && atencaoMensagem) {
-        // Define a mensagem dinâmica
+        // Define a mensagem na janela
         atencaoMensagem.textContent = mensagem;
 
         // Remove a classe 'hidden' para exibir a janela
         janelaAtencao.classList.remove("hidden");
 
-        // Adiciona os eventos nos botões
+        // Adiciona eventos aos botões
         if (confirmarAtencao) {
             confirmarAtencao.onclick = function () {
-                if (onConfirm) onConfirm(); // Executa a ação de confirmação
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                // Executa a lógica de confirmação
+                if (onConfirm) onConfirm();
+                // Oculta a janela
+                janelaAtencao.classList.add("hidden");
             };
         }
 
         if (cancelarAtencao) {
             cancelarAtencao.onclick = function () {
-                if (onCancel) onCancel(); // Executa a ação de cancelamento
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                // Executa a lógica de cancelamento
+                if (onCancel) onCancel();
+                // Oculta a janela
+                janelaAtencao.classList.add("hidden");
             };
         }
-    } else {
-        console.error("Elementos da janela de atenção não encontrados.");
     }
 }
-
-
-
 
 // Exemplo de uso ao reservar ou solicitar um material já solicitado
-// Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
-
 if (reservarButton) {
     reservarButton.addEventListener("click", function () {
-        var localSelect = document.getElementById("local");
-        var itemInput = document.getElementById("item");
-        var destinoSelect = document.getElementById("destino");
+        var localInput = document.getElementById("local").value;
+        var itemInput = document.getElementById("item").value;
+        var destinoInput = document.getElementById("destino").value;
 
-        var local = localSelect ? localSelect.value.trim() : "";
-        var item = itemInput ? itemInput.value.trim() : "";
-        var destino = destinoSelect ? destinoSelect.value.trim() : "";
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.find(
+            (item) => item.item === itemInput && item.destino === destinoInput
+        );
 
-        // Validação dos campos
-        if (!local || !item || !destino) {
-            alert("Por favor, preencha todos os campos para reservar.");
-            return;
+        if (itemJaSolicitado) {
+            // Exibe a janela de atenção
+            mostrarJanelaAtencao(
+                `ATENÇÃO: O material ${itemInput} já está solicitado e não foi recebido. Deseja solicitar novamente?`,
+                function () {
+                    // Lógica para abrir a janela de solicitação
+                    var abrirSolicitacaoButton = document.getElementById("abrirSolicitacaoButton");
+                    if (abrirSolicitacaoButton) abrirSolicitacaoButton.click();
+                },
+                function () {
+                    // Apenas fecha a janela
+                    console.log("Solicitação cancelada pelo usuário.");
+                }
+            );
+        } else {
+            // Adiciona o item aos reservados
+            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+            reservados.push({ local: localInput, item: itemInput, destino: destinoInput });
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            alert("Material reservado com sucesso!");
         }
-
-        if (!/^\d{5}$/.test(item)) {
-            alert("O código do item deve ter exatamente 5 dígitos.");
-            return;
-        }
-
-        var reservadosTable = document.getElementById("reservadosTable");
-        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
-
-        if (!reservadosTableBody) {
-            alert("Tabela de materiais reservados não encontrada.");
-            return;
-        }
-
-        // Adicionar o item à tabela de reservados
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${local}</td>
-            <td>${item}</td>
-            <td>${destino}</td>
-            <td><button class="solicitarButton">Solicitar</button></td>
-        `;
-        reservadosTableBody.appendChild(newRow);
-
-        // Adicionar o evento ao botão "Solicitar"
-        var solicitarButton = newRow.querySelector(".solicitarButton");
-        if (solicitarButton) {
-            solicitarButton.addEventListener("click", function () {
-                abrirJanelaSolicitacao({
-                    local: local,
-                    item: item,
-                    destino: destino,
-                });
-
-                // Remover o item da tabela e do localStorage
-                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-                reservados = reservados.filter((reservado) => {
-                    return !(
-                        reservado.local === local &&
-                        reservado.item === item &&
-                        reservado.destino === destino
-                    );
-                });
-
-                // Atualizar o localStorage
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                // Remover a linha da tabela
-                newRow.remove();
-
-                alert("Material removido da lista de reservados!");
-            });
-        }
-
-        // Adicionar ao localStorage
-        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        reservados.push({ local, item, destino });
-        localStorage.setItem("reservados", JSON.stringify(reservados));
-
-        alert("Material reservado com sucesso!");
     });
 }
-
-
-// Função para atualizar a tabela de materiais reservados
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
-            `;
-
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona evento ao botão de "Solicitar"
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    // Chama a função para abrir a janela de solicitação
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino
-                    });
-
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((_, i) => i !== index);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
-                });
-            }
-        });
-    }
-}
-
-function abrirJanelaSolicitacao(dados) {
-    var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    // Preencher os campos da janela de solicitação
-    var localInput = document.getElementById("local");
-    var itemInput = document.getElementById("item");
-    var destinoSelect = document.getElementById("destino");
-    var horarioInput = document.getElementById("horario");
-
-    if (localInput) localInput.value = dados.local || "";
-    if (itemInput) itemInput.value = dados.item || "";
-    if (destinoSelect) destinoSelect.value = dados.destino || "";
-    if (horarioInput) horarioInput.value = horarioAtual;
-
-    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-    if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
-    }
-}
-
-
-
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
-            `;
-
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona evento ao botão de "Solicitar"
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino,
-                    });
-
-                    // Remove o item da lista de reservados
-                    reservados.splice(index, 1);
-                    localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
-                });
-            }
-        });
-    }
-}
-
-
-
-// Carrega os dados ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
-
-// Chamada inicial para atualizar a tabela ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
-
-
-// Função para atualizar a tabela de materiais reservados
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-item="${item.item}">Solicitar</button></td>
-            `;
-
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona evento ao botão de "Solicitar"
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(item);
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    atualizarTabelaReservados();
-                });
-            }
-        });
-    }
-}
-
-// Carrega os dados ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
-
 
 
 
