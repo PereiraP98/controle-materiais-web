@@ -631,6 +631,7 @@ newRow.addEventListener("mouseout", function () {
 // Função para gerenciar a exclusão de itens
 // Função para gerenciar a exclusão de itens
 var excluirItensButton = document.getElementById("excluirItensButton");
+
 if (excluirItensButton) {
     excluirItensButton.addEventListener("click", function () {
         var detalhesTable = document.getElementById("detalhesTable");
@@ -639,6 +640,13 @@ if (excluirItensButton) {
 
         if (!detalhesTableBody) {
             alert("Tabela de detalhes não encontrada.");
+            return;
+        }
+
+        // Verifica se há itens na tabela
+        if (detalhesTableBody.rows.length === 0) {
+            alert("A lista está vazia! Adicione itens para poder realizar a exclusão.");
+            excluirItensButton.textContent = "Excluir Itens"; // Reseta o botão
             return;
         }
 
@@ -707,6 +715,7 @@ if (excluirItensButton) {
         }
     });
 }
+
 
         
 
