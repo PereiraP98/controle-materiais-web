@@ -145,11 +145,11 @@ if (janelaForm) {
         var solicitadosTable = document.getElementById("solicitadosTable");
         var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = 
+        newRow.innerHTML = `
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        ;
+        `;
         if (solicitadosTableBody) {
             solicitadosTableBody.appendChild(newRow);
         }
@@ -241,11 +241,11 @@ if (reservarButton) {
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
         var newRow = document.createElement("tr");
-        newRow.innerHTML = 
+        newRow.innerHTML = `
             <td>${local}</td>
             <td>${item}</td>
             <td>${destino}</td>
-        ;
+        `;
         if (reservadosTableBody) {
             reservadosTableBody.appendChild(newRow);
         }
@@ -267,11 +267,11 @@ document.addEventListener("DOMContentLoaded", function () {
         solicitadosTableBody.innerHTML = "";
         solicitados.forEach(function(item) {
             var newRow = document.createElement("tr");
-            newRow.innerHTML = 
+            newRow.innerHTML = `
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-            ;
+            `;
             solicitadosTableBody.appendChild(newRow);
         });
     }
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Calcula o tempo restante ou decorrido
                     var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
 
-                    newRow.innerHTML = 
+                    newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${detalhe.local}</td>
                         <td>${detalhe.item}</td>
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${detalhe.horario}</td>
                         <td><button class="receberButton">Receber</button></td>
                         <td class="tempo-cell">${tempoDisplay}</td>
-                    ;
+                    `;
                     detalhesTable.appendChild(newRow);
 
                     // Adiciona o evento de clique ao botão Receber
@@ -364,10 +364,10 @@ if (tempoCell) {
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%);
+                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
             } else {
                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                backgroundGradient = linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%);
+                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
             }
     
             // Atualiza o fundo da linha inteira
@@ -445,30 +445,35 @@ newRow.addEventListener("mouseover", function () {
 });
 
 newRow.addEventListener("mouseout", function () {
-    // Para o intervalo de hover, se existir
+    // Para a contagem dos segundos durante o hover
     if (tempoCell._hoverInterval) {
         clearInterval(tempoCell._hoverInterval);
-        delete tempoCell._hoverInterval;
+        delete tempoCell._hoverInterval; // Remove a referência ao intervalo
     }
 
-    // Volta ao formato HH:MM imediatamente
+    // Verifica se o item é futuro ou passado e retoma a contagem normal
+    if (detalhe.isFuture) {
+        if (!intervalMap.has(index)) {
+            // Reinicia a contagem regressiva apenas se não estiver já ativa
+            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+            intervalMap.set(index, countdownInterval);
+        }
+    } else {
+        if (!intervalMap.has(index)) {
+            // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
+            var elapsedInterval = setInterval(() => {
+                var elapsed = Date.now() - detalhe.timestamp;
+                tempoCell.textContent = formatTime(elapsed, false);
+            }, 1000);
+            intervalMap.set(index, elapsedInterval);
+        }
+    }
+
+    // Volta para o formato HH:MM
     const elapsed = Date.now() - detalhe.timestamp;
     tempoCell.textContent = formatTime(elapsed, false);
-
-    // Retoma o intervalo padrão (contagem regressiva ou decorrido)
-    if (detalhe.isFuture) {
-        // Reinicia a contagem regressiva para o futuro
-        const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, countdownInterval);
-    } else {
-        // Reinicia a contagem do tempo decorrido para o passado
-        const elapsedInterval = setInterval(() => {
-            const elapsedNormal = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsedNormal, false);
-        }, 1000);
-        intervalMap.set(index, elapsedInterval);
-    }
 });
+
                     }
                 });
             }
@@ -605,7 +610,7 @@ newRow.addEventListener("mouseout", function () {
 
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
-                    newRow.innerHTML = 
+                    newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
@@ -615,7 +620,7 @@ newRow.addEventListener("mouseout", function () {
                         <td>${item.horario}</td>
                         <td>${item.recebido}</td>
                         <td>${item.guardado}</td>
-                    ;
+                    `;
                     recebidosTable.appendChild(newRow);
                 });
             }
