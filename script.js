@@ -1,5 +1,3 @@
-
-
 // script.js
 
 // Map para armazenar os IDs dos intervals para cada detalhe
@@ -630,26 +628,17 @@ newRow.addEventListener("mouseout", function () {
 
         atualizarTabelaRecebidos();
 
-// Função para gerenciar a exclusão de itens
-// Função para gerenciar a exclusão de itens
-// Função para excluir itens da tabela de materiais solicitados
+// Função para excluir itens da tabela de materiais recebidos
+// Função para excluir itens da tabela de materiais recebidos
 var excluirItensButton = document.getElementById("excluirItensButton");
 
 if (excluirItensButton) {
     excluirItensButton.addEventListener("click", function () {
         var detalhesTable = document.getElementById("detalhesTable");
         var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
-        var selectAllCheckbox = document.getElementById("selectAllCheckbox");
 
         if (!detalhesTableBody) {
-            alert("Tabela de materiais solicitados não encontrada.");
-            return;
-        }
-
-        // Verifica se há itens na tabela
-        if (detalhesTableBody.rows.length === 0) {
-            alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
-            excluirItensButton.textContent = "Excluir Itens";
+            alert("Tabela de detalhes não encontrada.");
             return;
         }
 
@@ -669,17 +658,6 @@ if (excluirItensButton) {
             // Exibir a coluna "SELECIONE"
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
             excluirItensButton.textContent = "Confirmar Exclusão";
-
-            // Adiciona evento para "Selecionar Todos" no cabeçalho
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener("change", function () {
-                    // Marca ou desmarca todas as caixas de seleção
-                    var isChecked = this.checked;
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.checked = isChecked;
-                    });
-                });
-            }
         } else {
             // Processar exclusão
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
@@ -691,23 +669,13 @@ if (excluirItensButton) {
 
             if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
                 var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
 
                 selectedCheckboxes.forEach((checkbox) => {
                     var row = checkbox.closest("tr");
                     var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
 
                     // Remove do array de detalhes
-                    var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
-
-                    // Remove o item correspondente da lista de solicitados em index
-                    solicitados = solicitados.filter((itemSolicitado) => {
-                        return !(
-                            itemSolicitado.local === detalheExcluido.local &&
-                            itemSolicitado.item === detalheExcluido.item &&
-                            itemSolicitado.destino === detalheExcluido.destino
-                        );
-                    });
+                    detalhes.splice(rowIndex, 1);
 
                     // Remove a linha da tabela
                     row.remove();
@@ -715,139 +683,16 @@ if (excluirItensButton) {
 
                 // Atualiza o localStorage
                 localStorage.setItem("detalhes", JSON.stringify(detalhes));
-                localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
                 alert("Itens excluídos com sucesso!");
 
-                // Ocultar novamente a coluna "SELECIONE"
+                // Ocultar a coluna "SELECIONE" novamente
                 checkboxColumns.forEach((column) => column.classList.add("hidden"));
                 excluirItensButton.textContent = "Excluir Itens";
-
-                // Desmarcar a caixa "Selecionar Todos"
-                if (selectAllCheckbox) selectAllCheckbox.checked = false;
-
-                // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
-                if (window.location.pathname.includes("index.html")) {
-                    atualizarTabelaSolicitados();
-                }
             }
         }
     });
 }
-
-// Função para atualizar a tabela de materiais solicitados na página index.html
-function atualizarTabelaSolicitados() {
-    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    var solicitadosTable = document.getElementById("solicitadosTable");
-    var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
-
-    if (solicitadosTableBody) {
-        solicitadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        solicitados.forEach(function (item) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-            `;
-            solicitadosTableBody.appendChild(newRow);
-        });
-    }
-}
-
-
-// Função para excluir itens da tabela de materiais recebidos
-var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
-
-if (excluirRecebidosButton) {
-    excluirRecebidosButton.addEventListener("click", function () {
-        var recebidosTable = document.getElementById("recebidosTable");
-        var recebidosTableBody = recebidosTable ? recebidosTable.querySelector("tbody") : null;
-        var selectAllRecebidosCheckbox = document.getElementById("selectAllRecebidosCheckbox");
-
-        if (!recebidosTableBody) {
-            alert("Tabela de materiais recebidos não encontrada.");
-            return;
-        }
-
-        // Verifica se há itens na tabela
-        if (recebidosTableBody.rows.length === 0) {
-            alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
-            excluirRecebidosButton.textContent = "Excluir Itens";
-            return;
-        }
-
-        // Seleciona todas as colunas de checkbox
-        var checkboxColumns = recebidosTable.querySelectorAll(".checkbox-column");
-        var checkboxes = recebidosTableBody.querySelectorAll(".delete-checkbox");
-
-        if (!checkboxColumns.length) {
-            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
-            return;
-        }
-
-        // Verifica se a coluna está oculta
-        var isHidden = checkboxColumns[0].classList.contains("hidden");
-
-        if (isHidden) {
-            // Exibir a coluna "SELECIONE"
-            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-            excluirRecebidosButton.textContent = "Confirmar Exclusão";
-
-            // Adiciona evento para "Selecionar Todos" no cabeçalho
-            if (selectAllRecebidosCheckbox) {
-                selectAllRecebidosCheckbox.addEventListener("change", function () {
-                    // Marca ou desmarca todas as caixas de seleção
-                    var isChecked = this.checked;
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.checked = isChecked;
-                    });
-                });
-            }
-        } else {
-            // Processar exclusão
-            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
-
-            if (selectedCheckboxes.length === 0) {
-                alert("Selecione os itens que deseja excluir.");
-                return;
-            }
-
-            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-
-                selectedCheckboxes.forEach((checkbox) => {
-                    var row = checkbox.closest("tr");
-                    var rowIndex = Array.from(recebidosTableBody.rows).indexOf(row);
-
-                    // Remove do array de itens recebidos
-                    recebidos.splice(rowIndex, 1);
-
-                    // Remove a linha da tabela
-                    row.remove();
-                });
-
-                // Atualiza o localStorage
-                localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-                alert("Itens excluídos com sucesso!");
-
-                // Ocultar novamente a coluna "SELECIONE"
-                checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                excluirRecebidosButton.textContent = "Excluir Itens";
-
-                // Desmarcar a caixa "Selecionar Todos"
-                if (selectAllRecebidosCheckbox) selectAllRecebidosCheckbox.checked = false;
-            }
-        }
-    });
-}
-
-
-        
-
-
 
 
         
