@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes de Materiais</title>
@@ -9,14 +10,19 @@
 </head>
 <body class="detalhes-page">
     <header>
+        <!-- Header atualizado -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Detalhes de Materiais</h1>
+            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
                 </button>
+                <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
@@ -44,11 +50,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dados dinâmicos gerados pelo script -->
+                    <!-- Dados dinâmicos -->
                 </tbody>
             </table>
             <div class="button-container">
-                <button onclick="location.href='index.html'" class="voltar-button">Voltar</button>
+                <button onclick="location.href='index.html'">Voltar</button>
             </div>
         </section>
 
@@ -73,11 +79,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dados dinâmicos gerados pelo script -->
+                    <!-- Dados dinâmicos -->
                 </tbody>
             </table>
             <div class="button-container">
-                <button onclick="location.href='index.html'" class="voltar-button">Voltar</button>
+                <button onclick="location.href='index.html'">Voltar</button>
             </div>
         </section>
     </main>
@@ -96,20 +102,20 @@
             <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
 
             <div class="button-container">
-                <button type="button" id="cancelarRecebimentoButton" class="cancelar-button">Cancelar</button>
-                <button type="submit" id="confirmarRecebimentoButton" class="confirmar-button">Receber</button>
+                <button type="button" id="cancelarRecebimentoButton">Cancelar</button>
+                <button type="submit" id="confirmarRecebimentoButton">Receber</button>
             </div>
         </form>
     </div>
 
     <footer>
-        <p>© 2024 COLLAB - Todos os direitos reservados.</p>
+        © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
     <!-- Scripts -->
     <script src="script.js"></script>
     <script>
-        // Chama a função de verificação de autenticação ao carregar
+        // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
 </body>
