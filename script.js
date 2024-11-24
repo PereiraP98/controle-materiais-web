@@ -216,19 +216,23 @@ if (janelaForm) {
 }
 
 // Reservar um item (Página Index)
+// Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
+
 if (reservarButton) {
     reservarButton.addEventListener("click", function () {
         var localSelect = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
+        var quantidadeInput = document.getElementById("quantidade");
 
         var local = localSelect ? localSelect.value.trim() : "";
         var item = itemInput ? itemInput.value.trim() : "";
         var destino = destinoSelect ? destinoSelect.value.trim() : "";
+        var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
 
         // Validação dos campos
-        if (!local || !item || !destino) {
+        if (!local || !item || !destino || !quantidade) {
             alert("Por favor, preencha todos os campos para reservar.");
             return;
         }
@@ -240,21 +244,86 @@ if (reservarButton) {
 
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+
+        if (!reservadosTableBody) {
+            alert("Tabela de materiais reservados não encontrada.");
+            return;
+        }
+
+        // Adicionar o item à tabela de reservados
         var newRow = document.createElement("tr");
         newRow.innerHTML = `
             <td>${local}</td>
             <td>${item}</td>
+            <td>${quantidade}</td>
             <td>${destino}</td>
+            <td><button class="solicitarButton">Solicitar</button></td>
         `;
-        if (reservadosTableBody) {
-            reservadosTableBody.appendChild(newRow);
+        reservadosTableBody.appendChild(newRow);
+
+        // Adicionar o evento ao botão "Solicitar"
+        var solicitarButton = newRow.querySelector(".solicitarButton");
+        if (solicitarButton) {
+            solicitarButton.addEventListener("click", function () {
+                iniciarProcessoDeSolicitacao({
+                    local: local,
+                    item: item,
+                    quantidade: quantidade,
+                    destino: destino,
+                });
+            });
         }
 
-        // Opcional: Adicionar a reserva ao localStorage se necessário
+        // Adicionar ao localStorage
+        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+        reservados.push({ local, item, quantidade, destino });
+        localStorage.setItem("reservados", JSON.stringify(reservados));
 
         alert("Material reservado com sucesso!");
     });
 }
+
+// Função para iniciar o processo de solicitação
+function iniciarProcessoDeSolicitacao(dados) {
+    // Exibe os dados do material que será solicitado
+    var confirmar = confirm(
+        `Você está prestes a solicitar o material:\n\n` +
+        `Local: ${dados.local}\n` +
+        `Item: ${dados.item}\n` +
+        `Quantidade: ${dados.quantidade}\n` +
+        `Destino: ${dados.destino}\n\n` +
+        `Deseja continuar?`
+    );
+
+    if (confirmar) {
+        // Adiciona o item na tabela de solicitados
+        var solicitadosTable = document.getElementById("solicitadosTable");
+        var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
+
+        if (!solicitadosTableBody) {
+            alert("Tabela de materiais solicitados não encontrada.");
+            return;
+        }
+
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${dados.local}</td>
+            <td>${dados.item}</td>
+            <td>${dados.quantidade}</td>
+            <td>${dados.destino}</td>
+        `;
+        solicitadosTableBody.appendChild(newRow);
+
+        // Adicionar ao localStorage
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        solicitados.push(dados);
+        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+
+        alert("Material solicitado com sucesso!");
+    }
+}
+
+
 
 // Carregar os itens solicitados armazenados no localStorage na página index
 document.addEventListener("DOMContentLoaded", function () {
