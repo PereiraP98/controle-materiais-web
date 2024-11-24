@@ -415,27 +415,17 @@ if (tempoCell) {
 
     // Inicializa a contagem
     if (detalhe.isFuture) {
-        // Inicializa a contagem regressiva
-        const countdownInterval = setInterval(() => {
-            updateTimeCell(false);
-    
-            // Verifica se a contagem regressiva terminou
-            if (!detalhe.isFuture) {
-                clearInterval(countdownInterval);
-    
-                // Inicia a contagem do tempo decorrido
-                const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                intervalMap.set(index, elapsedInterval);
-            }
-        }, 1000);
-    
+        // Inicia a contagem regressiva a cada segundo
+        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
         intervalMap.set(index, countdownInterval);
     } else {
-        // Inicializa a contagem de tempo decorrido
-        const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+        // Inicia a contagem do tempo decorrido a cada segundo
+        var elapsedInterval = setInterval(() => {
+            var elapsed = Date.now() - detalhe.timestamp;
+            tempoCell.textContent = formatTime(elapsed, false);
+        }, 1000);
         intervalMap.set(index, elapsedInterval);
     }
-    
 
 
     // Exibição inicial
