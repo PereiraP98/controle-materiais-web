@@ -611,7 +611,7 @@ newRow.addEventListener("mouseout", function () {
                 recebidos.forEach(function(item, index) {
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
-                        <td class="checkbox-column hidden">SELECIONE</td>
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                         <td>${item.local}</td>
                         <td>${item.item}</td>
                         <td>${item.quantidade}</td>
