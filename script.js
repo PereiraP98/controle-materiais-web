@@ -375,7 +375,6 @@ function atualizarTabelaReservados() {
     }
 }
 
-// Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -390,17 +389,14 @@ function abrirJanelaSolicitacao(dados) {
     if (destinoSelect) destinoSelect.value = dados.destino || "";
     if (horarioInput) horarioInput.value = horarioAtual;
 
-    // Exibir a janela de solicitação
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     if (janelaSolicitacao) {
         janelaSolicitacao.style.display = "block";
-    } else {
-        console.error("Elemento da janela de solicitação não encontrado.");
     }
 }
 
 
-// Função para atualizar a tabela de materiais reservados
+
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableBody = document.querySelector("#reservadosTable tbody");
@@ -423,7 +419,6 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    // Abrir a janela de solicitação com os dados do item
                     abrirJanelaSolicitacao({
                         local: item.local,
                         item: item.item,
@@ -441,6 +436,7 @@ function atualizarTabelaReservados() {
         });
     }
 }
+
 
 
 // Carrega os dados ao carregar a página
