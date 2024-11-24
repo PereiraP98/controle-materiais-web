@@ -308,6 +308,44 @@ if (reservarButton) {
     });
 }
 
+// Função para atualizar a tabela de materiais reservados e adicionar o botão de solicitar
+function atualizarTabelaReservados() {
+    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
+
+    if (reservadosTableBody) {
+        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        reservados.forEach(function (item) {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.destino}</td>
+                <td><button class="solicitar-button" data-item="${item.item}">Solicitar</button></td>
+            `;
+
+            reservadosTableBody.appendChild(newRow);
+
+            // Adiciona evento ao botão de "Solicitar"
+            var solicitarButton = newRow.querySelector(".solicitar-button");
+            if (solicitarButton) {
+                solicitarButton.addEventListener("click", function () {
+                    abrirJanelaSolicitacao({
+                        local: item.local,
+                        item: item.item,
+                        destino: item.destino
+                    });
+                    // Remove o item da lista de reservados
+                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
+                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
+                    atualizarTabelaReservados();
+                });
+            }
+        });
+    }
+}
+
 
 // Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados) {
