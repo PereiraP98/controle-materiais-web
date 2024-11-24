@@ -216,102 +216,7 @@ if (janelaForm) {
 }
 
 // Reservar um item (Página Index)
-// Reservar um item (Página Index)
-var reservarButton = document.getElementById("reservarButton");
-
-if (reservarButton) {
-    reservarButton.addEventListener("click", function () {
-        var localSelect = document.getElementById("local");
-        var itemInput = document.getElementById("item");
-        var destinoSelect = document.getElementById("destino");
-
-        var local = localSelect ? localSelect.value.trim() : "";
-        var item = itemInput ? itemInput.value.trim() : "";
-        var destino = destinoSelect ? destinoSelect.value.trim() : "";
-
-        // Validação dos campos
-        if (!local || !item || !destino) {
-            alert("Por favor, preencha todos os campos para reservar.");
-            return;
-        }
-
-        if (!/^\d{5}$/.test(item)) {
-            alert("O código do item deve ter exatamente 5 dígitos.");
-            return;
-        }
-
-        var reservadosTable = document.getElementById("reservadosTable");
-        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
-
-        if (!reservadosTableBody) {
-            alert("Tabela de materiais reservados não encontrada.");
-            return;
-        }
-
-        // Verifica se o item já foi solicitado
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        var jaSolicitado = solicitados.some((solicitado) => solicitado.item === item);
-
-        if (jaSolicitado) {
-            // Abre a janela de atenção
-            abrirJanelaAtencao(item, function () {
-                // Confirmar: Abrir janela de solicitação
-                abrirJanelaSolicitacao({ local, item, destino });
-            }, function () {
-                // Cancelar: Apenas fechar a janela
-                alert("A solicitação foi cancelada.");
-            });
-            return;
-        }
-
-        // Caso contrário, adiciona o item à lista de reservados
-        var reservadosTable = document.getElementById("reservadosTable");
-        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
-
-        if (!reservadosTableBody) {
-            alert("Tabela de materiais reservados não encontrada.");
-            return;
-        }
-
-        // Adicionar o item à tabela de reservados
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${local}</td>
-            <td>${item}</td>
-            <td>${destino}</td>
-            <td><button class="solicitarButton">Solicitar</button></td>
-        `;
-        reservadosTableBody.appendChild(newRow);
-
-        // Adicionar o evento ao botão "Solicitar"
-        var solicitarButton = newRow.querySelector(".solicitarButton");
-        if (solicitarButton) {
-            solicitarButton.addEventListener("click", function () {
-                abrirJanelaSolicitacao({
-                    local: local,
-                    item: item,
-                    destino: destino,
-                });
-
-                // Remover o item da tabela e do localStorage
-                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-                reservados = reservados.filter((reservado) => {
-                    return !(
-                        reservado.local === local &&
-                        reservado.item === item &&
-                        reservado.destino === destino
-                    );
-                });
-
-                // Atualizar o localStorage
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                // Remover a linha da tabela
-                newRow.remove();
-            });
-        }
-
-        // Referências para a janela de atenção
+// Referências para a janela de atenção
 var janelaAtencao = document.getElementById("janelaAtencao");
 var atencaoMensagem = document.getElementById("atencaoMensagem");
 var confirmarAtencao = document.getElementById("confirmarAtencao");
@@ -344,6 +249,80 @@ function fecharJanelaAtencao() {
     }
 }
 
+// Função para reservar um material
+var reservarButton = document.getElementById("reservarButton");
+
+if (reservarButton) {
+    reservarButton.addEventListener("click", function () {
+        var localSelect = document.getElementById("local");
+        var itemInput = document.getElementById("item");
+        var destinoSelect = document.getElementById("destino");
+
+        var local = localSelect ? localSelect.value.trim() : "";
+        var item = itemInput ? itemInput.value.trim() : "";
+        var destino = destinoSelect ? destinoSelect.value.trim() : "";
+
+        // Validação dos campos
+        if (!local || !item || !destino) {
+            alert("Por favor, preencha todos os campos para reservar.");
+            return;
+        }
+
+        if (!/^\d{5}$/.test(item)) {
+            alert("O código do item deve ter exatamente 5 dígitos.");
+            return;
+        }
+
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var jaSolicitado = solicitados.some((solicitado) => solicitado.item === item);
+
+        if (jaSolicitado) {
+            // Abre a janela de atenção
+            abrirJanelaAtencao(item, function () {
+                // Confirmar: Abrir janela de solicitação
+                abrirJanelaSolicitacao({ local, item, destino });
+            }, function () {
+                // Cancelar: Apenas fechar a janela
+                alert("A solicitação foi cancelada.");
+            });
+            return;
+        }
+
+        // Adiciona o item à tabela de reservados
+        var reservadosTable = document.getElementById("reservadosTable");
+        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+
+        if (!reservadosTableBody) {
+            alert("Tabela de materiais reservados não encontrada.");
+            return;
+        }
+
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${local}</td>
+            <td>${item}</td>
+            <td>${destino}</td>
+            <td><button class="solicitarButton">Solicitar</button></td>
+        `;
+        reservadosTableBody.appendChild(newRow);
+
+        // Adicionar evento ao botão "Solicitar"
+        var solicitarButton = newRow.querySelector(".solicitarButton");
+        if (solicitarButton) {
+            solicitarButton.addEventListener("click", function () {
+                abrirJanelaSolicitacao({ local, item, destino });
+
+                // Remover da tabela e do localStorage
+                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+                reservados = reservados.filter((reservado) => {
+                    return reservado.item !== item;
+                });
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+                newRow.remove();
+            });
+        }
+
         // Adicionar ao localStorage
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
         reservados.push({ local, item, destino });
@@ -352,6 +331,7 @@ function fecharJanelaAtencao() {
         alert("Material reservado com sucesso!");
     });
 }
+
 
 
 
