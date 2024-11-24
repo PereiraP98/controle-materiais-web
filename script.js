@@ -364,7 +364,7 @@ if (tempoCell) {
             let backgroundGradient;
             if (elapsed <= midTime) {
                 const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to right, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
             } else {
                 const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
                 backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
@@ -374,22 +374,18 @@ if (tempoCell) {
             newRow.style.background = backgroundGradient;
         }
     
-        // Atualiza o campo de tempo
-        if (detalhe.isFuture) {
-            // Calcula o tempo restante
-            const remaining = detalhe.timestamp - now;
-    
-            // Se o horário chegou ao atual, altera o estado para "passado"
-            if (remaining <= 0) {
-                detalhe.isFuture = false;
-                elapsed = 0; // Reseta o tempo decorrido para iniciar a contagem
-            }
-            tempoCell.textContent = formatTime(remaining, showSeconds);
-        } else {
-            tempoCell.textContent = formatTime(elapsed, showSeconds);
+    // Atualiza o campo de tempo
+    if (detalhe.isFuture) {
+        const remaining = detalhe.timestamp - now;
+        if (remaining <= 0) {
+            detalhe.isFuture = false;
+            detalhe.timestamp = now;
         }
+        tempoCell.textContent = formatTime(remaining, showSeconds);
+    } else {
+        tempoCell.textContent = formatTime(elapsed, showSeconds);
     }
-    
+    }
     
     
     
