@@ -346,7 +346,7 @@ if (tempoCell) {
     // Função para atualizar o tempo na célula
     function updateTimeCell(showSeconds = false) {
         const now = Date.now();
-        let elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+        const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
     
         // Define tempos limites
         const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
@@ -388,9 +388,6 @@ if (tempoCell) {
         } else {
             tempoCell.textContent = formatTime(elapsed, showSeconds);
         }
-
-            // Atualiza a barra de cores
-    updateColor(newRow, elapsed);
     }
     
     
