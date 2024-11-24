@@ -375,7 +375,6 @@ function atualizarTabelaReservados() {
     }
 }
 
-// Função para abrir a janela de solicitação
 function abrirJanelaSolicitacao(dados) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -384,6 +383,7 @@ function abrirJanelaSolicitacao(dados) {
     var destinoSelect = document.getElementById("destino");
     var horarioInput = document.getElementById("horario");
 
+    // Preenche os campos da janela de solicitação
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
@@ -391,9 +391,13 @@ function abrirJanelaSolicitacao(dados) {
 
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
+        console.log("Exibindo a janela de solicitação"); // Log para depuração
+        janelaSolicitacao.style.display = "block"; // Exibe a janela
+    } else {
+        console.error("Elemento 'janelaSolicitacao' não encontrado.");
     }
 }
+
 
 // Chamada inicial para atualizar a tabela ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
