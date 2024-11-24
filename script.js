@@ -248,6 +248,31 @@ if (reservarButton) {
             return;
         }
 
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var jaSolicitado = solicitados.some((solicitado) => solicitado.item === item);
+
+        if (jaSolicitado) {
+            // Abre a janela de atenção
+            abrirJanelaAtencao(item, function () {
+                // Confirmar: Abrir janela de solicitação
+                abrirJanelaSolicitacao({ local, item, destino });
+            }, function () {
+                // Cancelar: Apenas fechar a janela
+                alert("A solicitação foi cancelada.");
+            });
+            return;
+        }
+
+        // Caso contrário, adiciona o item à lista de reservados
+        var reservadosTable = document.getElementById("reservadosTable");
+        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+
+        if (!reservadosTableBody) {
+            alert("Tabela de materiais reservados não encontrada.");
+            return;
+        }
+
         // Adicionar o item à tabela de reservados
         var newRow = document.createElement("tr");
         newRow.innerHTML = `
@@ -285,6 +310,39 @@ if (reservarButton) {
                 newRow.remove();
             });
         }
+
+        // Referências para a janela de atenção
+var janelaAtencao = document.getElementById("janelaAtencao");
+var atencaoMensagem = document.getElementById("atencaoMensagem");
+var confirmarAtencao = document.getElementById("confirmarAtencao");
+var cancelarAtencao = document.getElementById("cancelarAtencao");
+
+// Função para abrir a janela de atenção
+function abrirJanelaAtencao(codigoMaterial, onConfirm, onCancel) {
+    if (atencaoMensagem) {
+        atencaoMensagem.textContent = `ATENÇÃO, o material (${codigoMaterial}) já está solicitado e não foi recebido. Deseja solicitar novamente?`;
+    }
+    if (janelaAtencao) {
+        janelaAtencao.classList.remove("hidden");
+    }
+
+    confirmarAtencao.onclick = function () {
+        if (typeof onConfirm === "function") onConfirm();
+        fecharJanelaAtencao();
+    };
+
+    cancelarAtencao.onclick = function () {
+        if (typeof onCancel === "function") onCancel();
+        fecharJanelaAtencao();
+    };
+}
+
+// Função para fechar a janela de atenção
+function fecharJanelaAtencao() {
+    if (janelaAtencao) {
+        janelaAtencao.classList.add("hidden");
+    }
+}
 
         // Adicionar ao localStorage
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
