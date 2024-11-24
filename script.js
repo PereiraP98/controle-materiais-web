@@ -630,6 +630,94 @@ newRow.addEventListener("mouseout", function () {
 
 // Função para gerenciar a exclusão de itens
 // Função para gerenciar a exclusão de itens
+// Função para excluir itens da tabela de materiais solicitados
+var excluirItensButton = document.getElementById("excluirItensButton");
+
+if (excluirItensButton) {
+    excluirItensButton.addEventListener("click", function () {
+        var detalhesTable = document.getElementById("detalhesTable");
+        var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+        var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+
+        if (!detalhesTableBody) {
+            alert("Tabela de materiais solicitados não encontrada.");
+            return;
+        }
+
+        // Verifica se há itens na tabela
+        if (detalhesTableBody.rows.length === 0) {
+            alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
+            excluirItensButton.textContent = "Excluir Itens";
+            return;
+        }
+
+        // Seleciona todas as colunas de checkbox
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
+
+        // Verifica se a coluna está oculta
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+        if (isHidden) {
+            // Exibir a coluna "SELECIONE"
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            excluirItensButton.textContent = "Confirmar Exclusão";
+
+            // Adiciona evento para "Selecionar Todos" no cabeçalho
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener("change", function () {
+                    // Marca ou desmarca todas as caixas de seleção
+                    var isChecked = this.checked;
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            }
+        } else {
+            // Processar exclusão
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja excluir.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+
+                selectedCheckboxes.forEach((checkbox) => {
+                    var row = checkbox.closest("tr");
+                    var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
+
+                    // Remove do array de detalhes
+                    detalhes.splice(rowIndex, 1);
+
+                    // Remove a linha da tabela
+                    row.remove();
+                });
+
+                // Atualiza o localStorage
+                localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+                alert("Itens excluídos com sucesso!");
+
+                // Ocultar novamente a coluna "SELECIONE"
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                excluirItensButton.textContent = "Excluir Itens";
+
+                // Desmarcar a caixa "Selecionar Todos"
+                if (selectAllCheckbox) selectAllCheckbox.checked = false;
+            }
+        }
+    });
+}
+
+// Função para excluir itens da tabela de materiais recebidos
 var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
 
 if (excluirRecebidosButton) {
@@ -639,13 +727,13 @@ if (excluirRecebidosButton) {
         var selectAllRecebidosCheckbox = document.getElementById("selectAllRecebidosCheckbox");
 
         if (!recebidosTableBody) {
-            alert("Tabela de itens recebidos não encontrada.");
+            alert("Tabela de materiais recebidos não encontrada.");
             return;
         }
 
         // Verifica se há itens na tabela
         if (recebidosTableBody.rows.length === 0) {
-            alert("A lista de itens recebidos está vazia! Adicione itens para poder realizar a exclusão.");
+            alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
             excluirRecebidosButton.textContent = "Excluir Itens";
             return;
         }
