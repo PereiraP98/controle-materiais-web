@@ -689,13 +689,23 @@ if (excluirItensButton) {
 
             if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
                 var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
 
                 selectedCheckboxes.forEach((checkbox) => {
                     var row = checkbox.closest("tr");
                     var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
 
                     // Remove do array de detalhes
-                    detalhes.splice(rowIndex, 1);
+                    var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
+
+                    // Remove o item correspondente da lista de solicitados em index
+                    solicitados = solicitados.filter((itemSolicitado) => {
+                        return !(
+                            itemSolicitado.local === detalheExcluido.local &&
+                            itemSolicitado.item === detalheExcluido.item &&
+                            itemSolicitado.destino === detalheExcluido.destino
+                        );
+                    });
 
                     // Remove a linha da tabela
                     row.remove();
@@ -703,6 +713,7 @@ if (excluirItensButton) {
 
                 // Atualiza o localStorage
                 localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
                 alert("Itens excluídos com sucesso!");
 
@@ -712,10 +723,37 @@ if (excluirItensButton) {
 
                 // Desmarcar a caixa "Selecionar Todos"
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
+
+                // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
+                if (window.location.pathname.includes("index.html")) {
+                    atualizarTabelaSolicitados();
+                }
             }
         }
     });
 }
+
+// Função para atualizar a tabela de materiais solicitados na página index.html
+function atualizarTabelaSolicitados() {
+    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+    var solicitadosTable = document.getElementById("solicitadosTable");
+    var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
+
+    if (solicitadosTableBody) {
+        solicitadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        solicitados.forEach(function (item) {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.destino}</td>
+            `;
+            solicitadosTableBody.appendChild(newRow);
+        });
+    }
+}
+
 
 // Função para excluir itens da tabela de materiais recebidos
 var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
