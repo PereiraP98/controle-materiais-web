@@ -715,3 +715,105 @@ body.dark-mode button {
 body.dark-mode button:hover {
     background-color: #4a4a4a;
 }
+
+/* Estilo Moderno */
+body[data-style="modern"] {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+body[data-style="modern"] .header-container, 
+body[data-style="modern"] footer {
+    background-color: #0073e6;
+    color: #ffffff;
+}
+
+body[data-style="modern"] .config-section {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body[data-style="modern"] button {
+    background-color: #0073e6;
+    color: #ffffff;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+body[data-style="modern"] button:hover {
+    transform: scale(1.1);
+}
+
+/* Estilo Clássico */
+body[data-style="classic"] {
+    font-family: 'Times New Roman', serif;
+    font-size: 18px;
+    background-color: #f8f4e3;
+    color: #444;
+}
+
+body[data-style="classic"] .header-container, 
+body[data-style="classic"] footer {
+    background-color: #8b4513;
+    color: #ffffff;
+}
+
+body[data-style="classic"] .config-section {
+    background-color: #f8f4e3;
+    border: 1px solid #d3cbb8;
+    padding: 20px;
+    box-shadow: none;
+}
+
+body[data-style="classic"] button {
+    background-color: #d3cbb8;
+    color: #333;
+    border: 1px solid #8b4513;
+    font-weight: normal;
+}
+
+body[data-style="classic"] button:hover {
+    background-color: #8b4513;
+    color: #ffffff;
+}
+
+/* Estilo Especial - Natal */
+body[data-style="special"] {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    background: url('https://source.unsplash.com/1600x900/?christmas') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+body[data-style="special"] .header-container, 
+body[data-style="special"] footer {
+    background-color: rgba(0, 128, 0, 0.8); /* Verde com transparência */
+    color: #ffffff;
+}
+
+body[data-style="special"] .config-section {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body[data-style="special"] button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+}
+
+body[data-style="special"] button:hover {
+    background-color: #228b22; /* Verde floresta */
+    border-color: #ffdd57; /* Dourado */
+}
