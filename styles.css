@@ -500,3 +500,20 @@ footer {
     color: white;
 }
 
+/* Tema Escuro */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* Estilos de Página */
+body[data-style="modern"] {
+    font-family: "Arial", sans-serif;
+    font-size: 16px;
+}
+
+body[data-style="classic"] {
+    font-family: "Times New Roman", serif;
+    font-size: 18px;
+}
+
