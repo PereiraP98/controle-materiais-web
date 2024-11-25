@@ -1,82 +1,102 @@
-/* Reset Geral */
-body, h1, h2, p, label, select, button {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Controle de Materiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="configs-page">
+    <header>
+        <div class="header-container">
+            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <h1>Configurações</h1>
+            <div class="header-buttons">
+                <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel" onclick="location.href='painel.html'">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                </button>
+                <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-container">
+        <section class="config-section">
+            <h2>Personalização</h2>
 
-/* Estilo do Body */
-body {
-    background-color: #f9f9f9;
-    color: #333;
-    font-size: 16px;
-    line-height: 1.6;
-}
+            <!-- Tema Escuro -->
+            <div class="config-item">
+                <div class="config-label">
+                    <img src="https://img.icons8.com/material-rounded/24/000000/moon-symbol.png" alt="Tema Escuro">
+                    <label for="darkModeSwitch">Tema Escuro:</label>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSwitch">
+                    <span class="slider"></span>
+                </label>
+            </div>
 
-/* Tema Escuro */
-body.dark-mode {
-    background-color: #1e1e1e;
-    color: #eaeaea;
-}
+            <!-- Estilo de Página -->
+            <div class="config-item">
+                <div class="config-label">
+                    <img src="https://img.icons8.com/material-rounded/24/000000/design.png" alt="Estilo de Página">
+                    <label for="pageStyle">Estilo de Página:</label>
+                </div>
+                <select id="pageStyle">
+                    <option value="default">Padrão</option>
+                    <option value="modern">Moderno</option>
+                    <option value="classic">Clássico</option>
+                    <option value="special">Especial</option>
+                </select>
+            </div>
+        </section>
+    </main>
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
 
-/* Estilo Moderno */
-body[data-style="modern"] {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-}
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Modo Escuro com Botão Switch
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('change', function () {
+            if (darkModeSwitch.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
 
-body[data-style="modern"] .header-container, 
-body[data-style="modern"] footer {
-    background-color: #0073e6;
-    color: #ffffff;
-}
+        // Carregar Tema ao abrir a página
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
+            }
+        });
 
-/* Estilo Clássico */
-body[data-style="classic"] {
-    font-family: 'Times New Roman', serif;
-    background-color: #f8f4e3;
-    color: #444;
-}
+        // Alterar Estilo de Página
+        const pageStyle = document.getElementById('pageStyle');
+        pageStyle.addEventListener('change', function () {
+            const selectedStyle = pageStyle.value;
+            document.body.setAttribute('data-style', selectedStyle);
+            localStorage.setItem('pageStyle', selectedStyle);
+        });
 
-body[data-style="classic"] .header-container, 
-body[data-style="classic"] footer {
-    background-color: #8b4513;
-    color: #ffffff;
-}
-
-/* Estilo Especial - Natal */
-body[data-style="special"] {
-    font-family: 'Roboto', sans-serif;
-    background: url('https://source.unsplash.com/1600x900/?christmas') no-repeat center center fixed;
-    background-size: cover;
-    color: #ffffff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-body[data-style="special"] .header-container, 
-body[data-style="special"] footer {
-    background-color: rgba(0, 128, 0, 0.8); /* Verde com transparência */
-    color: #ffffff;
-}
-
-body[data-style="special"] .config-section {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #333;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-body[data-style="special"] button {
-    background-color: #ff0000;
-    color: #ffffff;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
-}
-
-body[data-style="special"] button:hover {
-    background-color: #228b22; /* Verde floresta */
-    border-color: #ffdd57; /* Dourado */
-}
+        // Carregar Estilo de Página ao abrir a página
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedStyle = localStorage.getItem('pageStyle');
+            if (savedStyle) {
+                document.body.setAttribute('data-style', savedStyle);
+                pageStyle.value = savedStyle;
+            }
+        });
+    </script>
+</body>
+</html>
