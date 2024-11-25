@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurações - Controle de Materiais</title>
@@ -10,14 +9,15 @@
 </head>
 <body class="configs-page">
     <header>
-        <!-- Header -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Configurações</h1>
-            <!-- Botão Voltar -->
-            <div class="back-container">
-                <button id="backButton" aria-label="Voltar" title="Voltar ao Painel" onclick="location.href='painel.html'">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/back.png" alt="Voltar" width="30" height="30">
+            <div class="header-buttons">
+                <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel" onclick="location.href='painel.html'">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                </button>
+                <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
         </div>
@@ -25,12 +25,17 @@
     <main class="main-container">
         <section class="config-section">
             <h2>Personalização</h2>
-            <!-- Configuração Tema Escuro -->
+
+            <!-- Tema Escuro -->
             <div class="config-item">
-                <label for="darkModeToggle">Ativar Tema Escuro:</label>
-                <input type="checkbox" id="darkModeToggle" />
+                <label for="darkModeSwitch" class="switch-label">Tema Escuro:</label>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSwitch">
+                    <span class="slider"></span>
+                </label>
             </div>
-            <!-- Configuração Estilo de Página -->
+
+            <!-- Estilo de Página -->
             <div class="config-item">
                 <label for="pageStyle">Estilo de Página:</label>
                 <select id="pageStyle">
@@ -48,10 +53,10 @@
     <!-- Scripts -->
     <script src="script.js"></script>
     <script>
-        // Ativar/desativar Tema Escuro
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        darkModeToggle.addEventListener('change', function () {
-            if (darkModeToggle.checked) {
+        // Modo Escuro com Botão Switch
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('change', function () {
+            if (darkModeSwitch.checked) {
                 document.body.classList.add('dark-mode');
                 localStorage.setItem('theme', 'dark');
             } else {
@@ -65,7 +70,7 @@
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
-                darkModeToggle.checked = true;
+                darkModeSwitch.checked = true;
             }
         });
 
