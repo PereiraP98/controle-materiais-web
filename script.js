@@ -303,21 +303,21 @@ if (reservarButton) {
                     destino: destino,
                 });
 
-                // Remover o item da tabela e do localStorage
+                // Remover apenas o item correspondente do localStorage
                 var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-                reservados = reservados.filter((reservado) => {
-                    return !(
-                        reservado.local === local &&
-                        reservado.item === item &&
-                        reservado.destino === destino
-                    );
-                });
+                reservados = reservados.filter((reservado) => 
+                    reservado.local !== local || 
+                    reservado.item !== item || 
+                    reservado.destino !== destino
+                );
 
                 // Atualizar o localStorage
                 localStorage.setItem("reservados", JSON.stringify(reservados));
 
                 // Remover a linha da tabela
                 newRow.remove();
+
+                alert("Material solicitado e removido da lista de reservados!");
             });
         }
 
@@ -329,6 +329,7 @@ if (reservarButton) {
         alert("Material reservado com sucesso!");
     });
 }
+
 
 
 // Função para atualizar a tabela de materiais reservados
