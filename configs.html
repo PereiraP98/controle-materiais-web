@@ -7,9 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="configs-page">
+<body class="configs-page" data-style="default">
     <header>
         <div class="header-container">
+            <!-- Festão de Natal no topo -->
+            <div class="christmas-garland"></div>
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Configurações</h1>
             <div class="header-buttons">
@@ -53,12 +55,20 @@
             </div>
         </section>
     </main>
+
+    <!-- Enfeites de Natal flutuantes -->
+    <div class="christmas-decorations">
+        <img src="https://cdn-icons-png.flaticon.com/512/2553/2553672.png" alt="Bola de Natal">
+        <img src="https://cdn-icons-png.flaticon.com/512/1998/1998581.png" alt="Presente">
+        <img src="https://cdn-icons-png.flaticon.com/512/1063/1063286.png" alt="Estrela de Natal">
+    </div>
+
     <footer>
+        <div class="christmas-garland"></div>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
     <!-- Scripts -->
-    <script src="script.js"></script>
     <script>
         // Modo Escuro com Botão Switch
         const darkModeSwitch = document.getElementById('darkModeSwitch');
