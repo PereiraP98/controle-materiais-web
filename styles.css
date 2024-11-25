@@ -817,3 +817,72 @@ body[data-style="special"] button:hover {
     background-color: #228b22; /* Verde floresta */
     border-color: #ffdd57; /* Dourado */
 }
+
+/* Festão de Natal */
+.christmas-garland {
+    height: 50px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/8/89/Christmas_garland.png') repeat-x;
+    background-size: contain;
+}
+
+/* Enfeites de Natal */
+.christmas-decorations {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 10;
+}
+
+.christmas-decorations img {
+    width: 50px;
+    height: 50px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Fundo com neve */
+body[data-style="special"] {
+    font-family: 'Roboto', sans-serif;
+    background: url('https://source.unsplash.com/1600x900/?snow') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Decorações Especiais */
+body[data-style="special"] .header-container, 
+body[data-style="special"] footer {
+    background-color: rgba(0, 128, 0, 0.8); /* Verde com transparência */
+    color: #ffffff;
+}
+
+body[data-style="special"] .config-section {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body[data-style="special"] button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+}
+
+body[data-style="special"] button:hover {
+    background-color: #228b22; /* Verde floresta */
+    border-color: #ffdd57; /* Dourado */
+}
