@@ -522,6 +522,199 @@ body.dark-mode {
     color: #eaeaea;
 }
 
+/* Header */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003d7a;
+    color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.header-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.2s;
+}
+
+.header-buttons button:hover {
+    transform: scale(1.1);
+}
+
+/* Logo */
+.logo {
+    height: 40px;
+}
+
+/* Main Container */
+.main-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Configuração Geral */
+.config-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .config-section {
+    background-color: #2e2e2e;
+}
+
+/* Config Item */
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+body.dark-mode .config-item {
+    border-bottom: 1px solid #3c3c3c;
+}
+
+/* Config Label */
+.config-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.config-label img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Select Estilo */
+select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+select:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+body.dark-mode select {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+    border-color: #4a4a4a;
+}
+
+/* Switch para Tema Escuro */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Footer */
+footer {
+    background-color: #003d7a;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode footer {
+    background-color: #2a2a2a;
+}
+
+/* Botões */
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    background-color: #003d7a;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #005bb5;
+    transform: scale(1.05);
+}
+
+body.dark-mode button {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode button:hover {
+    background-color: #4a4a4a;
+}
+
 /* Festão de Natal */
 .christmas-garland {
     height: 50px;
