@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="configs-page" data-style="default">
+<body class="configs-page">
     <header>
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
@@ -48,7 +48,6 @@
                     <option value="default">Padrão</option>
                     <option value="modern">Moderno</option>
                     <option value="classic">Clássico</option>
-                    <option value="special">Especial</option>
                 </select>
             </div>
         </section>
@@ -58,69 +57,43 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="script.js"></script>
     <script>
-        const pageStyle = document.getElementById('pageStyle');
-        const body = document.body;
-
-        // Função para adicionar enfeites e efeitos de Natal
-        function addChristmasDecorations() {
-            // Adiciona o festão ao header e footer
-            const header = document.querySelector('.header-container');
-            const footer = document.querySelector('footer');
-
-            if (!document.querySelector('.christmas-garland')) {
-                const garlandHeader = document.createElement('div');
-                garlandHeader.className = 'christmas-garland';
-                header.prepend(garlandHeader);
-
-                const garlandFooter = document.createElement('div');
-                garlandFooter.className = 'christmas-garland';
-                footer.prepend(garlandFooter);
+        // Modo Escuro com Botão Switch
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('change', function () {
+            if (darkModeSwitch.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
             }
+        });
 
-            // Adiciona enfeites flutuantes
-            if (!document.querySelector('.christmas-decorations')) {
-                const decorations = document.createElement('div');
-                decorations.className = 'christmas-decorations';
-                decorations.innerHTML = `
-                    <img src="https://cdn-icons-png.flaticon.com/512/2553/2553672.png" alt="Bola de Natal">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1998/1998581.png" alt="Presente">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1063/1063286.png" alt="Estrela de Natal">
-                `;
-                document.body.appendChild(decorations);
+        // Carregar Tema ao abrir a página
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
             }
-        }
-
-        // Função para remover os enfeites de Natal
-        function removeChristmasDecorations() {
-            const garlands = document.querySelectorAll('.christmas-garland');
-            const decorations = document.querySelector('.christmas-decorations');
-
-            garlands.forEach(garland => garland.remove());
-            if (decorations) decorations.remove();
-        }
+        });
 
         // Alterar Estilo de Página
+        const pageStyle = document.getElementById('pageStyle');
         pageStyle.addEventListener('change', function () {
             const selectedStyle = pageStyle.value;
-            body.setAttribute('data-style', selectedStyle);
+            document.body.setAttribute('data-style', selectedStyle);
             localStorage.setItem('pageStyle', selectedStyle);
-
-            if (selectedStyle === 'special') {
-                addChristmasDecorations();
-            } else {
-                removeChristmasDecorations();
-            }
         });
 
         // Carregar Estilo de Página ao abrir a página
         document.addEventListener('DOMContentLoaded', function () {
-            const savedStyle = localStorage.getItem('pageStyle') || 'default';
-            body.setAttribute('data-style', savedStyle);
-            pageStyle.value = savedStyle;
-
-            if (savedStyle === 'special') {
-                addChristmasDecorations();
+            const savedStyle = localStorage.getItem('pageStyle');
+            if (savedStyle) {
+                document.body.setAttribute('data-style', savedStyle);
+                pageStyle.value = savedStyle;
             }
         });
     </script>
