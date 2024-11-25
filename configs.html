@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Cabeçalho -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Controle de Materiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="configs-page">
+    <header>
+        <!-- Header -->
+        <div class="header-container">
+            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <h1>Configurações</h1>
+            <!-- Botão Voltar -->
+            <div class="back-container">
+                <button id="backButton" aria-label="Voltar" title="Voltar ao Painel" onclick="location.href='painel.html'">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/back.png" alt="Voltar" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-container">
+        <section class="config-section">
+            <h2>Personalização</h2>
+            <!-- Configuração Tema Escuro -->
+            <div class="config-item">
+                <label for="darkModeToggle">Ativar Tema Escuro:</label>
+                <input type="checkbox" id="darkModeToggle" />
+            </div>
+            <!-- Configuração Estilo de Página -->
+            <div class="config-item">
+                <label for="pageStyle">Estilo de Página:</label>
+                <select id="pageStyle">
+                    <option value="default">Padrão</option>
+                    <option value="modern">Moderno</option>
+                    <option value="classic">Clássico</option>
+                </select>
+            </div>
+        </section>
+    </main>
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Ativar/desativar Tema Escuro
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function () {
+            if (darkModeToggle.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Carregar Tema ao abrir a página
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+        });
+
+        // Alterar Estilo de Página
+        const pageStyle = document.getElementById('pageStyle');
+        pageStyle.addEventListener('change', function () {
+            const selectedStyle = pageStyle.value;
+            document.body.setAttribute('data-style', selectedStyle);
+            localStorage.setItem('pageStyle', selectedStyle);
+        });
+
+        // Carregar Estilo de Página ao abrir a página
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedStyle = localStorage.getItem('pageStyle');
+            if (savedStyle) {
+                document.body.setAttribute('data-style', savedStyle);
+                pageStyle.value = savedStyle;
+            }
+        });
+    </script>
+</body>
+</html>
