@@ -420,7 +420,7 @@ footer {
         background-color: rgb(255, 0, 0); /* Vermelho */
     }
     50% {
-        background-color: rgb(255, 50, 50); /* Vermelho mais claro */
+        background-color: rgb(255, 20, 20); /* Vermelho mais claro */
     }
     100% {
         background-color: rgb(255, 0, 0); /* Retorna ao vermelho */
