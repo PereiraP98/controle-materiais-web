@@ -89,28 +89,15 @@
                 `;
                 document.body.appendChild(decorations);
             }
-
-            // Adiciona o pisca-pisca
-            if (!document.querySelector('.christmas-lights')) {
-                const lights = document.createElement('ul');
-                lights.className = 'christmas-lights';
-                for (let i = 0; i < 8; i++) {
-                    const light = document.createElement('li');
-                    lights.appendChild(light);
-                }
-                header.appendChild(lights);
-            }
         }
 
         // Função para remover os enfeites de Natal
         function removeChristmasDecorations() {
             const garlands = document.querySelectorAll('.christmas-garland');
             const decorations = document.querySelector('.christmas-decorations');
-            const lights = document.querySelector('.christmas-lights');
 
             garlands.forEach(garland => garland.remove());
             if (decorations) decorations.remove();
-            if (lights) lights.remove();
         }
 
         // Alterar Estilo de Página
