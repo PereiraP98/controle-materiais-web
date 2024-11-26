@@ -29,5 +29,17 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
     <script src="script.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    });
+</script>
+
 </body>
 </html>
