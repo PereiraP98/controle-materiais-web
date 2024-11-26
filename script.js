@@ -1128,28 +1128,23 @@ if (reportarItensButton) {
         var isHidden = checkboxColumns[0].classList.contains("hidden");
 
         if (isHidden) {
-            // Exibir as caixas de seleção e resetar marcações
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-            checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
+            checkboxes.forEach((checkbox) => (checkbox.checked = false));
             reportarItensButton.textContent = "Confirmar Reporte";
 
-            // Vincular a função ao checkbox de selecionar todos
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener("change", function () {
                     checkboxes.forEach((checkbox) => {
                         var row = checkbox.closest("tr");
-                        var tempoCell = row.querySelector(".tempo-cell");
-                        var horaCell = row.children[6].textContent; // Coluna "HORA"
+                        var horaCell = row.children[6].textContent;
 
-                        // Verifica se o item está atrasado (30 minutos ou mais)
                         if (verificarAtraso(horaCell)) {
-                            checkbox.checked = this.checked; // Marca apenas itens atrasados
+                            checkbox.checked = this.checked;
                         }
                     });
                 });
             }
         } else {
-            // Verifica itens selecionados
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
             if (selectedCheckboxes.length === 0) {
@@ -1157,35 +1152,40 @@ if (reportarItensButton) {
                 return;
             }
 
-            // Verificar se todos os itens selecionados estão atrasados
             var detalhesReportados = [];
             var erro = false;
 
             selectedCheckboxes.forEach((checkbox) => {
                 var row = checkbox.closest("tr");
-                var horaCell = row.children[6].textContent; // Coluna "HORA"
-                var local = row.children[1].textContent; // Local do material
+                var horaCell = row.children[6].textContent; // Hora solicitada
+                var local = row.children[1].textContent; // Local
                 var item = row.children[2].textContent;  // Código do item
+                var destino = row.children[4].textContent; // Destino
+                var tempoCell = row.querySelector(".tempo-cell"); // Tempo de atraso
 
                 if (!verificarAtraso(horaCell)) {
                     alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
                     erro = true;
-                    checkbox.checked = false; // Desmarca o item não atrasado
+                    checkbox.checked = false;
                 } else {
-                    detalhesReportados.push(`• ${local} - ${item}`);
+                    detalhesReportados.push(
+                        `• ${local} - ${item} (Destino: ${destino}) - (Solicitado às: ${horaCell}) - (Tempo de atraso: ${tempoCell.textContent})`
+                    );
                 }
             });
 
             if (erro) {
-                return; // Interrompe o processo se houver erro
+                return;
             }
 
-            // Confirmar com a lista dos itens reportados
             var confirmacao = confirm(
                 `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
             );
 
             if (confirmacao) {
+                // Enviar o e-mail
+                enviarEmail(detalhesReportados);
+
                 alert("Reporte realizado com sucesso!");
                 checkboxColumns.forEach((column) => column.classList.add("hidden"));
                 reportarItensButton.textContent = "Reportar";
@@ -1194,7 +1194,26 @@ if (reportarItensButton) {
     });
 }
 
-// Função para verificar se um item está atrasado
+// Função para enviar o e-mail
+function enviarEmail(detalhesReportados) {
+    var emailParams = {
+        to_email: "adrianagonzaga75@gmail.com",
+        subject: "Reporte de Materiais Atrasados",
+        message: `Prezados,\n\nOs seguintes materiais foram reportados como atrasados:\n\n${detalhesReportados.join(
+            "\n"
+        )}\n\nAtenciosamente,\nEquipe Controle de Materiais`,
+    };
+
+    emailjs.send("lucasprestes30@gmail.com", "template_q26atzk", emailParams)
+        .then(function () {
+            console.log("E-mail enviado com sucesso!");
+        })
+        .catch(function (error) {
+            console.error("Erro ao enviar e-mail:", error);
+        });
+}
+
+// Função para verificar se o material está atrasado
 function verificarAtraso(horaSolicitada) {
     var agora = new Date();
     var [horas, minutos] = horaSolicitada.split(":").map(Number);
@@ -1206,6 +1225,7 @@ function verificarAtraso(horaSolicitada) {
 
     return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
 }
+
 
 
 
