@@ -1180,8 +1180,15 @@ if (reportarItensButton) {
                 return;
             }
 
-            // Enviar o e-mail
-            enviarEmail(detalhesReportados);
+            // Exibir mensagem de confirmação com itens reportados
+            var confirmacao = confirm(
+                `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
+            );
+
+            if (confirmacao) {
+                // Enviar o e-mail
+                enviarEmail(detalhesReportados);
+            }
         }
     });
 }
@@ -1189,7 +1196,7 @@ if (reportarItensButton) {
 // Função para enviar o e-mail com feedback ao usuário
 function enviarEmail(detalhesReportados) {
     var emailParams = {
-        to_email: "lucasprestes8486@gmail.com",
+        to_email: "adrianagonzaga75@gmail.com",
         subject: "Reporte de Materiais Atrasados",
         message: `Prezados,\n\nEstamos notificando que o material solicitado com os seguintes detalhes encontra-se em atraso para recebimento:\n\n${detalhesReportados.join(
             "\n"
@@ -1220,6 +1227,23 @@ function verificarAtraso(horaSolicitada) {
 
     return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
 }
+
+// Função para formatar o horário em HH:MM
+function formatarHora(data) {
+    var horas = String(data.getHours()).padStart(2, "0");
+    var minutos = String(data.getMinutes()).padStart(2, "0");
+    return `${horas}:${minutos}`;
+}
+
+// Inicializa o horário atual ao carregar a página (opcional para uso em campos de entrada)
+document.addEventListener("DOMContentLoaded", function () {
+    var horaAtual = formatarHora(new Date());
+    var horarioInput = document.getElementById("horario");
+    if (horarioInput) {
+        horarioInput.value = horaAtual;
+    }
+});
+
 
 
 
