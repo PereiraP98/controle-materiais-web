@@ -540,14 +540,7 @@ body.dark-mode {
     height: 40px;
 }
 
-/* Main Container */
-.main-container {
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
+
 
 /* Configuração Geral */
 .config-section {
