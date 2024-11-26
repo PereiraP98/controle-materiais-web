@@ -1107,7 +1107,7 @@ if (excluirRecebidosButton) {
 
         
 
-    emailjs.init("_Xir-W9c96lEqZ5GV"); // Inicializa o EmailJS
+
 
     var reportarItensButton = document.getElementById("reportarItensButton");
     var selectAllCheckbox = document.getElementById("selectAllCheckbox");
