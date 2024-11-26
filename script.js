@@ -1127,26 +1127,53 @@ if (reportarItensButton) {
         var isHidden = checkboxColumns[0].classList.contains("hidden");
 
         if (isHidden) {
+            // Exibir as caixas de seleção e resetar marcações
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
             reportarItensButton.textContent = "Confirmar Reporte";
-
-            checkboxes.forEach((checkbox) => {
-                var row = checkbox.closest("tr");
-                var tempoCell = row.querySelector(".tempo-cell");
-
-                if (tempoCell && tempoCell.classList.contains("elapsed")) {
-                    checkbox.checked = true;
-                }
-            });
         } else {
+            // Verifica itens selecionados
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
-
+            
             if (selectedCheckboxes.length === 0) {
                 alert("Selecione os itens que deseja reportar.");
                 return;
             }
 
-            if (confirm("Tem certeza de que deseja reportar os itens selecionados?")) {
+            // Verificar se todos os itens selecionados estão atrasados
+            var detalhesReportados = [];
+            var erro = false;
+
+            selectedCheckboxes.forEach((checkbox) => {
+                var row = checkbox.closest("tr");
+                var tempoCell = row.querySelector(".tempo-cell");
+                var local = row.children[1].textContent; // Local do material
+                var item = row.children[2].textContent;  // Código do item
+
+                if (tempoCell) {
+                    var tempoText = tempoCell.textContent.split(":");
+                    var minutosDecorridos = parseInt(tempoText[0], 10) * 60 + parseInt(tempoText[1], 10);
+
+                    if (minutosDecorridos < 30) {
+                        alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
+                        erro = true;
+                        checkbox.checked = false; // Desmarca o item não atrasado
+                    } else {
+                        detalhesReportados.push(`• ${local} - ${item}`);
+                    }
+                }
+            });
+
+            if (erro) {
+                return; // Interrompe o processo se houver erro
+            }
+
+            // Confirmar com a lista dos itens reportados
+            var confirmacao = confirm(
+                `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
+            );
+
+            if (confirmacao) {
                 alert("Reporte realizado com sucesso!");
                 checkboxColumns.forEach((column) => column.classList.add("hidden"));
                 reportarItensButton.textContent = "Reportar";
@@ -1154,6 +1181,7 @@ if (reportarItensButton) {
         }
     });
 }
+
 
         
 
