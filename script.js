@@ -1104,6 +1104,11 @@ if (excluirRecebidosButton) {
 
 }
 
+
+        
+// Inicialize o EmailJS com sua Public Key
+emailjs.init("_Xir-W9c96lEqZ5GV");
+
 var reportarItensButton = document.getElementById("reportarItensButton");
 var selectAllCheckbox = document.getElementById("selectAllCheckbox");
 
@@ -1175,27 +1180,16 @@ if (reportarItensButton) {
                 return;
             }
 
-            // Exibir a mensagem de confirmação simplificada
-            var confirmacao = confirm(
-                `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
-            );
-
-            if (confirmacao) {
-                // Enviar o e-mail
-                enviarEmail(detalhesReportados);
-
-                alert("Reporte realizado com sucesso!");
-                checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                reportarItensButton.textContent = "Reportar";
-            }
+            // Enviar o e-mail
+            enviarEmail(detalhesReportados);
         }
     });
 }
 
-// Função para enviar o e-mail
+// Função para enviar o e-mail com feedback ao usuário
 function enviarEmail(detalhesReportados) {
     var emailParams = {
-        to_email: "adrianagonzaga75@gmail.com",
+        to_email: "lucasprestes8486@gmail.com",
         subject: "Reporte de Materiais Atrasados",
         message: `Prezados,\n\nEstamos notificando que o material solicitado com os seguintes detalhes encontra-se em atraso para recebimento:\n\n${detalhesReportados.join(
             "\n"
@@ -1205,9 +1199,11 @@ function enviarEmail(detalhesReportados) {
     emailjs
         .send("lucasprestes30@gmail.com", "template_28grsg5", emailParams)
         .then(function () {
+            alert("Reporte enviado com sucesso!");
             console.log("E-mail enviado com sucesso!");
         })
         .catch(function (error) {
+            alert("Erro ao enviar o reporte. Por favor, tente novamente.");
             console.error("Erro ao enviar e-mail:", error);
         });
 }
@@ -1224,6 +1220,7 @@ function verificarAtraso(horaSolicitada) {
 
     return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
 }
+
 
 
 
