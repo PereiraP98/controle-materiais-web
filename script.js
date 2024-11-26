@@ -1101,8 +1101,59 @@ if (excluirRecebidosButton) {
             }
         }
     });
+
 }
 
+var reportarItensButton = document.getElementById("reportarItensButton");
+
+if (reportarItensButton) {
+    reportarItensButton.addEventListener("click", function () {
+        var detalhesTable = document.getElementById("detalhesTable");
+        var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+
+        if (!detalhesTableBody) {
+            alert("Tabela de materiais solicitados não encontrada.");
+            return;
+        }
+
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
+
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+        if (isHidden) {
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            reportarItensButton.textContent = "Confirmar Reporte";
+
+            checkboxes.forEach((checkbox) => {
+                var row = checkbox.closest("tr");
+                var tempoCell = row.querySelector(".tempo-cell");
+
+                if (tempoCell && tempoCell.classList.contains("elapsed")) {
+                    checkbox.checked = true;
+                }
+            });
+        } else {
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja reportar.");
+                return;
+            }
+
+            if (confirm("Tem certeza de que deseja reportar os itens selecionados?")) {
+                alert("Reporte realizado com sucesso!");
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                reportarItensButton.textContent = "Reportar";
+            }
+        }
+    });
+}
 
         
 
