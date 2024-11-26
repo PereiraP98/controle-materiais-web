@@ -57,17 +57,18 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="script.js"></script>
     <script>
-        // Modo Escuro com Botão Switch
         const darkModeSwitch = document.getElementById('darkModeSwitch');
+        const pageStyle = document.getElementById('pageStyle');
+
+        // Tema Escuro - Alterar em todas as páginas
         darkModeSwitch.addEventListener('change', function () {
             if (darkModeSwitch.checked) {
-                document.body.classList.add('dark-mode');
                 localStorage.setItem('theme', 'dark');
+                document.body.classList.add('dark-mode');
             } else {
-                document.body.classList.remove('dark-mode');
                 localStorage.setItem('theme', 'light');
+                document.body.classList.remove('dark-mode');
             }
         });
 
@@ -77,24 +78,22 @@
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
                 darkModeSwitch.checked = true;
+            } else {
+                document.body.classList.remove('dark-mode');
             }
-        });
 
-        // Alterar Estilo de Página
-        const pageStyle = document.getElementById('pageStyle');
-        pageStyle.addEventListener('change', function () {
-            const selectedStyle = pageStyle.value;
-            document.body.setAttribute('data-style', selectedStyle);
-            localStorage.setItem('pageStyle', selectedStyle);
-        });
-
-        // Carregar Estilo de Página ao abrir a página
-        document.addEventListener('DOMContentLoaded', function () {
             const savedStyle = localStorage.getItem('pageStyle');
             if (savedStyle) {
                 document.body.setAttribute('data-style', savedStyle);
                 pageStyle.value = savedStyle;
             }
+        });
+
+        // Estilo de Página
+        pageStyle.addEventListener('change', function () {
+            const selectedStyle = pageStyle.value;
+            document.body.setAttribute('data-style', selectedStyle);
+            localStorage.setItem('pageStyle', selectedStyle);
         });
     </script>
 </body>
