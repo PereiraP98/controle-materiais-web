@@ -665,3 +665,49 @@ body.dark-mode .cancelar-button:hover {
     background-color: #3a3a3a;
     color: #ffffff;
 }
+
+/* Botões - Visual Neutro */
+button,
+.solicitacao-container .excluir-button,
+.detalhes-container .excluir-button,
+.confirmar-button,
+.cancelar-button {
+    background-color: #215C98; /* Cor padrão dos botões */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover,
+.solicitacao-container .excluir-button:hover,
+.detalhes-container .excluir-button:hover,
+.confirmar-button:hover,
+.cancelar-button:hover {
+    background-color: #17406d; /* Cor de hover */
+    transform: scale(1.03); /* Leve crescimento ao passar o mouse */
+}
+
+/* Botões de exclusão */
+.solicitacao-container .excluir-button,
+.detalhes-container .excluir-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.solicitacao-container .excluir-button:hover,
+.detalhes-container .excluir-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Botões em Janelas Flutuantes */
+.confirmar-button {
+    background-color: #4CAF50;
+}
+
+.cancelar-button {
+    background-color: #f44336;
+}
