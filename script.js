@@ -1161,16 +1161,13 @@ if (reportarItensButton) {
                 var local = row.children[1].textContent; // Local
                 var item = row.children[2].textContent;  // Código do item
                 var destino = row.children[4].textContent; // Destino
-                var tempoCell = row.querySelector(".tempo-cell"); // Tempo de atraso
 
                 if (!verificarAtraso(horaCell)) {
                     alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
                     erro = true;
                     checkbox.checked = false;
                 } else {
-                    detalhesReportados.push(
-                        `• ${local} - ${item} (Destino: ${destino}) - (Solicitado às: ${horaCell}) - (Tempo de atraso: ${tempoCell.textContent})`
-                    );
+                    detalhesReportados.push(`• ${local} - ${item} (Destino: ${destino})`);
                 }
             });
 
@@ -1178,6 +1175,7 @@ if (reportarItensButton) {
                 return;
             }
 
+            // Exibir a mensagem de confirmação simplificada
             var confirmacao = confirm(
                 `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
             );
@@ -1204,7 +1202,8 @@ function enviarEmail(detalhesReportados) {
         )}\n\nAtenciosamente,\nEquipe Controle de Materiais`,
     };
 
-    emailjs.send("lucasprestes30@gmail.com", "template_q26atzk", emailParams)
+    emailjs
+        .send("lucasprestes30@gmail.com", "template_28grsg5", emailParams)
         .then(function () {
             console.log("E-mail enviado com sucesso!");
         })
