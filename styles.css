@@ -502,3 +502,166 @@ footer {
 
 
 
+/* Tema Escuro */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #eaeaea;
+}
+
+/* Header no Tema Escuro */
+body.dark-mode header {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+/* Footer no Tema Escuro */
+body.dark-mode footer {
+    background-color: #2a2a2a;
+    color: #eaeaea;
+}
+
+/* Containers no Tema Escuro */
+body.dark-mode .solicitacao-container,
+body.dark-mode .materiais-reservados,
+body.dark-mode .graficos-container,
+body.dark-mode .materiais-solicitados,
+body.dark-mode .detalhes-container,
+body.dark-mode .login-container,
+body.dark-mode .tools-container .tool-card {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Inputs no Tema Escuro */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+/* Botões no Tema Escuro */
+body.dark-mode button,
+body.dark-mode .solicitacao-container .excluir-button,
+body.dark-mode .detalhes-container .excluir-button {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode button:hover,
+body.dark-mode .solicitacao-container .excluir-button:hover,
+body.dark-mode .detalhes-container .excluir-button:hover {
+    background-color: #4a4a4a;
+    color: #ffffff;
+}
+
+/* Janela Flutuante no Tema Escuro */
+body.dark-mode .janela-flutuante {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Links no Tema Escuro */
+body.dark-mode a {
+    color: #4caf50;
+}
+
+body.dark-mode a:hover {
+    color: #81c784;
+}
+
+/* Mensagens no Tema Escuro */
+body.dark-mode .message {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+/* Tabelas no Tema Escuro */
+body.dark-mode table {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode th {
+    background-color: #3a3a3a;
+    color: #eaeaea;
+}
+
+body.dark-mode tbody tr:nth-child(even) {
+    background-color: #242424;
+}
+
+body.dark-mode tbody tr:hover {
+    background-color: #3a3a3a;
+}
+
+/* Cards no Tema Escuro */
+body.dark-mode .tool-card {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .tool-card:hover {
+    background-color: #3a3a3a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+}
+
+/* Janelas de Atenção no Tema Escuro */
+body.dark-mode #janelaAtencao {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .atencao-header img {
+    filter: brightness(0.8);
+}
+
+/* Campos e Botões das Janelas de Atenção */
+body.dark-mode .atencao-mensagem {
+    color: #eaeaea;
+}
+
+body.dark-mode .confirmar-button {
+    background-color: #4caf50;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode .confirmar-button:hover {
+    background-color: #3a3a3a;
+    color: #ffffff;
+}
+
+body.dark-mode .cancelar-button {
+    background-color: #f44336;
+    color: #eaeaea;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode .cancelar-button:hover {
+    background-color: #3a3a3a;
+    color: #ffffff;
+}
