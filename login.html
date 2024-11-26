@@ -32,7 +32,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Verificar o tema salvo no localStorage
         const savedTheme = localStorage.getItem('theme');
+
+        // Aplicar o tema escuro, se configurado
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
         } else {
