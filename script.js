@@ -1105,6 +1105,7 @@ if (excluirRecebidosButton) {
 }
 
 var reportarItensButton = document.getElementById("reportarItensButton");
+var selectAllCheckbox = document.getElementById("selectAllCheckbox");
 
 if (reportarItensButton) {
     reportarItensButton.addEventListener("click", function () {
@@ -1131,10 +1132,26 @@ if (reportarItensButton) {
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
             checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
             reportarItensButton.textContent = "Confirmar Reporte";
+
+            // Vincular a função ao checkbox de selecionar todos
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener("change", function () {
+                    checkboxes.forEach((checkbox) => {
+                        var row = checkbox.closest("tr");
+                        var tempoCell = row.querySelector(".tempo-cell");
+                        var horaCell = row.children[6].textContent; // Coluna "HORA"
+
+                        // Verifica se o item está atrasado (30 minutos ou mais)
+                        if (verificarAtraso(horaCell)) {
+                            checkbox.checked = this.checked; // Marca apenas itens atrasados
+                        }
+                    });
+                });
+            }
         } else {
             // Verifica itens selecionados
             var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
-            
+
             if (selectedCheckboxes.length === 0) {
                 alert("Selecione os itens que deseja reportar.");
                 return;
@@ -1146,21 +1163,16 @@ if (reportarItensButton) {
 
             selectedCheckboxes.forEach((checkbox) => {
                 var row = checkbox.closest("tr");
-                var tempoCell = row.querySelector(".tempo-cell");
+                var horaCell = row.children[6].textContent; // Coluna "HORA"
                 var local = row.children[1].textContent; // Local do material
                 var item = row.children[2].textContent;  // Código do item
 
-                if (tempoCell) {
-                    var tempoText = tempoCell.textContent.split(":");
-                    var minutosDecorridos = parseInt(tempoText[0], 10) * 60 + parseInt(tempoText[1], 10);
-
-                    if (minutosDecorridos < 30) {
-                        alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
-                        erro = true;
-                        checkbox.checked = false; // Desmarca o item não atrasado
-                    } else {
-                        detalhesReportados.push(`• ${local} - ${item}`);
-                    }
+                if (!verificarAtraso(horaCell)) {
+                    alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
+                    erro = true;
+                    checkbox.checked = false; // Desmarca o item não atrasado
+                } else {
+                    detalhesReportados.push(`• ${local} - ${item}`);
                 }
             });
 
@@ -1181,6 +1193,20 @@ if (reportarItensButton) {
         }
     });
 }
+
+// Função para verificar se um item está atrasado
+function verificarAtraso(horaSolicitada) {
+    var agora = new Date();
+    var [horas, minutos] = horaSolicitada.split(":").map(Number);
+
+    var horarioSolicitado = new Date();
+    horarioSolicitado.setHours(horas, minutos, 0, 0);
+
+    var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
+
+    return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
+}
+
 
 
         
