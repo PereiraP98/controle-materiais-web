@@ -1109,117 +1109,108 @@ if (excluirRecebidosButton) {
 
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-    try {
-        emailjs.init("_Xir-W9c96lEqZ5GV"); // Inicializa o EmailJS apenas uma vez
-        console.log("EmailJS inicializado com sucesso!");
-    } catch (error) {
-        console.error("Erro ao inicializar o EmailJS:", error);
-    }
-
     var reportarItensButton = document.getElementById("reportarItensButton");
-    var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+var selectAllCheckbox = document.getElementById("selectAllCheckbox");
 
-    if (reportarItensButton) {
-        reportarItensButton.addEventListener("click", function () {
-            var detalhesTable = document.getElementById("detalhesTable");
-            var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+if (reportarItensButton) {
+    reportarItensButton.addEventListener("click", function () {
+        var detalhesTable = document.getElementById("detalhesTable");
+        var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
 
-            if (!detalhesTableBody) {
-                alert("Tabela de materiais solicitados não encontrada.");
-                return;
-            }
+        if (!detalhesTableBody) {
+            alert("Tabela de materiais solicitados não encontrada.");
+            return;
+        }
 
-            var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
-            var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
 
-            if (!checkboxColumns.length) {
-                alert("A coluna 'SELECIONE' não foi configurada corretamente.");
-                return;
-            }
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
 
-            var isHidden = checkboxColumns[0].classList.contains("hidden");
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
 
-            if (isHidden) {
-                // Exibe a coluna de seleção
-                checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-                checkboxes.forEach((checkbox) => (checkbox.checked = false));
-                reportarItensButton.textContent = "Confirmar Reporte";
+        if (isHidden) {
+            // Exibir as caixas de seleção e resetar marcações
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
+            reportarItensButton.textContent = "Confirmar Reporte";
 
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.addEventListener("change", function () {
-                        checkboxes.forEach((checkbox) => {
-                            var row = checkbox.closest("tr");
-                            var horaCell = row.children[6]?.textContent;
-
-                            checkbox.checked = verificarAtraso(horaCell);
-                        });
-                    });
-                }
-            } else {
-                var detalhesReportados = [];
-                checkboxes.forEach((checkbox) => {
-                    if (checkbox.checked) {
+            // Vincular a função ao checkbox de selecionar todos
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener("change", function () {
+                    checkboxes.forEach((checkbox) => {
                         var row = checkbox.closest("tr");
-                        var local = row.children[1]?.textContent.trim();
-                        var item = row.children[2]?.textContent.trim();
-                        var destino = row.children[4]?.textContent.trim();
+                        var tempoCell = row.querySelector(".tempo-cell");
+                        var horaCell = row.children[6].textContent; // Coluna "HORA"
 
-                        detalhesReportados.push(`• ${local} - ${item} (Destino: ${destino})`);
-                    }
+                        // Verifica se o item está atrasado (30 minutos ou mais)
+                        if (verificarAtraso(horaCell)) {
+                            checkbox.checked = this.checked; // Marca apenas itens atrasados
+                        }
+                    });
                 });
-
-                if (detalhesReportados.length === 0) {
-                    alert("Selecione ao menos um item para reportar.");
-                    return;
-                }
-
-                var confirmacao = confirm(
-                    `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
-                );
-
-                if (confirmacao) {
-                    enviarEmail(detalhesReportados);
-                    alert("Reporte realizado com sucesso!");
-
-                    checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                    reportarItensButton.textContent = "Reportar";
-                }
             }
-        });
-    }
+        } else {
+            // Verifica itens selecionados
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
-    function enviarEmail(detalhesReportados) {
-        var emailParams = {
-            to_email: "lucasprestes8486@gmail.com",
-            subject: "Reporte de Materiais Atrasados",
-            message: `Prezados,\n\nEstamos notificando que os materiais abaixo estão atrasados:\n\n${detalhesReportados.join(
-                "\n"
-            )}\n\nPor favor, verifiquem.\n\nAtenciosamente,\nEquipe CDP`,
-        };
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja reportar.");
+                return;
+            }
 
-        emailjs
-            .send("lucasprestes30@gmail.com", "template_28grsg5", emailParams)
-            .then(() => {
-                console.log("E-mail enviado com sucesso!");
-            })
-            .catch((error) => {
-                console.error("Erro ao enviar o e-mail:", error);
-                alert("Erro ao enviar o e-mail. Verifique as configurações e tente novamente.");
+            // Verificar se todos os itens selecionados estão atrasados
+            var detalhesReportados = [];
+            var erro = false;
+
+            selectedCheckboxes.forEach((checkbox) => {
+                var row = checkbox.closest("tr");
+                var horaCell = row.children[6].textContent; // Coluna "HORA"
+                var local = row.children[1].textContent; // Local do material
+                var item = row.children[2].textContent;  // Código do item
+
+                if (!verificarAtraso(horaCell)) {
+                    alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
+                    erro = true;
+                    checkbox.checked = false; // Desmarca o item não atrasado
+                } else {
+                    detalhesReportados.push(`• ${local} - ${item}`);
+                }
             });
-    }
 
-    function verificarAtraso(horaSolicitada) {
-        if (!horaSolicitada) return false;
+            if (erro) {
+                return; // Interrompe o processo se houver erro
+            }
 
-        var agora = new Date();
-        var [horas, minutos] = horaSolicitada.split(":").map(Number);
-        var horarioSolicitado = new Date();
-        horarioSolicitado.setHours(horas, minutos, 0, 0);
+            // Confirmar com a lista dos itens reportados
+            var confirmacao = confirm(
+                `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
+            );
 
-        return agora - horarioSolicitado >= 30 * 60 * 1000; // 30 minutos
-    }
-});
+            if (confirmacao) {
+                alert("Reporte realizado com sucesso!");
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                reportarItensButton.textContent = "Reportar";
+            }
+        }
+    });
+}
+
+// Função para verificar se um item está atrasado
+function verificarAtraso(horaSolicitada) {
+    var agora = new Date();
+    var [horas, minutos] = horaSolicitada.split(":").map(Number);
+
+    var horarioSolicitado = new Date();
+    horarioSolicitado.setHours(horas, minutos, 0, 0);
+
+    var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
+
+    return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
+}
 
 
 
