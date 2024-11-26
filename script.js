@@ -1197,9 +1197,9 @@ function enviarEmail(detalhesReportados) {
     var emailParams = {
         to_email: "adrianagonzaga75@gmail.com",
         subject: "Reporte de Materiais Atrasados",
-        message: `Prezados,\n\nOs seguintes materiais foram reportados como atrasados:\n\n${detalhesReportados.join(
+        message: `Prezados,\n\nEstamos notificando que o material solicitado com os seguintes detalhes encontra-se em atraso para recebimento:\n\n${detalhesReportados.join(
             "\n"
-        )}\n\nAtenciosamente,\nEquipe Controle de Materiais`,
+        )}\n\nSolicitamos que verifiquem o status deste material e tomem as providências necessárias para regularizar a situação.\n\nAgradecemos pela atenção e aguardamos as orientações sobre os próximos passos.\n\nAtenciosamente,\nReposição - CDP`,
     };
 
     emailjs
@@ -1224,6 +1224,7 @@ function verificarAtraso(horaSolicitada) {
 
     return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
 }
+
 
 
 
