@@ -1106,7 +1106,7 @@ if (excluirRecebidosButton) {
 
 
         
-document.addEventListener("DOMContentLoaded", function () {
+
     emailjs.init("_Xir-W9c96lEqZ5GV"); // Inicializa o EmailJS
 
     var reportarItensButton = document.getElementById("reportarItensButton");
