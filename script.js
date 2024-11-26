@@ -1133,10 +1133,12 @@ if (reportarItensButton) {
         var isHidden = checkboxColumns[0].classList.contains("hidden");
 
         if (isHidden) {
+            // Exibe a coluna de seleção
             checkboxColumns.forEach((column) => column.classList.remove("hidden"));
             checkboxes.forEach((checkbox) => (checkbox.checked = false));
             reportarItensButton.textContent = "Confirmar Reporte";
 
+            // Adiciona evento ao botão "Selecionar Todos"
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener("change", function () {
                     checkboxes.forEach((checkbox) => {
@@ -1180,7 +1182,7 @@ if (reportarItensButton) {
                 return;
             }
 
-            // Exibir mensagem de confirmação com itens reportados
+            // Exibir a mensagem de confirmação simplificada
             var confirmacao = confirm(
                 `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
             );
@@ -1188,12 +1190,16 @@ if (reportarItensButton) {
             if (confirmacao) {
                 // Enviar o e-mail
                 enviarEmail(detalhesReportados);
+
+                alert("Reporte realizado com sucesso!");
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                reportarItensButton.textContent = "Reportar";
             }
         }
     });
 }
 
-// Função para enviar o e-mail com feedback ao usuário
+// Função para enviar o e-mail
 function enviarEmail(detalhesReportados) {
     var emailParams = {
         to_email: "adrianagonzaga75@gmail.com",
@@ -1206,11 +1212,9 @@ function enviarEmail(detalhesReportados) {
     emailjs
         .send("lucasprestes30@gmail.com", "template_28grsg5", emailParams)
         .then(function () {
-            alert("Reporte enviado com sucesso!");
             console.log("E-mail enviado com sucesso!");
         })
         .catch(function (error) {
-            alert("Erro ao enviar o reporte. Por favor, tente novamente.");
             console.error("Erro ao enviar e-mail:", error);
         });
 }
@@ -1227,22 +1231,6 @@ function verificarAtraso(horaSolicitada) {
 
     return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
 }
-
-// Função para formatar o horário em HH:MM
-function formatarHora(data) {
-    var horas = String(data.getHours()).padStart(2, "0");
-    var minutos = String(data.getMinutes()).padStart(2, "0");
-    return `${horas}:${minutos}`;
-}
-
-// Inicializa o horário atual ao carregar a página (opcional para uso em campos de entrada)
-document.addEventListener("DOMContentLoaded", function () {
-    var horaAtual = formatarHora(new Date());
-    var horarioInput = document.getElementById("horario");
-    if (horarioInput) {
-        horarioInput.value = horaAtual;
-    }
-});
 
 
 
