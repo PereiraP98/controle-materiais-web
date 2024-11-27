@@ -374,7 +374,7 @@ function atualizarTabelaReservados() {
     }
 }
 
-function abrirJanelaSolicitacao(dados) {
+function abrirJanelaSolicitacao(dados, index) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     // Preencher os campos da janela de solicitação
@@ -382,17 +382,22 @@ function abrirJanelaSolicitacao(dados) {
     var itemInput = document.getElementById("item");
     var destinoSelect = document.getElementById("destino");
     var horarioInput = document.getElementById("horario");
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
 
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
     if (horarioInput) horarioInput.value = horarioAtual;
+    if (fromReservadosInput) fromReservadosInput.value = "true";
+    if (itemIndexInput) itemIndexInput.value = index;
 
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     if (janelaSolicitacao) {
         janelaSolicitacao.style.display = "block";
     }
 }
+
 
 
 
@@ -418,23 +423,15 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino,
-                    });
-
-                    // Remove o item da lista de reservados
-                    reservados.splice(index, 1);
-                    localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
+                    var index = parseInt(this.getAttribute('data-index'));
+                    abrirJanelaSolicitacao(item, index);
+                    // Não removemos o item aqui
                 });
             }
         });
     }
 }
+
 
 
 
