@@ -106,7 +106,8 @@ var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
         event.preventDefault();
-
+        var fromReservadosInput = document.getElementById("fromReservados");
+        var itemIndexInput = document.getElementById("itemIndex");
         var quantidadeInput = document.getElementById("quantidade");
         var horarioInput = document.getElementById("horario");
         var localSelect = document.getElementById("local");
@@ -118,6 +119,18 @@ if (janelaForm) {
         var local = localSelect ? localSelect.value.trim() : "";
         var item = itemInput ? itemInput.value.trim() : "";
         var destino = destinoSelect ? destinoSelect.value.trim() : "";
+
+        if (fromReservados === "true" && itemIndex >= 0) {
+            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+            reservados.splice(itemIndex, 1);
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            // Atualiza a tabela de reservados
+            atualizarTabelaReservados();
+        }
+
+        // Limpa os campos ocultos após a submissão
+        if (fromReservadosInput) fromReservadosInput.value = "false";
+        if (itemIndexInput) itemIndexInput.value = "-1";
 
         // Validação dos campos
         if (!quantidade || !horario || !local || !item || !destino) {
