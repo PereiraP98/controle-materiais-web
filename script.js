@@ -990,7 +990,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Enviar o e-mail usando o EmailJS
                         var templateParams = {
                             message: mensagemEmail,
-                            to_email: 'lucasprestes8486@gmail.com, lucasprestes3540@gmail.com' // Destinatários
+                            to_email: 'lucasprestes30@gmail.com, adrianagonzaga75@gmail.com' // Destinatários
                         };
 
                         emailjs.send('service_i0s3unp', 'template_28grsg5', templateParams)
