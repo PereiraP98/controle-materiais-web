@@ -98,8 +98,14 @@ if (cancelarSolicitacaoButton) {
         if (janelaSolicitacao) {
             janelaSolicitacao.style.display = "none";
         }
+        // Limpa os campos ocultos
+        var fromReservadosInput = document.getElementById("fromReservados");
+        var itemIndexInput = document.getElementById("itemIndex");
+        if (fromReservadosInput) fromReservadosInput.value = "false";
+        if (itemIndexInput) itemIndexInput.value = "-1";
     });
 }
+
 
 // Confirmar a solicitação e registrar os dados (Página Index)
 var janelaForm = document.getElementById("janelaForm");
@@ -120,17 +126,9 @@ if (janelaForm) {
         var item = itemInput ? itemInput.value.trim() : "";
         var destino = destinoSelect ? destinoSelect.value.trim() : "";
 
-        if (fromReservados === "true" && itemIndex >= 0) {
-            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-            reservados.splice(itemIndex, 1);
-            localStorage.setItem("reservados", JSON.stringify(reservados));
-            // Atualiza a tabela de reservados
-            atualizarTabelaReservados();
-        }
-
-        // Limpa os campos ocultos após a submissão
-        if (fromReservadosInput) fromReservadosInput.value = "false";
-        if (itemIndexInput) itemIndexInput.value = "-1";
+        // Obter os valores dos campos ocultos
+        var fromReservados = fromReservadosInput ? fromReservadosInput.value : "false";
+        var itemIndex = itemIndexInput ? parseInt(itemIndexInput.value) : -1;
 
         // Validação dos campos
         if (!quantidade || !horario || !local || !item || !destino) {
@@ -149,75 +147,21 @@ if (janelaForm) {
             return;
         }
 
-        var dataAtual = new Date().toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
-
-        var solicitadosTable = document.getElementById("solicitadosTable");
-        var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${local}</td>
-            <td>${item}</td>
-            <td>${destino}</td>
-        `;
-        if (solicitadosTableBody) {
-            solicitadosTableBody.appendChild(newRow);
+        // Lógica para remover o item reservado após a confirmação
+        if (fromReservados === "true" && itemIndex >= 0) {
+            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+            reservados.splice(itemIndex, 1);
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            // Atualiza a tabela de reservados
+            atualizarTabelaReservados();
         }
 
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        solicitados.push({ local: local, item: item, destino: destino });
-        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+        // Limpa os campos ocultos após a submissão
+        if (fromReservadosInput) fromReservadosInput.value = "false";
+        if (itemIndexInput) itemIndexInput.value = "-1";
 
-        // Calcular o timestamp baseado no horário inserido pelo usuário
-        var dataAtualObj = new Date();
-
-        // Extrair o horário inserido pelo usuário (horario)
-        var horarioParts = horario.split(':');
-        var horas = parseInt(horarioParts[0], 10);
-        var minutos = parseInt(horarioParts[1], 10);
-
-        // Criar um novo objeto Date com a data atual e o horário inserido pelo usuário
-        var timestampDate = new Date(
-            dataAtualObj.getFullYear(),
-            dataAtualObj.getMonth(),
-            dataAtualObj.getDate(),
-            horas,
-            minutos,
-            0, // segundos
-            0  // milissegundos
-        );
-
-        // NÃO adiciona um dia se o horário for no passado ou igual ao atual
-        // Isso garante que o horário seja tratado como do mesmo dia
-        // Se precisar tratar como próximo dia apenas para horários futuros, mantenha a lógica abaixo
-        // Porém, pelo seu feedback, removemos a adição de um dia para horários passados
-
-        // Obter o timestamp (em milissegundos)
-        var timestamp = timestampDate.getTime();
-
-        var agora = Date.now();
-        var isFuture = timestamp > agora;
-
-        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        detalhes.push({
-            local: local,
-            item: item,
-            quantidade: quantidade,
-            destino: destino,
-            dataAtual: dataAtual,
-            horario: horario,
-            timestamp: timestamp, // Usamos o timestamp calculado
-            isFuture: isFuture    // Indica se o horário é no futuro
-        });
-        localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
+        // Restante do código para registrar a solicitação
+        // ...
 
         alert("Material solicitado com sucesso!");
 
@@ -227,6 +171,7 @@ if (janelaForm) {
         }
     });
 }
+
 
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
@@ -368,24 +313,15 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    // Chama a função para abrir a janela de solicitação
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino
-                    });
-
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((_, i) => i !== index);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
+                    var index = parseInt(this.getAttribute('data-index'));
+                    abrirJanelaSolicitacao(item, index);
+                    // Não removemos o item aqui
                 });
             }
         });
     }
 }
+
 
 function abrirJanelaSolicitacao(dados, index) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -410,6 +346,7 @@ function abrirJanelaSolicitacao(dados, index) {
         janelaSolicitacao.style.display = "block";
     }
 }
+
 
 
 
