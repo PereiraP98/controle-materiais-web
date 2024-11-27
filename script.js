@@ -449,7 +449,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// Função para atualizar a tabela de materiais reservados
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableBody = document.querySelector("#reservadosTable tbody");
@@ -457,13 +456,13 @@ function atualizarTabelaReservados() {
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-        reservados.forEach(function (item) {
+        reservados.forEach(function (item, index) {
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-item="${item.item}">Solicitar</button></td>
+                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
 
             reservadosTableBody.appendChild(newRow);
@@ -472,16 +471,33 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(item);
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
+                    var index = parseInt(this.getAttribute('data-index'));
+
+                    // Recupera o array atualizado de reservados
+                    var reservadosAtualizados = JSON.parse(localStorage.getItem("reservados")) || [];
+                    var itemSelecionado = reservadosAtualizados[index];
+
+                    // Abre a janela de solicitação com os dados do item selecionado
+                    abrirJanelaSolicitacao({
+                        local: itemSelecionado.local,
+                        item: itemSelecionado.item,
+                        destino: itemSelecionado.destino,
+                    });
+
+                    // Remove o item selecionado do array
+                    reservadosAtualizados.splice(index, 1);
                     localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
+
+                    // Atualiza a tabela de reservados
                     atualizarTabelaReservados();
+
+                    alert("Material solicitado e removido da lista de reservados!");
                 });
             }
         });
     }
 }
+
 
 // Carrega os dados ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
