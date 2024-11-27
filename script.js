@@ -5,7 +5,7 @@ const intervalMap = new Map();
 
 // Inicializar o EmailJS com a Public Key
 (function() {
-    emailjs.init("baO8F3nCL7i-U5sZG"); // Substitua pela sua Public Key correta
+    emailjs.init("-Dld80qWNEvyNQQYz"); // Substitua pela sua Public Key correta
 })();
 
 // Lógica de login
