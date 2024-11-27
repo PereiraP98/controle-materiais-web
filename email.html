@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste EmailJS</title>
+    <!-- SDK do EmailJS -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("-Dld80qWNEvyNQQYz");
+        })();
+    </script>
+</head>
+<body>
+    <button id="sendEmailButton">Enviar E-mail de Teste</button>
+    <script type="text/javascript">
+        document.getElementById('sendEmailButton').addEventListener('click', function() {
+            var templateParams = {
+                message: 'Este é um e-mail de teste.',
+                to_email: 'lucasprestes8486@gmail.com, lucasprestes3540@gmail.com'
+            };
+
+            emailjs.send('service_i0s3unp', 'template_28grsg5', templateParams)
+                .then(function(response) {
+                    alert('E-mail enviado com sucesso!');
+                }, function(error) {
+                    alert('Ocorreu um erro ao enviar o e-mail: ' + JSON.stringify(error));
+                });
+        });
+    </script>
+</body>
+</html>
