@@ -118,6 +118,10 @@
     <div id="janelaSolicitacao" class="janela-flutuante">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
+            <!-- Campos ocultos para armazenar informações sobre o item reservado -->
+            <input type="hidden" id="fromReservados" name="fromReservados" value="false">
+            <input type="hidden" id="itemIndex" name="itemIndex" value="-1">
+
             <label for="quantidade">Quantidade do Material:</label>
             <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
 
@@ -142,19 +146,19 @@
         checkAuthentication();
     </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Verificar o tema salvo no localStorage
-        const savedTheme = localStorage.getItem('theme');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
 
-        // Aplicar o tema escuro, se configurado
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-    });
-</script>
+            // Aplicar o tema escuro, se configurado
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
 
 </body>
 </html>
