@@ -3,11 +3,7 @@
 // Map para armazenar os IDs dos intervals para cada detalhe
 const intervalMap = new Map();
 
-// Inicializar o EmailJS com a Public Key
-(function() {
-    emailjs.init("-Dld80qWNEvyNQQYz"); // Substitua pela sua Public Key correta
-    console.log("EmailJS inicializado com sucesso!");
-})();
+
 
 // Lógica de login
 var loginForm = document.getElementById("loginForm");
