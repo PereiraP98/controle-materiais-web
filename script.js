@@ -976,14 +976,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
 
                     if (confirmacao) {
-                        // Construir a lista de itens atrasados no formato desejado
-                        var detalhesItens = detalhesReportados.map(function(detalhe) {
+                        // Construir o conteúdo do e-mail
+                        var mensagemEmail = `Reporte de Materiais Atrasados\n\nPrezados,\n\n` +
+                            `Estamos notificando que o material solicitado com os seguintes detalhes encontra-se em atraso para retirada:\n\n`;
+
+                        mensagemEmail += detalhesReportados.map(function(detalhe) {
                             return `${detalhe.local} - ${detalhe.item} - (${detalhe.destino}) - (Solicitação: ${detalhe.horario}) - (Tempo de atraso decorrido: ${detalhe.tempoAtraso})`;
                         }).join("\n");
 
+                        mensagemEmail += `\n\nSolicitamos que verifiquem o status deste material e tomem as medidas preventivas para regularizar a situação.\n\n` +
+                            `Agradecemos pela atenção e aguardamos as orientações sobre os próximos passos.\n\nAtenciosamente,\nReposição - CDP`;
+
                         // Enviar o e-mail usando o EmailJS
                         var templateParams = {
-                            detalhes_itens: detalhesItens,
+                            message: mensagemEmail,
                             to_email: 'lucasprestes8486@gmail.com, lucasprestes3540@gmail.com' // Destinatários
                         };
 
