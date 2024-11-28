@@ -268,6 +268,39 @@ function abrirJanelaSolicitacao(dados, index) {
     }
 }
 
+// Função para mostrar uma janela de atenção (pode ser utilizada se necessário)
+function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
+    var janelaAtencao = document.getElementById("janelaAtencao");
+    var atencaoMensagem = document.getElementById("atencaoMensagem");
+    var confirmarAtencao = document.getElementById("confirmarAtencao");
+    var cancelarAtencao = document.getElementById("cancelarAtencao");
+
+    if (janelaAtencao && atencaoMensagem) {
+        // Define a mensagem dinâmica
+        atencaoMensagem.textContent = mensagem;
+
+        // Remove a classe 'hidden' para exibir a janela
+        janelaAtencao.classList.remove("hidden");
+
+        // Adiciona os eventos nos botões
+        if (confirmarAtencao) {
+            confirmarAtencao.onclick = function () {
+                if (onConfirm) onConfirm(); // Executa a ação de confirmação
+                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+            };
+        }
+
+        if (cancelarAtencao) {
+            cancelarAtencao.onclick = function () {
+                if (onCancel) onCancel(); // Executa a ação de cancelamento
+                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+            };
+        }
+    } else {
+        console.error("Elementos da janela de atenção não encontrados.");
+    }
+}
+
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
 
@@ -336,12 +369,6 @@ function atualizarTabelaReservados() {
     }
 }
 
-// Carrega os dados ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-    atualizarTabelaSolicitados();
-});
-
 // Função para atualizar a tabela de materiais solicitados na página index.html
 function atualizarTabelaSolicitados() {
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
@@ -363,180 +390,625 @@ function atualizarTabelaSolicitados() {
     }
 }
 
-// Código específico para detalhes.html
-if (window.location.pathname.includes("detalhes.html")) {
-    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    var detalhesTableElement = document.getElementById("detalhesTable");
-    var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
-    var excluirItensButton = document.getElementById("excluirItensButton");
+// Carrega os dados ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+    atualizarTabelaSolicitados();
 
-    // Função para formatar o tempo decorrido ou restante
-    function formatTime(milliseconds, showSeconds = false) {
-        if (milliseconds < 0) milliseconds = 0; // Evita valores negativos
+    // Código específico para detalhes.html
+    if (window.location.pathname.includes("detalhes.html")) {
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        var detalhesTableElement = document.getElementById("detalhesTable");
+        var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
+        var excluirItensButton = document.getElementById("excluirItensButton");
 
-        var totalSeconds = Math.floor(milliseconds / 1000);
-        var hours = Math.floor(totalSeconds / 3600);
-        var minutes = Math.floor((totalSeconds % 3600) / 60);
-        var seconds = totalSeconds % 60;
+        // Função para formatar o tempo decorrido ou restante
+        function formatTime(milliseconds, showSeconds = false) {
+            if (milliseconds < 0) milliseconds = 0; // Evita valores negativos
 
-        var timeString = (
-            String(hours).padStart(2, '0') + ':' +
-            String(minutes).padStart(2, '0')
-        );
+            var totalSeconds = Math.floor(milliseconds / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
 
-        if (showSeconds) {
-            timeString += ':' + String(seconds).padStart(2, '0');
+            var timeString = (
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0')
+            );
+
+            if (showSeconds) {
+                timeString += ':' + String(seconds).padStart(2, '0');
+            }
+
+            return timeString;
         }
 
-        return timeString;
-    }
+        // Função para atualizar a tabela de detalhes
+        function atualizarTabelaDetalhes() {
+            if (detalhesTable) {
+                detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-    // Função para atualizar a tabela de detalhes
-    function atualizarTabelaDetalhes() {
-        if (detalhesTable) {
-            detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+                detalhes.forEach(function (detalhe, index) {
+                    var newRow = document.createElement("tr");
 
-            detalhes.forEach(function (detalhe, index) {
-                var newRow = document.createElement("tr");
+                    // Determina se o horário é no futuro ou no passado
+                    var agora = Date.now();
+                    detalhe.isFuture = detalhe.timestamp > agora;
 
-                // Determina se o horário é no futuro ou no passado
-                var agora = Date.now();
-                detalhe.isFuture = detalhe.timestamp > agora;
+                    // Calcula o tempo restante ou decorrido
+                    var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
 
-                // Calcula o tempo restante ou decorrido
-                var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${detalhe.local}</td>
+                        <td>${detalhe.item}</td>
+                        <td>${detalhe.quantidade}</td>
+                        <td>${detalhe.destino}</td>
+                        <td>${detalhe.dataAtual}</td>
+                        <td>${detalhe.horario}</td>
+                        <td><button class="receberButton">Receber</button></td>
+                        <td class="tempo-cell">${tempoDisplay}</td>
+                    `;
+                    detalhesTable.appendChild(newRow);
 
-                newRow.innerHTML = `
-                    <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                    <td>${detalhe.local}</td>
-                    <td>${detalhe.item}</td>
-                    <td>${detalhe.quantidade}</td>
-                    <td>${detalhe.destino}</td>
-                    <td>${detalhe.dataAtual}</td>
-                    <td>${detalhe.horario}</td>
-                    <td><button class="receberButton">Receber</button></td>
-                    <td class="tempo-cell">${tempoDisplay}</td>
-                `;
-                detalhesTable.appendChild(newRow);
+                    // Adiciona o evento de clique ao botão Receber
+                    var receberButton = newRow.querySelector(".receberButton");
+                    if (receberButton) {
+                        receberButton.addEventListener("click", function () {
+                            abrirJanelaRecebimento(index);
+                        });
+                    }
 
-                // Adiciona o evento de clique ao botão Receber
-                var receberButton = newRow.querySelector(".receberButton");
-                if (receberButton) {
-                    receberButton.addEventListener("click", function () {
-                        abrirJanelaRecebimento(index);
-                    });
-                }
+                    // Manipulação do tempo e eventos de hover
+                    var tempoCell = newRow.querySelector(".tempo-cell");
+                    if (tempoCell) {
+                        // Função para atualizar o tempo na célula
+                        function updateTimeCell(showSeconds = false) {
+                            const now = Date.now();
+                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
 
-                // Manipulação do tempo e eventos de hover
-                var tempoCell = newRow.querySelector(".tempo-cell");
-                if (tempoCell) {
-                    // Função para atualizar o tempo na célula
-                    function updateTimeCell(showSeconds = false) {
-                        const now = Date.now();
-                        const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+                            // Define tempos limites
+                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
 
-                        // Define tempos limites
-                        const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                        const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
-
-                        if (elapsed > maxTime) {
-                            newRow.classList.add("oscillation");
-                            newRow.style.background = ""; // Remove estilos inline conflitantes
-                        } else {
-                            newRow.classList.remove("oscillation");
-
-                            // Gradiente dinâmico para preenchimento da barra
-                            let backgroundGradient;
-                            if (elapsed <= midTime) {
-                                const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                            if (elapsed > maxTime) {
+                                newRow.classList.add("oscillation");
+                                newRow.style.background = ""; // Remove estilos inline conflitantes
                             } else {
-                                const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                                newRow.classList.remove("oscillation");
+
+                                // Gradiente dinâmico para preenchimento da barra
+                                let backgroundGradient;
+                                if (elapsed <= midTime) {
+                                    const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                                    backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                                } else {
+                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                                    backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                                }
+
+                                // Atualiza o fundo da linha inteira
+                                newRow.style.background = backgroundGradient;
                             }
 
-                            // Atualiza o fundo da linha inteira
-                            newRow.style.background = backgroundGradient;
+                            // Atualiza o campo de tempo
+                            if (detalhe.isFuture) {
+                                const remaining = detalhe.timestamp - now;
+                                if (remaining <= 0) {
+                                    detalhe.isFuture = false;
+                                    detalhe.timestamp = now;
+                                }
+                                tempoCell.textContent = formatTime(remaining, showSeconds);
+                            } else {
+                                tempoCell.textContent = formatTime(elapsed, showSeconds);
+                            }
                         }
 
-                        // Atualiza o campo de tempo
+                        // Inicializa a contagem
                         if (detalhe.isFuture) {
-                            const remaining = detalhe.timestamp - now;
-                            if (remaining <= 0) {
-                                detalhe.isFuture = false;
-                                detalhe.timestamp = now;
-                            }
-                            tempoCell.textContent = formatTime(remaining, showSeconds);
+                            // Inicia a contagem regressiva a cada segundo
+                            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, countdownInterval);
                         } else {
-                            tempoCell.textContent = formatTime(elapsed, showSeconds);
-                        }
-                    }
-
-                    // Inicializa a contagem
-                    if (detalhe.isFuture) {
-                        // Inicia a contagem regressiva a cada segundo
-                        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                        intervalMap.set(index, countdownInterval);
-                    } else {
-                        // Inicia a contagem do tempo decorrido a cada segundo
-                        var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                        intervalMap.set(index, elapsedInterval);
-                    }
-
-                    // Exibição inicial
-                    updateTimeCell(false);
-
-                    // Eventos de hover para exibir e ocultar os segundos
-                    newRow.addEventListener("mouseover", function () {
-                        // Pausa o intervalo padrão, se existir
-                        if (intervalMap.has(index)) {
-                            clearInterval(intervalMap.get(index));
-                            intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+                            // Inicia a contagem do tempo decorrido a cada segundo
+                            var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, elapsedInterval);
                         }
 
-                        // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                        updateTimeCell(true); // Atualiza para exibir HH:MM:SS
-                        if (!tempoCell._hoverInterval) {
-                            tempoCell._hoverInterval = setInterval(() => {
-                                const elapsedHover = Date.now() - detalhe.timestamp;
-                                tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
-                            }, 1000);
-                        }
-                    });
+                        // Exibição inicial
+                        updateTimeCell(false);
 
-                    newRow.addEventListener("mouseout", function () {
-                        // Para a contagem dos segundos durante o hover
-                        if (tempoCell._hoverInterval) {
-                            clearInterval(tempoCell._hoverInterval);
-                            delete tempoCell._hoverInterval; // Remove a referência ao intervalo
-                        }
-
-                        // Verifica se o item é futuro ou passado e retoma a contagem normal
-                        if (detalhe.isFuture) {
-                            if (!intervalMap.has(index)) {
-                                // Reinicia a contagem regressiva apenas se não estiver já ativa
-                                var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                                intervalMap.set(index, countdownInterval);
+                        // Eventos de hover para exibir e ocultar os segundos
+                        newRow.addEventListener("mouseover", function () {
+                            // Pausa o intervalo padrão, se existir
+                            if (intervalMap.has(index)) {
+                                clearInterval(intervalMap.get(index));
+                                intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
                             }
-                        } else {
-                            if (!intervalMap.has(index)) {
-                                // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
-                                var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                                intervalMap.set(index, elapsedInterval);
-                            }
-                        }
 
-                        // Volta para o formato HH:MM
-                        const elapsed = Date.now() - detalhe.timestamp;
-                        tempoCell.textContent = formatTime(elapsed, false);
-                    });
+                            // Atualiza imediatamente com segundos e inicia um intervalo de hover
+                            updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+                            if (!tempoCell._hoverInterval) {
+                                tempoCell._hoverInterval = setInterval(() => {
+                                    const elapsedHover = Date.now() - detalhe.timestamp;
+                                    tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+                                }, 1000);
+                            }
+                        });
+
+                        newRow.addEventListener("mouseout", function () {
+                            // Para a contagem dos segundos durante o hover
+                            if (tempoCell._hoverInterval) {
+                                clearInterval(tempoCell._hoverInterval);
+                                delete tempoCell._hoverInterval; // Remove a referência ao intervalo
+                            }
+
+                            // Verifica se o item é futuro ou passado e retoma a contagem normal
+                            if (detalhe.isFuture) {
+                                if (!intervalMap.has(index)) {
+                                    // Reinicia a contagem regressiva apenas se não estiver já ativa
+                                    var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                                    intervalMap.set(index, countdownInterval);
+                                }
+                            } else {
+                                if (!intervalMap.has(index)) {
+                                    // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
+                                    var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                                    intervalMap.set(index, elapsedInterval);
+                                }
+                            }
+
+                            // Volta para o formato HH:MM
+                            const elapsed = Date.now() - detalhe.timestamp;
+                            tempoCell.textContent = formatTime(elapsed, false);
+                        });
+                    }
+                });
+            }
+        }
+
+        atualizarTabelaDetalhes();
+
+        // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
+
+        // Função para abrir a janela flutuante de recebimento
+        function abrirJanelaRecebimento(index) {
+            var detalhe = detalhes[index];
+            // Preenche os campos da janela com os dados atuais
+            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+            if (recebimentoQuantidadeInput) {
+                recebimentoQuantidadeInput.value = detalhe.quantidade;
+            }
+            var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+            if (recebimentoHorarioInput) {
+                recebimentoHorarioInput.value = horarioAtual;
+            }
+            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+            if (recebimentoIndexInput) {
+                recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
+            }
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            if (janelaRecebimento) {
+                janelaRecebimento.style.display = "block";
+            }
+        }
+
+        // Fecha a janela de recebimento
+        var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
+        if (cancelarRecebimentoButton) {
+            cancelarRecebimentoButton.addEventListener("click", function () {
+                var janelaRecebimento = document.getElementById("janelaRecebimento");
+                if (janelaRecebimento) {
+                    janelaRecebimento.style.display = "none";
                 }
             });
         }
+
+        // Confirma o recebimento
+        var recebimentoForm = document.getElementById("recebimentoForm");
+        if (recebimentoForm) {
+            recebimentoForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+                var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+                var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+
+                var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
+                var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
+                var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
+
+                // Validações
+                if (index === -1 || isNaN(index)) {
+                    alert("Erro ao identificar o item a ser recebido.");
+                    return;
+                }
+
+                if (!quantidadeRecebida) {
+                    alert("Por favor, insira a quantidade recebida.");
+                    return;
+                }
+
+                if (!horarioRecebido) {
+                    alert("Por favor, insira o horário de recebimento.");
+                    return;
+                }
+
+                var detalhe = detalhes[index];
+
+                // Limpa os intervals do cronômetro
+                if (intervalMap.has(index)) {
+                    clearInterval(intervalMap.get(index));
+                    intervalMap.delete(index);
+                }
+
+                // Cria um novo objeto para materiais recebidos
+                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+                recebidos.push({
+                    local: detalhe.local,
+                    item: detalhe.item,
+                    quantidade: quantidadeRecebida,
+                    destino: detalhe.destino,
+                    dataAtual: detalhe.dataAtual,
+                    horario: detalhe.horario,
+                    recebido: horarioRecebido,
+                    guardado: '' // Pode ser preenchido posteriormente
+                });
+                localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                // Remove o item da lista de detalhes
+                detalhes.splice(index, 1);
+                localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+                // Também remove o item correspondente de 'solicitados'
+                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+                var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
+                    return itemSolicitado.local === detalhe.local &&
+                        itemSolicitado.item === detalhe.item &&
+                        itemSolicitado.destino === detalhe.destino;
+                });
+
+                if (solicitadosIndex !== -1) {
+                    solicitados.splice(solicitadosIndex, 1);
+                    localStorage.setItem("solicitados", JSON.stringify(solicitados));
+                }
+
+                // Atualiza a tabela
+                atualizarTabelaDetalhes();
+
+                // Atualiza a tabela de recebidos
+                atualizarTabelaRecebidos();
+
+                var janelaRecebimento = document.getElementById("janelaRecebimento");
+                if (janelaRecebimento) {
+                    janelaRecebimento.style.display = "none";
+                }
+
+                alert("Material recebido com sucesso!");
+            });
+        }
+
+        // Função para atualizar a tabela de materiais recebidos
+        var recebidosTableElement = document.getElementById("recebidosTable");
+        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
+
+        function atualizarTabelaRecebidos() {
+            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            if (recebidosTable) {
+                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+                recebidos.forEach(function (item, index) {
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.dataAtual}</td>
+                        <td>${item.horario}</td>
+                        <td>${item.recebido}</td>
+                        <td>${item.guardado}</td>
+                    `;
+                    recebidosTable.appendChild(newRow);
+                });
+            }
+        }
+
+        atualizarTabelaRecebidos();
+
+        // Função para excluir itens da tabela de materiais solicitados
+        var excluirItensButton = document.getElementById("excluirItensButton");
+
+        if (excluirItensButton) {
+            excluirItensButton.addEventListener("click", function () {
+                var detalhesTable = document.getElementById("detalhesTable");
+                var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+                var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+
+                if (!detalhesTableBody) {
+                    alert("Tabela de materiais solicitados não encontrada.");
+                    return;
+                }
+
+                // Verifica se há itens na tabela
+                if (detalhesTableBody.rows.length === 0) {
+                    alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
+                    excluirItensButton.textContent = "Excluir Itens";
+                    return;
+                }
+
+                // Seleciona todas as colunas de checkbox
+                var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+                var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                // Verifica se a coluna está oculta
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir a coluna "SELECIONE"
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    excluirItensButton.textContent = "Confirmar Exclusão";
+
+                    // Adiciona evento para "Selecionar Todos" no cabeçalho
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener("change", function () {
+                            // Marca ou desmarca todas as caixas de seleção
+                            var isChecked = this.checked;
+                            checkboxes.forEach((checkbox) => {
+                                checkbox.checked = isChecked;
+                            });
+                        });
+                    }
+                } else {
+                    // Processar exclusão
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
+
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+                        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+
+                        selectedCheckboxes.forEach((checkbox) => {
+                            var row = checkbox.closest("tr");
+                            var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
+
+                            // Remove do array de detalhes
+                            var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
+
+                            // Remove o item correspondente da lista de solicitados em index
+                            solicitados = solicitados.filter((itemSolicitado) => {
+                                return !(
+                                    itemSolicitado.local === detalheExcluido.local &&
+                                    itemSolicitado.item === detalheExcluido.item &&
+                                    itemSolicitado.destino === detalheExcluido.destino
+                                );
+                            });
+
+                            // Remove a linha da tabela
+                            row.remove();
+                        });
+
+                        // Atualiza o localStorage
+                        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+
+                        alert("Itens excluídos com sucesso!");
+
+                        // Ocultar novamente a coluna "SELECIONE"
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        excluirItensButton.textContent = "Excluir Itens";
+
+                        // Desmarcar a caixa "Selecionar Todos"
+                        if (selectAllCheckbox) selectAllCheckbox.checked = false;
+
+                        // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
+                        if (window.location.pathname.includes("index.html")) {
+                            atualizarTabelaSolicitados();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Função para excluir itens da tabela de materiais recebidos
+        var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
+
+        if (excluirRecebidosButton) {
+            excluirRecebidosButton.addEventListener("click", function () {
+                var recebidosTable = document.getElementById("recebidosTable");
+                var recebidosTableBody = recebidosTable ? recebidosTable.querySelector("tbody") : null;
+                var selectAllRecebidosCheckbox = document.getElementById("selectAllRecebidosCheckbox");
+
+                if (!recebidosTableBody) {
+                    alert("Tabela de materiais recebidos não encontrada.");
+                    return;
+                }
+
+                // Verifica se há itens na tabela
+                if (recebidosTableBody.rows.length === 0) {
+                    alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
+                    excluirRecebidosButton.textContent = "Excluir Itens";
+                    return;
+                }
+
+                // Seleciona todas as colunas de checkbox
+                var checkboxColumns = recebidosTable.querySelectorAll(".checkbox-column");
+                var checkboxes = recebidosTableBody.querySelectorAll(".delete-checkbox");
+
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                // Verifica se a coluna está oculta
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir a coluna "SELECIONE"
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    excluirRecebidosButton.textContent = "Confirmar Exclusão";
+
+                    // Adiciona evento para "Selecionar Todos" no cabeçalho
+                    if (selectAllRecebidosCheckbox) {
+                        selectAllRecebidosCheckbox.addEventListener("change", function () {
+                            // Marca ou desmarca todas as caixas de seleção
+                            var isChecked = this.checked;
+                            checkboxes.forEach((checkbox) => {
+                                checkbox.checked = isChecked;
+                            });
+                        });
+                    }
+                } else {
+                    // Processar exclusão
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
+
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+
+                        selectedCheckboxes.forEach((checkbox) => {
+                            var row = checkbox.closest("tr");
+                            var rowIndex = Array.from(recebidosTableBody.rows).indexOf(row);
+
+                            // Remove do array de itens recebidos
+                            recebidos.splice(rowIndex, 1);
+
+                            // Remove a linha da tabela
+                            row.remove();
+                        });
+
+                        // Atualiza o localStorage
+                        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                        alert("Itens excluídos com sucesso!");
+
+                        // Ocultar novamente a coluna "SELECIONE"
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        excluirRecebidosButton.textContent = "Excluir Itens";
+
+                        // Desmarcar a caixa "Selecionar Todos"
+                        if (selectAllRecebidosCheckbox) selectAllRecebidosCheckbox.checked = false;
+                    }
+                }
+            });
+        }
+
+        // Função para reportar itens atrasados
+        var reportarItensButton = document.getElementById("reportarItensButton");
+        var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+
+        if (reportarItensButton) {
+            reportarItensButton.addEventListener("click", function () {
+                var detalhesTable = document.getElementById("detalhesTable");
+                var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+
+                if (!detalhesTableBody) {
+                    alert("Tabela de materiais solicitados não encontrada.");
+                    return;
+                }
+
+                var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+                var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir as caixas de seleção e resetar marcações
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
+                    reportarItensButton.textContent = "Confirmar Reporte";
+
+                    // Vincular a função ao checkbox de selecionar todos
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener("change", function () {
+                            checkboxes.forEach((checkbox) => {
+                                var row = checkbox.closest("tr");
+                                var horaCell = row.children[6].textContent; // Coluna "HORA"
+
+                                // Verifica se o item está atrasado (30 minutos ou mais)
+                                if (verificarAtraso(horaCell)) {
+                                    checkbox.checked = this.checked; // Marca apenas itens atrasados
+                                }
+                            });
+                        });
+                    }
+                } else {
+                    // Verifica itens selecionados
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja reportar.");
+                        return;
+                    }
+
+                    // Verificar se todos os itens selecionados estão atrasados
+                    var detalhesReportados = [];
+                    var erro = false;
+
+                    selectedCheckboxes.forEach((checkbox) => {
+                        var row = checkbox.closest("tr");
+                        var horaCell = row.children[6].textContent; // Coluna "HORA"
+                        var local = row.children[1].textContent; // Local do material
+                        var item = row.children[2].textContent;  // Código do item
+
+                        if (!verificarAtraso(horaCell)) {
+                            alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
+                            erro = true;
+                            checkbox.checked = false; // Desmarca o item não atrasado
+                        } else {
+                            detalhesReportados.push(`• ${local} - ${item}`);
+                        }
+                    });
+
+                    if (erro) {
+                        return; // Interrompe o processo se houver erro
+                    }
+
+                    // Confirmar com a lista dos itens reportados
+                    var confirmacao = confirm(
+                        `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
+                    );
+
+                    if (confirmacao) {
+                        alert("Reporte realizado com sucesso!");
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        reportarItensButton.textContent = "Reportar";
+                    }
+                }
+            });
+        }
+
+        // Função para verificar se um item está atrasado
+        function verificarAtraso(horaSolicitada) {
+            var agora = new Date();
+            var [horas, minutos] = horaSolicitada.split(":").map(Number);
+
+            var horarioSolicitado = new Date();
+            horarioSolicitado.setHours(horas, minutos, 0, 0);
+
+            var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
+
+            return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
+        }
     }
-
-    atualizarTabelaDetalhes();
-
-    // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
-    // ... (Inclua aqui as funções relacionadas, conforme necessário)
-}
+});
