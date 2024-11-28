@@ -1,132 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Inclusão do SDK do EmailJS -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
 </head>
 <body>
     <header>
+        <!-- Ajuste no header-container -->
         <div class="header-container">
-            <div>
-                <h1>Controle de Materiais</h1>
-                <p id="codigoRegistro" style="display: none; font-weight: bold; font-size: 16px;">Código de Registro: <span id="registroCodigo"></span></p>
-            </div>
+            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <h1>Controle de Materiais</h1>
+            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
                 </button>
+                <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
         </div>
     </header>
     <main class="main-container">
-        <button id="iniciarTurnoButton" style="margin: 10px; padding: 10px 15px;">Iniciar Turno</button>
-        
-        <div class="column">
-            <section class="solicitacao-container">
-                <h2>Solicitação de Materiais</h2>
-                <form id="materialForm">
-                    <label for="local">Local:</label>
-                    <select id="local" name="local" required>
-                        <option value="CA">CA</option>
-                        <option value="VF">VF</option>
-                        <option value="VD">VD</option>
-                        <option value="VE">VE</option>
-                        <option value="EX">EX</option>
-                        <option value="R01">R01</option>
-                    </select>
-
-                    <label for="item">Código do Item:</label>
-                    <input type="text" id="item" name="item" placeholder="Ex: 20239" maxlength="5" pattern="\d{5}" required>
-
-                    <label for="destino">Destino:</label>
-                    <select id="destino" name="destino" required>
-                        <option value="PICKING">PICKING</option>
-                        <option value="MESA">MESA</option>
-                    </select>
-
-                    <div class="button-container">
-                        <button type="button" id="abrirSolicitacaoButton" style="display: none;">Solicitar</button>
-                        <button type="button" id="reservarButton" style="display: none;">Reservar</button>
-                    </div>
-                </form>
-            </section>
-        </div>
+        <!-- Conteúdo da página detalhes.html -->
+        <!-- Você pode adicionar aqui suas seções e tabelas específicas -->
     </main>
+
+    <!-- Janela Flutuante de Recebimento (se aplicável) -->
+    <!-- ... -->
 
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
+    <!-- Scripts -->
+    <!-- Inclusão do SDK do EmailJS antes do seu script.js -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
+    <script src="script.js"></script>
     <script>
-        // Função para gerar um código de registro
-        function gerarCodigoRegistro() {
-            return Math.floor(1000 + Math.random() * 9000).toString();
-        }
+        // Chama a função de verificação de autenticação
+        checkAuthentication();
+    </script>
 
-        // Função para verificar se o código de registro é válido para o dia
-        function verificarCodigoRegistro() {
-            const codigoData = localStorage.getItem("registroData");
-            const codigoAtual = localStorage.getItem("codigoRegistro");
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
 
-            const hoje = new Date().toISOString().split("T")[0]; // Data no formato YYYY-MM-DD
-
-            // Se a data for diferente de hoje, redefine o código
-            if (codigoData !== hoje) {
-                localStorage.removeItem("codigoRegistro");
-                localStorage.removeItem("registroData");
-                return null;
-            }
-
-            return codigoAtual;
-        }
-
-        // Função para inicializar o turno
-        function iniciarTurno() {
-            const codigo = gerarCodigoRegistro();
-            const hoje = new Date().toISOString().split("T")[0]; // Data no formato YYYY-MM-DD
-
-            // Salva o código de registro e a data
-            localStorage.setItem("codigoRegistro", codigo);
-            localStorage.setItem("registroData", hoje);
-
-            return codigo;
-        }
-
-        // Controle da página ao carregar
-        document.addEventListener("DOMContentLoaded", function () {
-            const iniciarTurnoButton = document.getElementById("iniciarTurnoButton");
-            const abrirSolicitacaoButton = document.getElementById("abrirSolicitacaoButton");
-            const reservarButton = document.getElementById("reservarButton");
-            const codigoRegistroContainer = document.getElementById("codigoRegistro");
-            const registroCodigo = document.getElementById("registroCodigo");
-
-            // Verifica o código existente
-            const codigoExistente = verificarCodigoRegistro();
-
-            if (codigoExistente) {
-                registroCodigo.textContent = codigoExistente;
-                codigoRegistroContainer.style.display = "block";
-                abrirSolicitacaoButton.style.display = "inline-block";
-                reservarButton.style.display = "inline-block";
-                iniciarTurnoButton.style.display = "none";
+            // Aplicar o tema escuro, se configurado
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
             } else {
-                iniciarTurnoButton.addEventListener("click", function () {
-                    const novoCodigo = iniciarTurno();
-                    registroCodigo.textContent = novoCodigo;
-                    codigoRegistroContainer.style.display = "block";
-                    abrirSolicitacaoButton.style.display = "inline-block";
-                    reservarButton.style.display = "inline-block";
-                    iniciarTurnoButton.style.display = "none";
-                    alert(`Turno iniciado! Código de registro: ${novoCodigo}`);
-                });
+                document.body.classList.remove('dark-mode');
             }
         });
     </script>
+
 </body>
 </html>
