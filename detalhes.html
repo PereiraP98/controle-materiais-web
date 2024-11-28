@@ -31,84 +31,11 @@
     </header>
     <main class="main-container">
         <!-- Seção de detalhes de materiais solicitados -->
-        <section class="detalhes-container">
-            <div class="title-container">
-                <h2>Detalhes de Materiais Solicitados</h2>
-                <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
-                <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
-            </div>
-            <table id="detalhesTable">
-                <thead>
-                    <tr>
-                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos"></th>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBER</th>
-                        <th>TEMPO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dados dinâmicos -->
-                </tbody>
-            </table>
-            <div class="button-container">
-                <button onclick="location.href='index.html'">Voltar</button>
-            </div>
-        </section>
-
-        <!-- Seção de detalhes de materiais recebidos -->
-        <section class="detalhes-container">
-            <div class="title-container">
-                <h2>Detalhes de Materiais Recebidos</h2>
-                <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
-            </div>
-            <table id="recebidosTable">
-                <thead>
-                    <tr>
-                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBIDO</th>
-                        <th>GUARDADO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dados dinâmicos -->
-                </tbody>
-            </table>
-            <div class="button-container">
-                <button onclick="location.href='index.html'">Voltar</button>
-            </div>
-        </section>
+        <!-- ... (restante do conteúdo) -->
     </main>
 
     <!-- Janela Flutuante de Recebimento -->
-    <div id="janelaRecebimento" class="janela-flutuante">
-        <h2>Receber Material</h2>
-        <form id="recebimentoForm">
-            <label for="recebimentoQuantidade">Quantidade Recebida:</label>
-            <input type="number" id="recebimentoQuantidade" name="recebimentoQuantidade" value="1" min="1" required>
-
-            <label for="recebimentoHorario">Horário Recebido:</label>
-            <input type="time" id="recebimentoHorario" name="recebimentoHorario" required>
-
-            <!-- Input oculto para armazenar o índice do item -->
-            <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
-
-            <div class="button-container">
-                <button type="button" id="cancelarRecebimentoButton">Cancelar</button>
-                <button type="submit" id="confirmarRecebimentoButton">Receber</button>
-            </div>
-        </form>
-    </div>
+    <!-- ... -->
 
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
@@ -116,20 +43,13 @@
 
     <!-- Scripts -->
     <!-- Inclusão do SDK do EmailJS ANTES do seu script.js -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <!-- Inclusão do seu script.js -->
     <script src="script.js"></script>
-    <script>
-        // Inicializa o EmailJS
-        (function() {
-            emailjs.init("-Dld80qWNEvyNQQYz");
-            console.log("EmailJS inicializado com sucesso!");
-        })();
 
-        // Chama a função de verificação de autenticação
-        checkAuthentication();
-    </script>
+    <!-- Removemos a inicialização do EmailJS daqui -->
 
+    <!-- Script para aplicar o tema, se necessário -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Verificar o tema salvo no localStorage
