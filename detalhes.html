@@ -7,6 +7,9 @@
     <title>Detalhes de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Inclusão do SDK do EmailJS atualizado -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body class="detalhes-page">
     <header>
@@ -34,11 +37,12 @@
             <div class="title-container">
                 <h2>Detalhes de Materiais Solicitados</h2>
                 <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
+                <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
             </div>
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <th class="checkbox-column hidden">Selecionar</th>
+                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos"></th>
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
@@ -67,7 +71,7 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <th class="checkbox-column hidden">Selecionar</th>
+                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
@@ -113,10 +117,33 @@
     </footer>
 
     <!-- Scripts -->
+    <!-- Inclusão do SDK do EmailJS atualizado e script.js -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js"></script>
     <script>
+        // Inicializa o EmailJS
+        (function() {
+            emailjs.init("-Dld80qWNEvyNQQYz");
+            console.log("EmailJS inicializado com sucesso!");
+        })();
+
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
+
+            // Aplicar o tema escuro, se configurado
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
+
 </body>
 </html>
