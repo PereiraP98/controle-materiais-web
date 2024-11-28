@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes de Materiais</title>
+    <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Removido o SDK do EmailJS daqui -->
+    <!-- Inclusão do SDK do EmailJS -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
 </head>
-<body class="detalhes-page">
+<body>
     <header>
-        <!-- Header atualizado -->
+        <!-- Ajuste no header-container -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
-            <h1>Detalhes de Materiais</h1>
+            <h1>Controle de Materiais</h1>
             <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
                 <!-- Botão de Voltar ao Painel -->
@@ -30,11 +31,11 @@
         </div>
     </header>
     <main class="main-container">
-        <!-- Seção de detalhes de materiais solicitados -->
-        <!-- ... (restante do conteúdo) -->
+        <!-- Conteúdo da página detalhes.html -->
+        <!-- Você pode adicionar aqui suas seções e tabelas específicas -->
     </main>
 
-    <!-- Janela Flutuante de Recebimento -->
+    <!-- Janela Flutuante de Recebimento (se aplicável) -->
     <!-- ... -->
 
     <footer>
@@ -42,14 +43,14 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- Inclusão do SDK do EmailJS ANTES do seu script.js -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <!-- Inclusão do seu script.js -->
+    <!-- Inclusão do SDK do EmailJS antes do seu script.js -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Chama a função de verificação de autenticação
+        checkAuthentication();
+    </script>
 
-    <!-- Removemos a inicialização do EmailJS daqui -->
-
-    <!-- Script para aplicar o tema, se necessário -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Verificar o tema salvo no localStorage
