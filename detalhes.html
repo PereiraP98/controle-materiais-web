@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
+    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Materiais</title>
+    <title>Detalhes de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Inclusão do SDK do EmailJS -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
 </head>
-<body>
+<body class="detalhes-page">
     <header>
-        <!-- Ajuste no header-container -->
+        <!-- Header atualizado -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
-            <h1>Controle de Materiais</h1>
+            <h1>Detalhes de Materiais</h1>
             <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
                 <!-- Botão de Voltar ao Painel -->
@@ -31,39 +29,94 @@
         </div>
     </header>
     <main class="main-container">
-        <!-- Conteúdo da página detalhes.html -->
-        <!-- Você pode adicionar aqui suas seções e tabelas específicas -->
+        <!-- Seção de detalhes de materiais solicitados -->
+        <section class="detalhes-container">
+            <div class="title-container">
+                <h2>Detalhes de Materiais Solicitados</h2>
+                <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
+            </div>
+            <table id="detalhesTable">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column hidden">Selecionar</th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBER</th>
+                        <th>TEMPO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dinâmicos -->
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button onclick="location.href='index.html'">Voltar</button>
+            </div>
+        </section>
+
+        <!-- Seção de detalhes de materiais recebidos -->
+        <section class="detalhes-container">
+            <div class="title-container">
+                <h2>Detalhes de Materiais Recebidos</h2>
+                <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
+            </div>
+            <table id="recebidosTable">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column hidden">Selecionar</th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dinâmicos -->
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button onclick="location.href='index.html'">Voltar</button>
+            </div>
+        </section>
     </main>
 
-    <!-- Janela Flutuante de Recebimento (se aplicável) -->
-    <!-- ... -->
+    <!-- Janela Flutuante de Recebimento -->
+    <div id="janelaRecebimento" class="janela-flutuante">
+        <h2>Receber Material</h2>
+        <form id="recebimentoForm">
+            <label for="recebimentoQuantidade">Quantidade Recebida:</label>
+            <input type="number" id="recebimentoQuantidade" name="recebimentoQuantidade" value="1" min="1" required>
+
+            <label for="recebimentoHorario">Horário Recebido:</label>
+            <input type="time" id="recebimentoHorario" name="recebimentoHorario" required>
+
+            <!-- Input oculto para armazenar o índice do item -->
+            <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
+
+            <div class="button-container">
+                <button type="button" id="cancelarRecebimentoButton">Cancelar</button>
+                <button type="submit" id="confirmarRecebimentoButton">Receber</button>
+            </div>
+        </form>
+    </div>
 
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
     <!-- Scripts -->
-    <!-- Inclusão do SDK do EmailJS antes do seu script.js -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.6.2/email.min.js"></script>
     <script src="script.js"></script>
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Verificar o tema salvo no localStorage
-            const savedTheme = localStorage.getItem('theme');
-
-            // Aplicar o tema escuro, se configurado
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-        });
-    </script>
-
 </body>
 </html>
