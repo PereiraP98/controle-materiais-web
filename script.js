@@ -3,8 +3,6 @@
 // Map para armazenar os IDs dos intervals para cada detalhe
 const intervalMap = new Map();
 
-
-
 // Lógica de login
 var loginForm = document.getElementById("loginForm");
 if (loginForm) {
@@ -267,6 +265,39 @@ function abrirJanelaSolicitacao(dados, index) {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     if (janelaSolicitacao) {
         janelaSolicitacao.style.display = "block";
+    }
+}
+
+// Função para mostrar uma janela de atenção (pode ser utilizada se necessário)
+function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
+    var janelaAtencao = document.getElementById("janelaAtencao");
+    var atencaoMensagem = document.getElementById("atencaoMensagem");
+    var confirmarAtencao = document.getElementById("confirmarAtencao");
+    var cancelarAtencao = document.getElementById("cancelarAtencao");
+
+    if (janelaAtencao && atencaoMensagem) {
+        // Define a mensagem dinâmica
+        atencaoMensagem.textContent = mensagem;
+
+        // Remove a classe 'hidden' para exibir a janela
+        janelaAtencao.classList.remove("hidden");
+
+        // Adiciona os eventos nos botões
+        if (confirmarAtencao) {
+            confirmarAtencao.onclick = function () {
+                if (onConfirm) onConfirm(); // Executa a ação de confirmação
+                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+            };
+        }
+
+        if (cancelarAtencao) {
+            cancelarAtencao.onclick = function () {
+                if (onCancel) onCancel(); // Executa a ação de cancelamento
+                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+            };
+        }
+    } else {
+        console.error("Elementos da janela de atenção não encontrados.");
     }
 }
 
@@ -939,22 +970,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         var horaCell = row.children[6].textContent; // Coluna "HORA"
                         var local = row.children[1].textContent; // Local do material
                         var item = row.children[2].textContent;  // Código do item
-                        var destino = row.children[4].textContent; // Destino
-                        var index = Array.from(detalhesTableBody.rows).indexOf(row);
-                        var detalhe = detalhes[index];
 
                         if (!verificarAtraso(horaCell)) {
                             alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
                             erro = true;
                             checkbox.checked = false; // Desmarca o item não atrasado
                         } else {
-                            detalhesReportados.push({
-                                local: local,
-                                item: item,
-                                destino: destino,
-                                horario: detalhe.horario,
-                                tempoAtraso: formatTime(Date.now() - detalhe.timestamp)
-                            });
+                            detalhesReportados.push(`• ${local} - ${item}`);
                         }
                     });
 
@@ -962,35 +984,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         return; // Interrompe o processo se houver erro
                     }
 
-                    // Formatar a mensagem de confirmação
-                    var detalhesConfirmacao = detalhesReportados.map(function(detalhe) {
-                        return `${detalhe.local} - ${detalhe.item} - (${detalhe.destino})`;
-                    }).join("\n");
-
                     // Confirmar com a lista dos itens reportados
                     var confirmacao = confirm(
-                        `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesConfirmacao}`
+                        `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
                     );
 
                     if (confirmacao) {
-                        // Construir a lista de itens atrasados no formato desejado
-                        var detalhesItens = detalhesReportados.map(function(detalhe) {
-                            return `${detalhe.local} - ${detalhe.item} - (${detalhe.destino}) - (Solicitação: ${detalhe.horario}) - (Tempo de atraso decorrido: ${detalhe.tempoAtraso})`;
-                        }).join("\n");
-
-                        // Enviar o e-mail usando o EmailJS
-                        var templateParams = {
-                            detalhes_itens: detalhesItens,
-                            to_email: 'lucasprestes8486@gmail.com, lucasprestes3540@gmail.com' // Destinatários
-                        };
-
-                        emailjs.send('service_i0s3unp', 'template_28grsg5', templateParams)
-                            .then(function(response) {
-                                alert('Reporte realizado com sucesso e e-mail enviado!');
-                            }, function(error) {
-                                alert('Ocorreu um erro ao enviar o e-mail: ' + JSON.stringify(error));
-                            });
-
+                        alert("Reporte realizado com sucesso!");
                         checkboxColumns.forEach((column) => column.classList.add("hidden"));
                         reportarItensButton.textContent = "Reportar";
                     }
