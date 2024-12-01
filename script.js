@@ -97,8 +97,31 @@ if (abrirSolicitacaoButton) {
             return;
         }
 
-        // Abrir a janela de solicitação com os dados preenchidos
-        abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de solicitação
+                    abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de solicitação com os dados preenchidos
+            abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+        }
     });
 }
 
@@ -271,7 +294,7 @@ function abrirJanelaSolicitacao(dados, index) {
 }
 
 
-// Função para mostrar uma janela de atenção (pode ser utilizada se necessário)
+// Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
     var atencaoMensagem = document.getElementById("atencaoMensagem");
@@ -304,6 +327,7 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     }
 }
 
+
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
 
@@ -328,10 +352,34 @@ if (reservarButton) {
             return;
         }
 
-        // Abrir a janela de reserva
-        abrirJanelaReserva({ local, item, destino });
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de reserva
+                    abrirJanelaReserva({ local, item, destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de reserva
+            abrirJanelaReserva({ local, item, destino });
+        }
     });
 }
+
 
 
 // Função para abrir a janela de reserva
