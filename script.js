@@ -395,7 +395,94 @@ if (janelaReservaForm) {
     });
 }
 
-// Atualização da função para incluir a quantidade na tabela
+// Função para excluir itens da tabela de materiais reservados
+var excluirReservadosButton = document.getElementById("excluirReservadosButton");
+
+if (excluirReservadosButton) {
+    excluirReservadosButton.addEventListener("click", function () {
+        var reservadosTable = document.getElementById("reservadosTable");
+        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+        var selectAllReservadosCheckbox = document.getElementById("selectAllReservadosCheckbox");
+
+        if (!reservadosTableBody) {
+            alert("Tabela de materiais reservados não encontrada.");
+            return;
+        }
+
+        // Verifica se há itens na tabela
+        if (reservadosTableBody.rows.length === 0) {
+            alert("A lista de materiais reservados está vazia! Adicione itens para poder realizar a exclusão.");
+            excluirReservadosButton.textContent = "Excluir";
+            return;
+        }
+
+        // Seleciona todas as colunas de checkbox
+        var checkboxColumns = reservadosTable.querySelectorAll(".checkbox-column");
+        var checkboxes = reservadosTableBody.querySelectorAll(".delete-checkbox");
+
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
+
+        // Verifica se a coluna está oculta
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+        if (isHidden) {
+            // Exibir a coluna "SELECIONE"
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            excluirReservadosButton.textContent = "Confirmar Exclusão";
+
+            // Adiciona evento para "Selecionar Todos" no cabeçalho
+            if (selectAllReservadosCheckbox) {
+                selectAllReservadosCheckbox.addEventListener("change", function () {
+                    // Marca ou desmarca todas as caixas de seleção
+                    var isChecked = this.checked;
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            }
+        } else {
+            // Processar exclusão
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja excluir.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+
+                selectedCheckboxes.forEach((checkbox) => {
+                    var row = checkbox.closest("tr");
+                    var rowIndex = Array.from(reservadosTableBody.rows).indexOf(row);
+
+                    // Remove do array de reservados
+                    reservados.splice(rowIndex, 1);
+
+                    // Remove a linha da tabela
+                    row.remove();
+                });
+
+                // Atualiza o localStorage
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+
+                alert("Itens excluídos com sucesso!");
+
+                // Ocultar novamente a coluna "SELECIONE"
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                excluirReservadosButton.textContent = "Excluir";
+
+                // Desmarcar a caixa "Selecionar Todos"
+                if (selectAllReservadosCheckbox) selectAllReservadosCheckbox.checked = false;
+            }
+        }
+    });
+}
+
+
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableBody = document.querySelector("#reservadosTable tbody");
@@ -406,10 +493,11 @@ function atualizarTabelaReservados() {
         reservados.forEach(function (item, index) {
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
-                <td>${item.quantidade}</td> <!-- Exibe a quantidade reservada -->
+                <td>${item.quantidade}</td>
                 <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
 
@@ -427,6 +515,7 @@ function atualizarTabelaReservados() {
         });
     }
 }
+
 
 // Função para atualizar a tabela de materiais solicitados na página index.html
 function atualizarTabelaSolicitados() {
