@@ -412,7 +412,7 @@ if (excluirReservadosButton) {
         // Verifica se há itens na tabela
         if (reservadosTableBody.rows.length === 0) {
             alert("A lista de materiais reservados está vazia! Adicione itens para poder realizar a exclusão.");
-            excluirReservadosButton.textContent = "Excluir";
+            excluirReservadosButton.textContent = "Excluir Itens";
             return;
         }
 
@@ -473,7 +473,7 @@ if (excluirReservadosButton) {
 
                 // Ocultar novamente a coluna "SELECIONE"
                 checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                excluirReservadosButton.textContent = "Excluir";
+                excluirReservadosButton.textContent = "Excluir Itens";
 
                 // Desmarcar a caixa "Selecionar Todos"
                 if (selectAllReservadosCheckbox) selectAllReservadosCheckbox.checked = false;
