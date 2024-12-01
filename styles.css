@@ -146,6 +146,23 @@ button:hover,
     color: white;
 }
 
+/* Estilo para o botão de excluir itens */
+.excluir-itens-button {
+    background-color: #ff4d4d; /* Vermelho claro */
+    color: white; /* Texto branco */
+    border: none; /* Sem borda */
+    padding: 8px 16px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte */
+    cursor: pointer; /* Cursor de mãozinha */
+    border-radius: 4px; /* Bordas arredondadas */
+    transition: background-color 0.3s; /* Transição suave */
+}
+
+.excluir-itens-button:hover {
+    background-color: #e60000; /* Vermelho mais escuro ao passar o mouse */
+}
+
+
 .reportar-button {
     background-color: #fbc02d;
     color: white;
