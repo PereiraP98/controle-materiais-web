@@ -341,7 +341,7 @@ function fecharJanelaAtencao() {
     var overlay = document.getElementById("overlay");
 
     if (janelaAtencao && overlay) {
-        // Adiciona a animação de saída
+        // Animação de saída
         janelaAtencao.style.animation = 'slideUp 0.3s forwards';
 
         // Remove o overlay após a animação
@@ -352,7 +352,6 @@ function fecharJanelaAtencao() {
         }, 300); // Tempo igual à duração da animação
     }
 }
-
 
 
 // Reservar um item (Página Index)
