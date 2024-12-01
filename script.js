@@ -480,6 +480,7 @@ function abrirJanelaReserva(dados) {
     var overlay = document.getElementById("overlay");
     if (janelaReserva && overlay) {
         // Resetar propriedades
+        janelaReserva.style.display = ''; // Remove qualquer display:none inline
         janelaReserva.style.animation = 'none';
         janelaReserva.style.transform = '';
         janelaReserva.style.opacity = '';
@@ -493,6 +494,7 @@ function abrirJanelaReserva(dados) {
         document.body.classList.add('modal-open');
     }
 }
+
 
 
 
@@ -515,6 +517,7 @@ function fecharJanelaReserva() {
             janelaReserva.style.animation = '';
             janelaReserva.style.transform = '';
             janelaReserva.style.opacity = '';
+            janelaReserva.style.display = ''; // Remove qualquer display:none inline
         }, 300); // Duração da animação
     }
 }
