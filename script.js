@@ -238,11 +238,6 @@ if (janelaForm) {
         solicitados.push({ local: local, item: item, destino: destino });
         localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
-
         alert("Material solicitado com sucesso!");
 
         // Atualiza a tabela de solicitados na página index.html
@@ -254,6 +249,7 @@ if (janelaForm) {
         }
     });
 }
+
 
 // Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados, index) {
