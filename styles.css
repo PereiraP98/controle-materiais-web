@@ -162,7 +162,6 @@ button:hover,
     background-color: #e60000; /* Vermelho mais escuro ao passar o mouse */
 }
 
-
 .reportar-button {
     background-color: #fbc02d;
     color: white;
@@ -177,7 +176,6 @@ button:hover,
 .reportar-button:hover {
     background-color: #f9a825;
 }
-
 
 .solicitacao-container .excluir-button:hover,
 .detalhes-container .excluir-button:hover {
@@ -264,7 +262,6 @@ tbody tr:hover {
 
 /* Janela flutuante */
 .janela-flutuante {
-    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -276,6 +273,49 @@ tbody tr:hover {
     z-index: 1000;
     width: 400px;
     text-align: center;
+    opacity: 0; /* Começa invisível */
+    animation: slideDown 0.3s forwards;
+}
+
+/* Animação de entrada da janela */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Animação de saída da janela */
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+}
+
+/* Estilo para o botão container dentro da janela */
+.janela-flutuante .button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Classe para ocultar a janela */
+.janela-flutuante.hidden {
+    display: none;
+}
+
+/* Estilo para impedir rolagem quando o modal estiver aberto */
+body.modal-open {
+    overflow: hidden;
 }
 
 .janela-flutuante h2 {
@@ -285,6 +325,36 @@ tbody tr:hover {
 
 .janela-flutuante button {
     margin: 10px;
+}
+
+/* Estilo para o overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+    display: none; /* Oculto por padrão */
+    z-index: 999; /* Nível acima do conteúdo da página */
+}
+
+/* Exibir o overlay */
+.overlay.active {
+    display: block;
+    animation: fadeIn 0.3s forwards;
+}
+
+/* Animação de fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animação de fade-out */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 /* Título e botão de exclusão */
@@ -473,7 +543,6 @@ footer {
 
 /* Janela de Atenção */
 #janelaAtencao {
-    outline: 2px solid red; /* Para visualizar os limites do elemento */
     position: fixed;
     top: 50%;
     left: 50%;
@@ -485,14 +554,18 @@ footer {
     padding: 20px;
     width: 300px;
     z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    opacity: 0; /* Começa invisível */
+    animation: slideDown 0.3s forwards;
 }
 
+/* Classe para ocultar a janela de atenção */
+#janelaAtencao.hidden {
+    display: none;
+}
+
+/* Classe para ocultar elementos */
 .hidden {
-    display: none!important;
+    display: none !important;
 }
 
 .atencao-header {
@@ -539,8 +612,6 @@ footer {
     background-color: #f44336;
     color: white;
 }
-
-
 
 /* Tema Escuro */
 body.dark-mode {
@@ -614,6 +685,11 @@ body.dark-mode .janela-flutuante {
     color: #eaeaea;
     border: 1px solid #4a4a4a;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Overlay no Tema Escuro */
+body.dark-mode .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* Links no Tema Escuro */
@@ -705,4 +781,3 @@ body.dark-mode .cancelar-button:hover {
     background-color: #3a3a3a;
     color: #ffffff;
 }
-
