@@ -300,32 +300,59 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var atencaoMensagem = document.getElementById("atencaoMensagem");
     var confirmarAtencao = document.getElementById("confirmarAtencao");
     var cancelarAtencao = document.getElementById("cancelarAtencao");
+    var overlay = document.getElementById("overlay");
 
-    if (janelaAtencao && atencaoMensagem) {
+    if (janelaAtencao && atencaoMensagem && overlay) {
         // Define a mensagem dinâmica
         atencaoMensagem.textContent = mensagem;
 
-        // Remove a classe 'hidden' para exibir a janela
+        // Exibe o overlay e adiciona a classe 'active' para a animação
+        overlay.classList.add("active");
+
+        // Remove a classe 'hidden' e adiciona a animação de entrada
         janelaAtencao.classList.remove("hidden");
+        janelaAtencao.style.animation = 'slideDown 0.3s forwards';
+
+        // Adiciona a classe para impedir a rolagem
+        document.body.classList.add('modal-open');
 
         // Adiciona os eventos nos botões
         if (confirmarAtencao) {
             confirmarAtencao.onclick = function () {
                 if (onConfirm) onConfirm(); // Executa a ação de confirmação
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
 
         if (cancelarAtencao) {
             cancelarAtencao.onclick = function () {
                 if (onCancel) onCancel(); // Executa a ação de cancelamento
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
     } else {
         console.error("Elementos da janela de atenção não encontrados.");
     }
 }
+
+// Função para fechar a janela de atenção com animação
+function fecharJanelaAtencao() {
+    var janelaAtencao = document.getElementById("janelaAtencao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaAtencao && overlay) {
+        // Adiciona a animação de saída
+        janelaAtencao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaAtencao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+        }, 300); // Tempo igual à duração da animação
+    }
+}
+
 
 
 // Reservar um item (Página Index)
