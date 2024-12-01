@@ -286,6 +286,7 @@ function abrirJanelaSolicitacao(dados, index) {
     var overlay = document.getElementById("overlay");
     if (janelaSolicitacao && overlay) {
         // Resetar propriedades
+        janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
         janelaSolicitacao.style.animation = 'none';
         janelaSolicitacao.style.transform = '';
         janelaSolicitacao.style.opacity = '';
@@ -299,6 +300,7 @@ function abrirJanelaSolicitacao(dados, index) {
         document.body.classList.add('modal-open');
     }
 }
+
 
 
 // Função para fechar a janela de solicitação
@@ -320,6 +322,7 @@ function fecharJanelaSolicitacao() {
             janelaSolicitacao.style.animation = '';
             janelaSolicitacao.style.transform = '';
             janelaSolicitacao.style.opacity = '';
+            janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
         }, 300); // Duração da animação
     }
 
