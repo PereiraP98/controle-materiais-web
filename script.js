@@ -660,18 +660,13 @@ function atualizarTabelaReservados() {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
-            // Usamos 'let' para garantir o escopo correto
-            let currentItem = item;
-            let currentIndex = index;
-
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${currentItem.local}</td>
-                <td>${currentItem.item}</td>
-                <td>${currentItem.destino}</td>
-                <td>${currentItem.quantidade}</td>
-                <td><button class="solicitar-button" data-index="${currentIndex}">Solicitar</button></td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.destino}</td>
+                <td>${item.quantidade}</td>
+                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
 
             reservadosTableBody.appendChild(newRow);
@@ -680,13 +675,13 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(currentItem, currentIndex);
-                    // Não removemos o item aqui; ele será removido após a confirmação
+                    abrirJanelaSolicitacao(item, index);
                 });
             }
         });
     }
 }
+
 
 
 
