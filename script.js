@@ -176,13 +176,11 @@ if (janelaForm) {
             return;
         }
 
-        // Lógica para remover o item reservado após a confirmação
         if (fromReservados === "true" && itemIndex >= 0) {
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
             reservados.splice(itemIndex, 1);
             localStorage.setItem("reservados", JSON.stringify(reservados));
-            // Atualiza a tabela de reservados
-            atualizarTabelaReservados();
+            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
         }
 
         // Limpa os campos ocultos após a submissão
