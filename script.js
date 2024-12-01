@@ -337,7 +337,68 @@ if (reservarButton) {
     });
 }
 
-// Função para atualizar a tabela de materiais reservados
+// Função para abrir a janela de reserva
+function abrirJanelaReserva(dados) {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+
+    // Limpar o campo de quantidade e definir valor padrão
+    if (reservaQuantidadeInput) reservaQuantidadeInput.value = "1";
+
+    // Armazenar os dados do item a ser reservado
+    janelaReserva.dataset.local = dados.local;
+    janelaReserva.dataset.item = dados.item;
+    janelaReserva.dataset.destino = dados.destino;
+
+    if (janelaReserva) {
+        janelaReserva.style.display = "block";
+    }
+}
+
+// Evento para cancelar a reserva
+var cancelarReservaButton = document.getElementById("cancelarReservaButton");
+if (cancelarReservaButton) {
+    cancelarReservaButton.addEventListener("click", function () {
+        var janelaReserva = document.getElementById("janelaReserva");
+        if (janelaReserva) {
+            janelaReserva.style.display = "none";
+        }
+    });
+}
+
+// Evento para confirmar a reserva
+var janelaReservaForm = document.getElementById("janelaReservaForm");
+if (janelaReservaForm) {
+    janelaReservaForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+        var quantidade = reservaQuantidadeInput ? reservaQuantidadeInput.value.trim() : "1";
+
+        var janelaReserva = document.getElementById("janelaReserva");
+
+        // Recuperar os dados armazenados
+        var local = janelaReserva.dataset.local;
+        var item = janelaReserva.dataset.item;
+        var destino = janelaReserva.dataset.destino;
+
+        // Adicionar ao localStorage
+        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+        reservados.push({ local, item, destino, quantidade });
+        localStorage.setItem("reservados", JSON.stringify(reservados));
+
+        // Atualiza a tabela de reservados
+        atualizarTabelaReservados();
+
+        if (janelaReserva) {
+            janelaReserva.style.display = "none";
+        }
+
+        alert("Material reservado com sucesso!");
+    });
+}
+
+// Atualização da função para incluir a quantidade na tabela
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableBody = document.querySelector("#reservadosTable tbody");
@@ -351,6 +412,7 @@ function atualizarTabelaReservados() {
                 <td>${item.local}</td>
                 <td>${item.item}</td>
                 <td>${item.destino}</td>
+                <td>${item.quantidade}</td> <!-- Exibe a quantidade reservada -->
                 <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
 
