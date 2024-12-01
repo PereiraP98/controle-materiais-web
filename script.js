@@ -325,17 +325,11 @@ if (reservarButton) {
             return;
         }
 
-        // Adicionar ao localStorage
-        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        reservados.push({ local, item, destino });
-        localStorage.setItem("reservados", JSON.stringify(reservados));
-
-        // Atualiza a tabela de reservados
-        atualizarTabelaReservados();
-
-        alert("Material reservado com sucesso!");
+        // Abrir a janela de reserva
+        abrirJanelaReserva({ local, item, destino });
     });
 }
+
 
 // Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
