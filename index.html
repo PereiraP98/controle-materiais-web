@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
     <header>
         <!-- Ajuste no header-container -->
         <div class="header-container">
@@ -121,7 +124,7 @@
     </main>
 
     <!-- Janela Flutuante de Solicitação -->
-    <div id="janelaSolicitacao" class="janela-flutuante">
+    <div id="janelaSolicitacao" class="janela-flutuante hidden">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
             <!-- Campos ocultos para armazenar informações sobre o item reservado -->
@@ -142,7 +145,7 @@
     </div>
 
     <!-- Janela Flutuante de Reserva -->
-    <div id="janelaReserva" class="janela-flutuante">
+    <div id="janelaReserva" class="janela-flutuante hidden">
         <h2>Reservar Material</h2>
         <form id="janelaReservaForm">
             <label for="reservaQuantidade">Quantidade do Material:</label>
