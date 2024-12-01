@@ -285,6 +285,9 @@ function abrirJanelaSolicitacao(dados, index) {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     var overlay = document.getElementById("overlay");
     if (janelaSolicitacao && overlay) {
+        // Resetar propriedades
+        janelaSolicitacao.style.animation = 'none';
+        janelaSolicitacao.offsetHeight; // Força um reflow
         // Exibe o overlay
         overlay.classList.add("active");
         // Remove a classe 'hidden' e aplica a animação
@@ -292,10 +295,10 @@ function abrirJanelaSolicitacao(dados, index) {
         janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
         // Bloqueia a rolagem da página
         document.body.classList.add('modal-open');
+        document.body.classList.add('modal-open');
     }
 }
 
-// Função para fechar a janela de solicitação
 function fecharJanelaSolicitacao() {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     var overlay = document.getElementById("overlay");
@@ -310,8 +313,10 @@ function fecharJanelaSolicitacao() {
             janelaSolicitacao.classList.add("hidden");
             document.body.classList.remove('modal-open');
 
-            // Reseta a propriedade de animação
+            // Reseta as propriedades de animação e transformação
             janelaSolicitacao.style.animation = '';
+            janelaSolicitacao.style.transform = '';
+            janelaSolicitacao.style.opacity = '';
         }, 300); // Duração da animação
     }
 
@@ -321,6 +326,7 @@ function fecharJanelaSolicitacao() {
     if (fromReservadosInput) fromReservadosInput.value = "false";
     if (itemIndexInput) itemIndexInput.value = "-1";
 }
+
 
 
 
@@ -438,7 +444,6 @@ if (reservarButton) {
 
 
 
-// Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
     var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
@@ -453,6 +458,9 @@ function abrirJanelaReserva(dados) {
 
     var overlay = document.getElementById("overlay");
     if (janelaReserva && overlay) {
+        // Resetar propriedades
+        janelaReserva.style.animation = 'none';
+        janelaReserva.offsetHeight; // Força um reflow
         // Exibe o overlay
         overlay.classList.add("active");
         // Remove a classe 'hidden' e aplica a animação
@@ -463,7 +471,7 @@ function abrirJanelaReserva(dados) {
     }
 }
 
-// Função para fechar a janela de reserva
+
 function fecharJanelaReserva() {
     var janelaReserva = document.getElementById("janelaReserva");
     var overlay = document.getElementById("overlay");
@@ -478,11 +486,14 @@ function fecharJanelaReserva() {
             janelaReserva.classList.add("hidden");
             document.body.classList.remove('modal-open');
 
-            // Reseta a propriedade de animação
+            // Reseta as propriedades de animação e transformação
             janelaReserva.style.animation = '';
+            janelaReserva.style.transform = '';
+            janelaReserva.style.opacity = '';
         }, 300); // Duração da animação
     }
 }
+
 
 
 // Evento para cancelar a reserva
