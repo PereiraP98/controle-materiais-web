@@ -247,11 +247,13 @@ function abrirJanelaSolicitacao(dados, index) {
     var horarioInput = document.getElementById("horario");
     var fromReservadosInput = document.getElementById("fromReservados");
     var itemIndexInput = document.getElementById("itemIndex");
+    var quantidadeInput = document.getElementById("quantidade"); // Adicionado
 
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
     if (horarioInput) horarioInput.value = horarioAtual;
+    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1"; // Atualizado
 
     // Define os campos ocultos somente se o index for válido
     if (typeof index !== 'undefined') {
@@ -267,6 +269,7 @@ function abrirJanelaSolicitacao(dados, index) {
         janelaSolicitacao.style.display = "block";
     }
 }
+
 
 // Função para mostrar uma janela de atenção (pode ser utilizada se necessário)
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
