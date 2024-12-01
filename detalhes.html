@@ -12,6 +12,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body class="detalhes-page">
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
     <header>
         <!-- Header atualizado -->
         <div class="header-container">
@@ -93,7 +96,7 @@
     </main>
 
     <!-- Janela Flutuante de Recebimento -->
-    <div id="janelaRecebimento" class="janela-flutuante">
+    <div id="janelaRecebimento" class="janela-flutuante hidden">
         <h2>Receber Material</h2>
         <form id="recebimentoForm">
             <label for="recebimentoQuantidade">Quantidade Recebida:</label>
