@@ -287,6 +287,8 @@ function abrirJanelaSolicitacao(dados, index) {
     if (janelaSolicitacao && overlay) {
         // Resetar propriedades
         janelaSolicitacao.style.animation = 'none';
+        janelaSolicitacao.style.transform = '';
+        janelaSolicitacao.style.opacity = '';
         janelaSolicitacao.offsetHeight; // Força um reflow
         // Exibe o overlay
         overlay.classList.add("active");
@@ -295,10 +297,11 @@ function abrirJanelaSolicitacao(dados, index) {
         janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
         // Bloqueia a rolagem da página
         document.body.classList.add('modal-open');
-        document.body.classList.add('modal-open');
     }
 }
 
+
+// Função para fechar a janela de solicitação
 function fecharJanelaSolicitacao() {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     var overlay = document.getElementById("overlay");
@@ -330,6 +333,7 @@ function fecharJanelaSolicitacao() {
 
 
 
+
 // Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
@@ -341,6 +345,12 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     if (janelaAtencao && atencaoMensagem && overlay) {
         // Define a mensagem dinâmica
         atencaoMensagem.textContent = mensagem;
+
+        // Resetar propriedades
+        janelaAtencao.style.animation = 'none';
+        janelaAtencao.style.transform = '';
+        janelaAtencao.style.opacity = '';
+        janelaAtencao.offsetHeight; // Força um reflow
 
         // Exibe o overlay e adiciona a classe 'active' para a animação
         overlay.classList.add("active");
@@ -371,6 +381,7 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     }
 }
 
+
 // Função para fechar a janela de atenção com animação
 function fecharJanelaAtencao() {
     var janelaAtencao = document.getElementById("janelaAtencao");
@@ -385,9 +396,15 @@ function fecharJanelaAtencao() {
             overlay.classList.remove("active");
             janelaAtencao.classList.add("hidden");
             document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaAtencao.style.animation = '';
+            janelaAtencao.style.transform = '';
+            janelaAtencao.style.opacity = '';
         }, 300); // Tempo igual à duração da animação
     }
 }
+
 
 
 // Reservar um item (Página Index)
@@ -444,6 +461,7 @@ if (reservarButton) {
 
 
 
+// Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
     var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
@@ -460,6 +478,8 @@ function abrirJanelaReserva(dados) {
     if (janelaReserva && overlay) {
         // Resetar propriedades
         janelaReserva.style.animation = 'none';
+        janelaReserva.style.transform = '';
+        janelaReserva.style.opacity = '';
         janelaReserva.offsetHeight; // Força um reflow
         // Exibe o overlay
         overlay.classList.add("active");
@@ -472,6 +492,8 @@ function abrirJanelaReserva(dados) {
 }
 
 
+
+// Função para fechar a janela de reserva
 function fecharJanelaReserva() {
     var janelaReserva = document.getElementById("janelaReserva");
     var overlay = document.getElementById("overlay");
@@ -493,6 +515,7 @@ function fecharJanelaReserva() {
         }, 300); // Duração da animação
     }
 }
+
 
 
 
