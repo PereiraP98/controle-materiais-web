@@ -125,21 +125,14 @@ if (abrirSolicitacaoButton) {
     });
 }
 
-// Cancelar a solicitação e fechar a janela flutuante (Página Index)
+// Cancelar a solicitação e fechar a janela flutuante
 var cancelarSolicitacaoButton = document.getElementById("cancelarSolicitacaoButton");
 if (cancelarSolicitacaoButton) {
     cancelarSolicitacaoButton.addEventListener("click", function () {
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
-        // Limpa os campos ocultos
-        var fromReservadosInput = document.getElementById("fromReservados");
-        var itemIndexInput = document.getElementById("itemIndex");
-        if (fromReservadosInput) fromReservadosInput.value = "false";
-        if (itemIndexInput) itemIndexInput.value = "-1";
+        fecharJanelaSolicitacao();
     });
 }
+
 
 // Confirmar a solicitação e registrar os dados (Página Index)
 var janelaForm = document.getElementById("janelaForm");
@@ -153,6 +146,8 @@ if (janelaForm) {
         var localInput = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
+        // Fecha a janela de solicitação
+        fecharJanelaSolicitacao();
 
         var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
         var horario = horarioInput ? horarioInput.value.trim() : "";
@@ -270,13 +265,13 @@ function abrirJanelaSolicitacao(dados, index) {
     var horarioInput = document.getElementById("horario");
     var fromReservadosInput = document.getElementById("fromReservados");
     var itemIndexInput = document.getElementById("itemIndex");
-    var quantidadeInput = document.getElementById("quantidade"); // Adicionado
+    var quantidadeInput = document.getElementById("quantidade");
 
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
     if (horarioInput) horarioInput.value = horarioAtual;
-    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1"; // Atualizado
+    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1";
 
     // Define os campos ocultos somente se o index for válido
     if (typeof index !== 'undefined') {
@@ -288,10 +283,45 @@ function abrirJanelaSolicitacao(dados, index) {
     }
 
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-    if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
+    var overlay = document.getElementById("overlay");
+    if (janelaSolicitacao && overlay) {
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaSolicitacao.classList.remove("hidden");
+        janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
     }
 }
+
+// Função para fechar a janela de solicitação
+function fecharJanelaSolicitacao() {
+    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaSolicitacao && overlay) {
+        // Aplica a animação de saída
+        janelaSolicitacao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaSolicitacao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta a propriedade de animação
+            janelaSolicitacao.style.animation = '';
+        }, 300); // Duração da animação
+    }
+
+    // Limpa os campos ocultos
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
+    if (fromReservadosInput) fromReservadosInput.value = "false";
+    if (itemIndexInput) itemIndexInput.value = "-1";
+}
+
 
 
 // Função para mostrar uma janela de atenção
@@ -421,21 +451,48 @@ function abrirJanelaReserva(dados) {
     janelaReserva.dataset.item = dados.item;
     janelaReserva.dataset.destino = dados.destino;
 
-    if (janelaReserva) {
-        janelaReserva.style.display = "block";
+    var overlay = document.getElementById("overlay");
+    if (janelaReserva && overlay) {
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaReserva.classList.remove("hidden");
+        janelaReserva.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
     }
 }
+
+// Função para fechar a janela de reserva
+function fecharJanelaReserva() {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaReserva && overlay) {
+        // Aplica a animação de saída
+        janelaReserva.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaReserva.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta a propriedade de animação
+            janelaReserva.style.animation = '';
+        }, 300); // Duração da animação
+    }
+}
+
 
 // Evento para cancelar a reserva
 var cancelarReservaButton = document.getElementById("cancelarReservaButton");
 if (cancelarReservaButton) {
     cancelarReservaButton.addEventListener("click", function () {
-        var janelaReserva = document.getElementById("janelaReserva");
-        if (janelaReserva) {
-            janelaReserva.style.display = "none";
-        }
+        fecharJanelaReserva();
     });
 }
+
 
 // Evento para confirmar a reserva
 var janelaReservaForm = document.getElementById("janelaReservaForm");
@@ -457,6 +514,8 @@ if (janelaReservaForm) {
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
         reservados.push({ local, item, destino, quantidade });
         localStorage.setItem("reservados", JSON.stringify(reservados));
+        // Fecha a janela de reserva
+        fecharJanelaReserva();
 
         // Atualiza a tabela de reservados
         atualizarTabelaReservados();
