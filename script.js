@@ -654,37 +654,102 @@ if (excluirReservadosButton) {
 }
 
 
+// Função para solicitar um item reservado
+function solicitarItemReservado(index) {
+    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+    var reservado = reservados[index];
+
+    if (!reservado) {
+        alert("Erro ao encontrar o material reservado.");
+        return;
+    }
+
+    // Abre a janela de solicitação com os dados do item reservado
+    abrirJanelaSolicitacao(reservado, index);
+
+    // Função para processar a solicitação do material
+    var janelaForm = document.getElementById("janelaForm");
+    if (janelaForm) {
+        janelaForm.addEventListener("submit", function handleSolicitacao(event) {
+            event.preventDefault();
+
+            var quantidadeInput = document.getElementById("quantidade");
+            var horarioInput = document.getElementById("horario");
+
+            var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
+            var horario = horarioInput ? horarioInput.value.trim() : "";
+
+            // Validações
+            if (!quantidade || !horario) {
+                alert("Por favor, preencha todos os campos.");
+                return;
+            }
+
+            if (!/^\d{2}:\d{2}$/.test(horario)) {
+                alert("O horário deve estar no formato HH:MM.");
+                return;
+            }
+
+            // Registra o item solicitado no localStorage
+            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+            solicitados.push({
+                local: reservado.local,
+                item: reservado.item,
+                quantidade: quantidade,
+                destino: reservado.destino,
+                horario: horario,
+                dataAtual: new Date().toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                })
+            });
+            localStorage.setItem("solicitados", JSON.stringify(solicitados));
+
+            // Remove o item da lista de reservados
+            reservados.splice(index, 1);
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+
+            // Atualiza as tabelas de reservados e solicitados
+            atualizarTabelaReservados();
+            atualizarTabelaSolicitados();
+
+            // Fecha a janela de solicitação
+            fecharJanelaSolicitacao();
+
+            alert("Material solicitado com sucesso!");
+
+            // Remove o evento de submit após a execução para evitar duplicação de eventos
+            janelaForm.removeEventListener("submit", handleSolicitacao);
+        });
+    }
+}
+
+// Atualiza a tabela de reservados e adiciona o evento de solicitação
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableElement = document.getElementById("reservadosTable");
-    var reservadosTableBody = reservadosTableElement ? reservadosTableElement.querySelector("tbody") : null;
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
 
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
-            // Usamos 'let' para garantir o escopo correto
-            let currentItem = item;
-            let currentIndex = index;
-
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${currentItem.local}</td>
-                <td>${currentItem.item}</td>
-                <td>${currentItem.destino}</td>
-                <td>${currentItem.quantidade}</td>
-                <td><button class="solicitar-button" data-index="${currentIndex}">Solicitar</button></td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
-
             reservadosTableBody.appendChild(newRow);
 
-            // Adiciona evento ao botão de "Solicitar"
+            // Adiciona o evento ao botão de solicitar
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(currentItem, currentIndex);
-                    // Não removemos o item aqui; ele será removido após a confirmação
+                    solicitarItemReservado(index);
                 });
             }
         });
@@ -698,9 +763,15 @@ function atualizarTabelaReservados() {
             reservadosTableBody.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de itens reservados não encontrada.");
+        console.error("Tabela de materiais reservados não encontrada.");
     }
 }
+
+// Atualiza as tabelas ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+    atualizarTabelaSolicitados();
+});
 
 
 
