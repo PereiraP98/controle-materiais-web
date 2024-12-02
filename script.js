@@ -937,6 +937,29 @@ function abrirJanelaRecebimento(index) {
     }
 }
 
+// Evento para fechar a janela de recebimento e remover o overlay
+document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        overlay.classList.remove("active"); // Remove o escurecimento da página
+        janelaRecebimento.classList.add("hidden"); // Oculta a janela de recebimento
+
+        // Reseta estilos e animações
+        janelaRecebimento.style.animation = "";
+        janelaRecebimento.style.display = ""; // Garante que o display seja resetado
+    }
+});
+
+// Garantia de reset do overlay ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    var overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.classList.remove("active"); // Remove qualquer estado residual
+    }
+});
+
 
         // Função para fechar a janela de recebimento
 function fecharJanelaRecebimento() {
