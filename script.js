@@ -912,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (detalhes.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material nos detalhes.</td>
+                <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
             `;
             detalhesTable.appendChild(emptyRow);
         }
@@ -1135,7 +1135,19 @@ if (recebimentoForm) {
                     `;
                     recebidosTable.appendChild(newRow);
                 });
+
+                                // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
+            `;
+            detalhesTable.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de detalhes não encontrada.");
             }
+            
         }
 
         atualizarTabelaRecebidos();
