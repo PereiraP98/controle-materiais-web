@@ -120,33 +120,39 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- Inclusão do SDK do EmailJS atualizado e script.js -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js"></script>
     <script>
-        // Inicializa o EmailJS
-        (function() {
-            emailjs.init("-Dld80qWNEvyNQQYz");
-            console.log("EmailJS inicializado com sucesso!");
-        })();
-
-        // Chama a função de verificação de autenticação
-        checkAuthentication();
-    </script>
-
-    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Verificar o tema salvo no localStorage
+            // Verifica o tema salvo
             const savedTheme = localStorage.getItem('theme');
-
-            // Aplicar o tema escuro, se configurado
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
             }
         });
-    </script>
 
+        function abrirJanelaRecebimento(index) {
+            var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            var detalhe = detalhes[index];
+            if (!detalhe) {
+                alert("Erro: Item não encontrado.");
+                return;
+            }
+
+            document.getElementById("recebimentoQuantidade").value = detalhe.quantidade;
+            document.getElementById("recebimentoHorario").value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById("recebimentoIndex").value = index;
+
+            document.getElementById("overlay").classList.add("active");
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            janelaRecebimento.classList.remove("hidden");
+            janelaRecebimento.style.animation = "slideDown 0.3s forwards";
+        }
+
+        document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
+            document.getElementById("overlay").classList.remove("active");
+            document.getElementById("janelaRecebimento").classList.add("hidden");
+        });
+    </script>
 </body>
 </html>
