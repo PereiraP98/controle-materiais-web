@@ -1142,7 +1142,7 @@ if (recebimentoForm) {
             emptyRow.innerHTML = `
                 <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
             `;
-            detalhesTable.appendChild(emptyRow);
+            recebidosTable.appendChild(emptyRow);
         }
     } else {
         console.error("Tabela de detalhes não encontrada.");
