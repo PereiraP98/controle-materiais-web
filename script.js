@@ -172,32 +172,18 @@ if (janelaForm) {
             return;
         }
 
-        // Verifica se o horário está no formato HH:MM
         if (!/^\d{2}:\d{2}$/.test(horario)) {
             alert("O horário deve estar no formato HH:MM.");
             return;
         }
 
-        // Remove o item dos reservados se originado da tabela de itens reservados
-        if (fromReservados === "true" && itemIndex >= 0) {
-            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-            reservados.splice(itemIndex, 1);
-            localStorage.setItem("reservados", JSON.stringify(reservados));
-            atualizarTabelaReservados(); // Atualiza a tabela de reservados
-        }
-
-        // Limpa os campos ocultos após a submissão
-        if (fromReservadosInput) fromReservadosInput.value = "false";
-        if (itemIndexInput) itemIndexInput.value = "-1";
-
-        // Registro da solicitação nos dados locais
+        // Registro único
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric"
         });
 
-        // Calcular o timestamp baseado no horário inserido pelo usuário
         var dataAtualObj = new Date();
         var horarioParts = horario.split(":");
         var horas = parseInt(horarioParts[0], 10);
@@ -216,9 +202,7 @@ if (janelaForm) {
         var agora = Date.now();
         var isFuture = timestamp > agora;
 
-        // Adiciona aos detalhes
-        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        detalhes.push({
+        var registro = {
             local: local,
             item: item,
             quantidade: quantidade,
@@ -227,31 +211,33 @@ if (janelaForm) {
             horario: horario,
             timestamp: timestamp,
             isFuture: isFuture
-        });
-        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+        };
 
-        // Adiciona aos solicitados
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        solicitados.push({ local: local, item: item, destino: destino });
-        localStorage.setItem("solicitados", JSON.stringify(solicitados));
-
-        // Esconde a janela de solicitação
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
+        if (fromReservados === "true" && itemIndex >= 0) {
+            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+            reservados.splice(itemIndex, 1); // Remove o item da lista de reservados
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            atualizarTabelaReservados(); // Atualiza a tabela de reservados
+        } else {
+            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+            solicitados.push({ local: local, item: item, destino: destino });
+            localStorage.setItem("solicitados", JSON.stringify(solicitados));
         }
+
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        detalhes.push(registro);
+        localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
         alert("Material solicitado com sucesso!");
 
-        // Atualiza a tabela de solicitados na página index.html
+        // Atualizações de tabelas
         atualizarTabelaSolicitados();
-
-        // Atualiza a tabela de detalhes se estiver na página detalhes.html
         if (window.location.pathname.includes("detalhes.html")) {
             atualizarTabelaDetalhes();
         }
     });
 }
+
 
 
 // Função para abrir a janela de solicitação com dados preenchidos
