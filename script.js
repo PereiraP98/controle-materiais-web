@@ -895,76 +895,28 @@ document.addEventListener("DOMContentLoaded", function () {
         // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
 
         // Função para abrir a janela flutuante de recebimento
-function abrirJanelaRecebimento(index) {
-    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    var detalhe = detalhes[index];
-
-    if (!detalhe) {
-        alert("Erro: O item não foi encontrado.");
-        return;
-    }
-
-    // Preenche os campos da janela com os dados do item selecionado
-    var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-    var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-    var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-
-    if (recebimentoQuantidadeInput) {
-        recebimentoQuantidadeInput.value = detalhe.quantidade || "1";
-    }
-    if (recebimentoHorarioInput) {
-        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        recebimentoHorarioInput.value = horarioAtual;
-    }
-    if (recebimentoIndexInput) {
-        recebimentoIndexInput.value = index;
-    }
-
-    // Mostra a janela de recebimento
-    var janelaRecebimento = document.getElementById("janelaRecebimento");
-    var overlay = document.getElementById("overlay");
-
-    if (janelaRecebimento && overlay) {
-        overlay.classList.add("active");
-        janelaRecebimento.classList.remove("hidden");
-    } else {
-        alert("Erro: Elementos da janela de recebimento não encontrados.");
-    }
-}
-
-// Adiciona evento ao botão "Receber" para cada item na tabela de detalhes
-function atualizarTabelaDetalhes() {
-    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    var detalhesTableBody = document.querySelector("#detalhesTable tbody");
-
-    if (detalhesTableBody) {
-        detalhesTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        detalhes.forEach(function (detalhe, index) {
-            var newRow = document.createElement("tr");
-
-            newRow.innerHTML = `
-                <td>${detalhe.local}</td>
-                <td>${detalhe.item}</td>
-                <td>${detalhe.quantidade}</td>
-                <td>${detalhe.destino}</td>
-                <td>${detalhe.dataAtual}</td>
-                <td>${detalhe.horario}</td>
-                <td><button class="receberButton" data-index="${index}">Receber</button></td>
-            `;
-
-            detalhesTableBody.appendChild(newRow);
-
-            // Adiciona o evento de clique ao botão "Receber"
-            var receberButton = newRow.querySelector(".receberButton");
-            if (receberButton) {
-                receberButton.addEventListener("click", function () {
-                    abrirJanelaRecebimento(index);
-                });
+        function abrirJanelaRecebimento(index) {
+            var detalhe = detalhes[index];
+            // Preenche os campos da janela com os dados atuais
+            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+            if (recebimentoQuantidadeInput) {
+                recebimentoQuantidadeInput.value = detalhe.quantidade;
             }
-        });
-    }
-}
+            var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+            if (recebimentoHorarioInput) {
+                recebimentoHorarioInput.value = horarioAtual;
+            }
+            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+            if (recebimentoIndexInput) {
+                recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
+            }
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            if (janelaRecebimento) {
+                janelaRecebimento.style.display = "block";
+            }
+        }
+
         // Fecha a janela de recebimento
         var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
         if (cancelarRecebimentoButton) {
