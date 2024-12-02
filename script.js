@@ -687,6 +687,15 @@ function atualizarTabelaReservados() {
                 });
             }
         });
+
+        // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material reservado no momento.</td>
+            `;
+            reservadosTableBody.appendChild(emptyRow);
+        }
     }
 }
 
@@ -719,6 +728,7 @@ function atualizarTabelaSolicitados() {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
+
 
 
 
