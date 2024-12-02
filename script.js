@@ -139,7 +139,6 @@ var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
         event.preventDefault();
-
         var fromReservadosInput = document.getElementById("fromReservados");
         var itemIndexInput = document.getElementById("itemIndex");
         var quantidadeInput = document.getElementById("quantidade");
@@ -147,7 +146,6 @@ if (janelaForm) {
         var localInput = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
-
         // Fecha a janela de solicitação
         fecharJanelaSolicitacao();
 
@@ -178,12 +176,11 @@ if (janelaForm) {
             return;
         }
 
-        // Remove o item dos reservados se originado da tabela de itens reservados
         if (fromReservados === "true" && itemIndex >= 0) {
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
             reservados.splice(itemIndex, 1);
             localStorage.setItem("reservados", JSON.stringify(reservados));
-            atualizarTabelaReservados(); // Atualiza a tabela de reservados
+            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
         }
 
         // Limpa os campos ocultos após a submissão
@@ -199,17 +196,21 @@ if (janelaForm) {
 
         // Calcular o timestamp baseado no horário inserido pelo usuário
         var dataAtualObj = new Date();
-        var horarioParts = horario.split(":");
+
+        // Extrair o horário inserido pelo usuário (horario)
+        var horarioParts = horario.split(':');
         var horas = parseInt(horarioParts[0], 10);
         var minutos = parseInt(horarioParts[1], 10);
 
+        // Criar um novo objeto Date com a data atual e o horário inserido pelo usuário
         var timestampDate = new Date(
             dataAtualObj.getFullYear(),
             dataAtualObj.getMonth(),
             dataAtualObj.getDate(),
             horas,
             minutos,
-            0
+            0, // segundos
+            0  // milissegundos
         );
 
         var timestamp = timestampDate.getTime();
@@ -235,7 +236,6 @@ if (janelaForm) {
         solicitados.push({ local: local, item: item, destino: destino });
         localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
-        // Esconde a janela de solicitação
         var janelaSolicitacao = document.getElementById("janelaSolicitacao");
         if (janelaSolicitacao) {
             janelaSolicitacao.style.display = "none";
@@ -252,7 +252,6 @@ if (janelaForm) {
         }
     });
 }
-
 
 // Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados, index) {
@@ -655,31 +654,37 @@ if (excluirReservadosButton) {
 }
 
 
-// Atualiza a tabela de reservados e adiciona o evento de solicitação
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
+    var reservadosTableElement = document.getElementById("reservadosTable");
+    var reservadosTableBody = reservadosTableElement ? reservadosTableElement.querySelector("tbody") : null;
 
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
+            // Usamos 'let' para garantir o escopo correto
+            let currentItem = item;
+            let currentIndex = index;
+
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.quantidade}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
+                <td>${currentItem.local}</td>
+                <td>${currentItem.item}</td>
+                <td>${currentItem.destino}</td>
+                <td>${currentItem.quantidade}</td>
+                <td><button class="solicitar-button" data-index="${currentIndex}">Solicitar</button></td>
             `;
+
             reservadosTableBody.appendChild(newRow);
 
-            // Adiciona o evento ao botão de solicitar
+            // Adiciona evento ao botão de "Solicitar"
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    solicitarItemReservado(index);
+                    abrirJanelaSolicitacao(currentItem, currentIndex);
+                    // Não removemos o item aqui; ele será removido após a confirmação
                 });
             }
         });
@@ -693,15 +698,9 @@ function atualizarTabelaReservados() {
             reservadosTableBody.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de materiais reservados não encontrada.");
+        console.error("Tabela de itens reservados não encontrada.");
     }
 }
-
-// Atualiza as tabelas ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-    atualizarTabelaSolicitados();
-});
 
 
 
@@ -1123,16 +1122,20 @@ if (recebimentoForm) {
 }
 
 
-// Função para atualizar a tabela de materiais recebidos
-var recebidosTableElement = document.getElementById("recebidosTable");
-var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-function atualizarTabelaRecebidos() {
-    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-    if (recebidosTable) {
-        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+        // Função para atualizar a tabela de materiais recebidos
+        var recebidosTableElement = document.getElementById("recebidosTable");
+        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-        recebidos.forEach(function (item, index) {
+      // Atualiza a tabela de reservados e adiciona o evento de solicitação
+function atualizarTabelaReservados() {
+    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
+
+    if (reservadosTableBody) {
+        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        reservados.forEach(function (item, index) {
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -1140,27 +1143,37 @@ function atualizarTabelaRecebidos() {
                 <td>${item.item}</td>
                 <td>${item.quantidade}</td>
                 <td>${item.destino}</td>
-                <td>${item.dataAtual}</td>
-                <td>${item.horario}</td>
-                <td>${item.recebido}</td>
-                <td>${item.guardado}</td>
+                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
-            recebidosTable.appendChild(newRow);
+            reservadosTableBody.appendChild(newRow);
+
+            // Adiciona o evento ao botão de solicitar
+            var solicitarButton = newRow.querySelector(".solicitar-button");
+            if (solicitarButton) {
+                solicitarButton.addEventListener("click", function () {
+                    solicitarItemReservado(index);
+                });
+            }
         });
 
         // Mensagem para tabela vazia
-        if (recebidos.length === 0) {
+        if (reservados.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
+                <td colspan="6" style="text-align: center;">Nenhum material reservado no momento.</td>
             `;
-            recebidosTable.appendChild(emptyRow);
+            reservadosTableBody.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de materiais recebidos não encontrada.");
+        console.error("Tabela de materiais reservados não encontrada.");
     }
 }
 
+// Atualiza as tabelas ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+    atualizarTabelaSolicitados();
+});
 
         atualizarTabelaRecebidos();
 
