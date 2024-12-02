@@ -1066,6 +1066,7 @@ if (recebimentoForm) {
         // Atualiza as tabelas
         atualizarTabelaDetalhes();
         atualizarTabelaRecebidos();
+        atualizarTabelaSolicitados(); // Atualiza a lista de materiais solicitados imediatamente
 
         // Fecha a janela de recebimento
         fecharJanelaRecebimento();
