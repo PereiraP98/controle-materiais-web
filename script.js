@@ -694,24 +694,44 @@ function atualizarTabelaReservados() {
 
 // Função para atualizar a tabela de materiais solicitados na página index.html
 function atualizarTabelaSolicitados() {
+    // Recupera a lista de itens solicitados armazenada no localStorage
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+    
+    // Localiza a tabela de solicitados na página
     var solicitadosTable = document.getElementById("solicitadosTable");
     var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
     if (solicitadosTableBody) {
-        solicitadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+        // Limpa o conteúdo atual da tabela
+        solicitadosTableBody.innerHTML = "";
 
+        // Itera sobre os itens solicitados e os adiciona à tabela
         solicitados.forEach(function (item) {
             var newRow = document.createElement("tr");
+
+            // Adiciona os dados do item em formato de linha de tabela
             newRow.innerHTML = `
                 <td>${item.local}</td>
                 <td>${item.item}</td>
+                <td>${item.quantidade || "1"}</td>
                 <td>${item.destino}</td>
             `;
             solicitadosTableBody.appendChild(newRow);
         });
+
+        // Exibe uma mensagem caso não existam materiais solicitados
+        if (solicitados.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>
+            `;
+            solicitadosTableBody.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
+
 
 // Carrega os dados ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
