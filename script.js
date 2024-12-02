@@ -692,45 +692,35 @@ function atualizarTabelaReservados() {
 
 
 
-// Função para atualizar a tabela de materiais solicitados na página index.html
 function atualizarTabelaSolicitados() {
-    // Recupera a lista de itens solicitados armazenada no localStorage
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    
-    // Localiza a tabela de solicitados na página
     var solicitadosTable = document.getElementById("solicitadosTable");
     var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
     if (solicitadosTableBody) {
-        // Limpa o conteúdo atual da tabela
-        solicitadosTableBody.innerHTML = "";
+        solicitadosTableBody.innerHTML = ""; // Limpa a tabela
 
-        // Itera sobre os itens solicitados e os adiciona à tabela
-        solicitados.forEach(function (item) {
-            var newRow = document.createElement("tr");
-
-            // Adiciona os dados do item em formato de linha de tabela
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.quantidade || "1"}</td>
-                <td>${item.destino}</td>
-            `;
-            solicitadosTableBody.appendChild(newRow);
-        });
-
-        // Exibe uma mensagem caso não existam materiais solicitados
         if (solicitados.length === 0) {
             var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>
-            `;
+            emptyRow.innerHTML = `<td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>`;
             solicitadosTableBody.appendChild(emptyRow);
+        } else {
+            solicitados.forEach((item) => {
+                var newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.quantidade || "1"}</td>
+                    <td>${item.destino}</td>
+                `;
+                solicitadosTableBody.appendChild(newRow);
+            });
         }
     } else {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
+
 
 
 // Carrega os dados ao carregar a página
@@ -1070,12 +1060,14 @@ if (recebimentoForm) {
         detalhes.splice(index, 1);
         localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-        // Também remove o item correspondente de 'solicitados'
+        // Remove o item correspondente de 'solicitados'
         var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
         var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
-            return itemSolicitado.local === detalhe.local &&
+            return (
+                itemSolicitado.local === detalhe.local &&
                 itemSolicitado.item === detalhe.item &&
-                itemSolicitado.destino === detalhe.destino;
+                itemSolicitado.destino === detalhe.destino
+            );
         });
 
         if (solicitadosIndex !== -1) {
@@ -1084,9 +1076,11 @@ if (recebimentoForm) {
         }
 
         // Atualiza as tabelas
-        atualizarTabelaDetalhes();
-        atualizarTabelaRecebidos();
-        atualizarTabelaSolicitados(); // Atualiza a lista de materiais solicitados imediatamente
+        atualizarTabelaDetalhes(); // Atualiza os materiais na página de detalhes
+        atualizarTabelaRecebidos(); // Atualiza os materiais recebidos
+        if (window.location.pathname.includes("index.html")) {
+            atualizarTabelaSolicitados(); // Atualiza a tabela de materiais solicitados, se estiver na página index
+        }
 
         // Fecha a janela de recebimento
         fecharJanelaRecebimento();
@@ -1094,6 +1088,7 @@ if (recebimentoForm) {
         alert("Material recebido com sucesso!");
     });
 }
+
 
 
         // Função para atualizar a tabela de materiais recebidos
