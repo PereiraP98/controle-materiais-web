@@ -900,9 +900,26 @@ document.addEventListener("DOMContentLoaded", function () {
                             const elapsed = Date.now() - detalhe.timestamp;
                             tempoCell.textContent = formatTime(elapsed, false);
                         });
+
+                        
+
                     }
+
+                    
                 });
+
+                // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material nos detalhes.</td>
+            `;
+            detalhesTable.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de detalhes não encontrada.");
             }
+            
         }
 
         atualizarTabelaDetalhes();
