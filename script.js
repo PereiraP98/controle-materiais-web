@@ -1060,14 +1060,12 @@ if (recebimentoForm) {
         detalhes.splice(index, 1);
         localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-        // Remove o item correspondente de 'solicitados'
+        // Também remove o item correspondente de 'solicitados'
         var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
         var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
-            return (
-                itemSolicitado.local === detalhe.local &&
+            return itemSolicitado.local === detalhe.local &&
                 itemSolicitado.item === detalhe.item &&
-                itemSolicitado.destino === detalhe.destino
-            );
+                itemSolicitado.destino === detalhe.destino;
         });
 
         if (solicitadosIndex !== -1) {
@@ -1076,10 +1074,10 @@ if (recebimentoForm) {
         }
 
         // Atualiza as tabelas
-        atualizarTabelaDetalhes(); // Atualiza os materiais na página de detalhes
-        atualizarTabelaRecebidos(); // Atualiza os materiais recebidos
+        atualizarTabelaDetalhes(); // Atualiza a tabela de detalhes para remover o item
+        atualizarTabelaRecebidos(); // Atualiza a tabela de recebidos com o novo item
         if (window.location.pathname.includes("index.html")) {
-            atualizarTabelaSolicitados(); // Atualiza a tabela de materiais solicitados, se estiver na página index
+            atualizarTabelaSolicitados(); // Atualiza a tabela de solicitados, se na página index
         }
 
         // Fecha a janela de recebimento
