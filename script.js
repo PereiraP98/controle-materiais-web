@@ -139,6 +139,7 @@ var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
         event.preventDefault();
+
         var fromReservadosInput = document.getElementById("fromReservados");
         var itemIndexInput = document.getElementById("itemIndex");
         var quantidadeInput = document.getElementById("quantidade");
@@ -146,6 +147,7 @@ if (janelaForm) {
         var localInput = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
+
         // Fecha a janela de solicitação
         fecharJanelaSolicitacao();
 
@@ -176,11 +178,12 @@ if (janelaForm) {
             return;
         }
 
+        // Remove o item dos reservados se originado da tabela de itens reservados
         if (fromReservados === "true" && itemIndex >= 0) {
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
             reservados.splice(itemIndex, 1);
             localStorage.setItem("reservados", JSON.stringify(reservados));
-            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
+            atualizarTabelaReservados(); // Atualiza a tabela de reservados
         }
 
         // Limpa os campos ocultos após a submissão
@@ -196,21 +199,17 @@ if (janelaForm) {
 
         // Calcular o timestamp baseado no horário inserido pelo usuário
         var dataAtualObj = new Date();
-
-        // Extrair o horário inserido pelo usuário (horario)
-        var horarioParts = horario.split(':');
+        var horarioParts = horario.split(":");
         var horas = parseInt(horarioParts[0], 10);
         var minutos = parseInt(horarioParts[1], 10);
 
-        // Criar um novo objeto Date com a data atual e o horário inserido pelo usuário
         var timestampDate = new Date(
             dataAtualObj.getFullYear(),
             dataAtualObj.getMonth(),
             dataAtualObj.getDate(),
             horas,
             minutos,
-            0, // segundos
-            0  // milissegundos
+            0
         );
 
         var timestamp = timestampDate.getTime();
@@ -236,6 +235,7 @@ if (janelaForm) {
         solicitados.push({ local: local, item: item, destino: destino });
         localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
+        // Esconde a janela de solicitação
         var janelaSolicitacao = document.getElementById("janelaSolicitacao");
         if (janelaSolicitacao) {
             janelaSolicitacao.style.display = "none";
@@ -252,6 +252,7 @@ if (janelaForm) {
         }
     });
 }
+
 
 // Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados, index) {
@@ -653,77 +654,6 @@ if (excluirReservadosButton) {
     });
 }
 
-
-// Função para solicitar um item reservado
-function solicitarItemReservado(index) {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservado = reservados[index];
-
-    if (!reservado) {
-        alert("Erro ao encontrar o material reservado.");
-        return;
-    }
-
-    // Abre a janela de solicitação com os dados do item reservado
-    abrirJanelaSolicitacao(reservado, index);
-
-    // Função para processar a solicitação do material
-    var janelaForm = document.getElementById("janelaForm");
-    if (janelaForm) {
-        janelaForm.addEventListener("submit", function handleSolicitacao(event) {
-            event.preventDefault();
-
-            var quantidadeInput = document.getElementById("quantidade");
-            var horarioInput = document.getElementById("horario");
-
-            var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
-            var horario = horarioInput ? horarioInput.value.trim() : "";
-
-            // Validações
-            if (!quantidade || !horario) {
-                alert("Por favor, preencha todos os campos.");
-                return;
-            }
-
-            if (!/^\d{2}:\d{2}$/.test(horario)) {
-                alert("O horário deve estar no formato HH:MM.");
-                return;
-            }
-
-            // Registra o item solicitado no localStorage
-            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-            solicitados.push({
-                local: reservado.local,
-                item: reservado.item,
-                quantidade: quantidade,
-                destino: reservado.destino,
-                horario: horario,
-                dataAtual: new Date().toLocaleDateString("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric"
-                })
-            });
-            localStorage.setItem("solicitados", JSON.stringify(solicitados));
-
-            // Remove o item da lista de reservados
-            reservados.splice(index, 1);
-            localStorage.setItem("reservados", JSON.stringify(reservados));
-
-            // Atualiza as tabelas de reservados e solicitados
-            atualizarTabelaReservados();
-            atualizarTabelaSolicitados();
-
-            // Fecha a janela de solicitação
-            fecharJanelaSolicitacao();
-
-            alert("Material solicitado com sucesso!");
-
-            // Remove o evento de submit após a execução para evitar duplicação de eventos
-            janelaForm.removeEventListener("submit", handleSolicitacao);
-        });
-    }
-}
 
 // Atualiza a tabela de reservados e adiciona o evento de solicitação
 function atualizarTabelaReservados() {
