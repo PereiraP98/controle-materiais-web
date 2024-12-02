@@ -1122,20 +1122,16 @@ if (recebimentoForm) {
 }
 
 
+// Função para atualizar a tabela de materiais recebidos
+var recebidosTableElement = document.getElementById("recebidosTable");
+var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-        // Função para atualizar a tabela de materiais recebidos
-        var recebidosTableElement = document.getElementById("recebidosTable");
-        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
+function atualizarTabelaRecebidos() {
+    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    if (recebidosTable) {
+        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-      // Atualiza a tabela de reservados e adiciona o evento de solicitação
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item, index) {
+        recebidos.forEach(function (item, index) {
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -1143,37 +1139,27 @@ function atualizarTabelaReservados() {
                 <td>${item.item}</td>
                 <td>${item.quantidade}</td>
                 <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
+                <td>${item.dataAtual}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${item.guardado}</td>
             `;
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona o evento ao botão de solicitar
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    solicitarItemReservado(index);
-                });
-            }
+            recebidosTable.appendChild(newRow);
         });
 
         // Mensagem para tabela vazia
-        if (reservados.length === 0) {
+        if (recebidos.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
-                <td colspan="6" style="text-align: center;">Nenhum material reservado no momento.</td>
+                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
             `;
-            reservadosTableBody.appendChild(emptyRow);
+            recebidosTable.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de materiais reservados não encontrada.");
+        console.error("Tabela de materiais recebidos não encontrada.");
     }
 }
 
-// Atualiza as tabelas ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-    atualizarTabelaSolicitados();
-});
 
         atualizarTabelaRecebidos();
 
