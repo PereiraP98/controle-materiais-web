@@ -757,148 +757,142 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Função para atualizar a tabela de detalhes
-        function atualizarTabelaDetalhes() {
-            if (detalhesTable) {
-                detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+function atualizarTabelaDetalhes() {
+    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+    var detalhesTableElement = document.getElementById("detalhesTable");
+    var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
 
-                detalhes.forEach(function (detalhe, index) {
-                    var newRow = document.createElement("tr");
+    if (detalhesTable) {
+        detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-                    // Determina se o horário é no futuro ou no passado
-                    var agora = Date.now();
-                    detalhe.isFuture = detalhe.timestamp > agora;
+        // Itera sobre os detalhes e os adiciona à tabela
+        detalhes.forEach(function (detalhe, index) {
+            var newRow = document.createElement("tr");
 
-                    // Calcula o tempo restante ou decorrido
-                    var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
+            // Determina se o horário é no futuro ou no passado
+            var agora = Date.now();
+            detalhe.isFuture = detalhe.timestamp > agora;
 
-                    newRow.innerHTML = `
-                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                        <td>${detalhe.local}</td>
-                        <td>${detalhe.item}</td>
-                        <td>${detalhe.quantidade}</td>
-                        <td>${detalhe.destino}</td>
-                        <td>${detalhe.dataAtual}</td>
-                        <td>${detalhe.horario}</td>
-                        <td><button class="receberButton">Receber</button></td>
-                        <td class="tempo-cell">${tempoDisplay}</td>
-                    `;
-                    detalhesTable.appendChild(newRow);
+            // Calcula o tempo restante ou decorrido
+            var tempoDisplay = detalhe.isFuture 
+                ? formatTime(detalhe.timestamp - agora, true) 
+                : formatTime(agora - detalhe.timestamp);
 
-                    // Adiciona o evento de clique ao botão Receber
-                    var receberButton = newRow.querySelector(".receberButton");
-                    if (receberButton) {
-                        receberButton.addEventListener("click", function () {
-                            abrirJanelaRecebimento(index);
-                        });
-                    }
+            newRow.innerHTML = `
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                <td>${detalhe.local}</td>
+                <td>${detalhe.item}</td>
+                <td>${detalhe.quantidade}</td>
+                <td>${detalhe.destino}</td>
+                <td>${detalhe.dataAtual}</td>
+                <td>${detalhe.horario}</td>
+                <td><button class="receberButton">Receber</button></td>
+                <td class="tempo-cell">${tempoDisplay}</td>
+            `;
+            detalhesTable.appendChild(newRow);
 
-                    // Manipulação do tempo e eventos de hover
-                    var tempoCell = newRow.querySelector(".tempo-cell");
-                    if (tempoCell) {
-                        // Função para atualizar o tempo na célula
-                        function updateTimeCell(showSeconds = false) {
-                            const now = Date.now();
-                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
-
-                            // Define tempos limites
-                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
-
-                            if (elapsed > maxTime) {
-                                newRow.classList.add("oscillation");
-                                newRow.style.background = ""; // Remove estilos inline conflitantes
-                            } else {
-                                newRow.classList.remove("oscillation");
-
-                                // Gradiente dinâmico para preenchimento da barra
-                                let backgroundGradient;
-                                if (elapsed <= midTime) {
-                                    const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                                    backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
-                                } else {
-                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                                    backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
-                                }
-
-                                // Atualiza o fundo da linha inteira
-                                newRow.style.background = backgroundGradient;
-                            }
-
-                            // Atualiza o campo de tempo
-                            if (detalhe.isFuture) {
-                                const remaining = detalhe.timestamp - now;
-                                if (remaining <= 0) {
-                                    detalhe.isFuture = false;
-                                    detalhe.timestamp = now;
-                                }
-                                tempoCell.textContent = formatTime(remaining, showSeconds);
-                            } else {
-                                tempoCell.textContent = formatTime(elapsed, showSeconds);
-                            }
-                        }
-
-                        // Inicializa a contagem
-                        if (detalhe.isFuture) {
-                            // Inicia a contagem regressiva a cada segundo
-                            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                            intervalMap.set(index, countdownInterval);
-                        } else {
-                            // Inicia a contagem do tempo decorrido a cada segundo
-                            var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                            intervalMap.set(index, elapsedInterval);
-                        }
-
-                        // Exibição inicial
-                        updateTimeCell(false);
-
-                        // Eventos de hover para exibir e ocultar os segundos
-                        newRow.addEventListener("mouseover", function () {
-                            // Pausa o intervalo padrão, se existir
-                            if (intervalMap.has(index)) {
-                                clearInterval(intervalMap.get(index));
-                                intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
-                            }
-
-                            // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                            updateTimeCell(true); // Atualiza para exibir HH:MM:SS
-                            if (!tempoCell._hoverInterval) {
-                                tempoCell._hoverInterval = setInterval(() => {
-                                    const elapsedHover = Date.now() - detalhe.timestamp;
-                                    tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
-                                }, 1000);
-                            }
-                        });
-
-                        newRow.addEventListener("mouseout", function () {
-                            // Para a contagem dos segundos durante o hover
-                            if (tempoCell._hoverInterval) {
-                                clearInterval(tempoCell._hoverInterval);
-                                delete tempoCell._hoverInterval; // Remove a referência ao intervalo
-                            }
-
-                            // Verifica se o item é futuro ou passado e retoma a contagem normal
-                            if (detalhe.isFuture) {
-                                if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem regressiva apenas se não estiver já ativa
-                                    var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                                    intervalMap.set(index, countdownInterval);
-                                }
-                            } else {
-                                if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
-                                    var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                                    intervalMap.set(index, elapsedInterval);
-                                }
-                            }
-
-                            // Volta para o formato HH:MM
-                            const elapsed = Date.now() - detalhe.timestamp;
-                            tempoCell.textContent = formatTime(elapsed, false);
-                        });
-                    }
+            // Adiciona o evento de clique ao botão Receber
+            var receberButton = newRow.querySelector(".receberButton");
+            if (receberButton) {
+                receberButton.addEventListener("click", function () {
+                    abrirJanelaRecebimento(index);
                 });
             }
+
+            // Manipulação do tempo na célula
+            var tempoCell = newRow.querySelector(".tempo-cell");
+            if (tempoCell) {
+                function updateTimeCell(showSeconds = false) {
+                    const now = Date.now();
+                    const elapsed = now - detalhe.timestamp;
+
+                    // Define limites de tempo
+                    const maxTime = 30 * 60 * 1000; // 30 minutos
+                    const midTime = 15 * 60 * 1000; // 15 minutos
+
+                    if (elapsed > maxTime) {
+                        newRow.classList.add("oscillation");
+                        newRow.style.background = ""; // Remove estilos conflitantes
+                    } else {
+                        newRow.classList.remove("oscillation");
+
+                        // Gradiente dinâmico para o fundo
+                        let backgroundGradient;
+                        if (elapsed <= midTime) {
+                            const percentage = (elapsed / midTime) * 100;
+                            backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                        } else {
+                            const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100;
+                            backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                        }
+                        newRow.style.background = backgroundGradient;
+                    }
+
+                    // Atualiza o tempo na célula
+                    if (detalhe.isFuture) {
+                        const remaining = detalhe.timestamp - now;
+                        if (remaining <= 0) {
+                            detalhe.isFuture = false;
+                            detalhe.timestamp = now;
+                        }
+                        tempoCell.textContent = formatTime(remaining, showSeconds);
+                    } else {
+                        tempoCell.textContent = formatTime(elapsed, showSeconds);
+                    }
+                }
+
+                // Inicializa a contagem de tempo
+                var interval = setInterval(() => updateTimeCell(false), 1000);
+                intervalMap.set(index, interval);
+
+                // Exibição inicial
+                updateTimeCell(false);
+
+                // Eventos de hover
+                newRow.addEventListener("mouseover", function () {
+                    clearInterval(intervalMap.get(index)); // Pausa o intervalo padrão
+                    updateTimeCell(true); // Mostra segundos
+                });
+
+                newRow.addEventListener("mouseout", function () {
+                    // Retoma o intervalo padrão
+                    if (!intervalMap.has(index)) {
+                        var newInterval = setInterval(() => updateTimeCell(false), 1000);
+                        intervalMap.set(index, newInterval);
+                    }
+                    tempoCell.textContent = formatTime(Date.now() - detalhe.timestamp, false);
+                });
+            }
+        });
+
+        // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material nos detalhes.</td>
+            `;
+            detalhesTable.appendChild(emptyRow);
         }
+    } else {
+        console.error("Tabela de detalhes não encontrada.");
+    }
+}
+
+// Função para formatar o tempo
+function formatTime(milliseconds, showSeconds = false) {
+    if (milliseconds < 0) milliseconds = 0;
+
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    if (showSeconds) {
+        timeString += `:${String(seconds).padStart(2, '0')}`;
+    }
+    return timeString;
+}
 
         atualizarTabelaDetalhes();
 
