@@ -692,10 +692,13 @@ function atualizarTabelaReservados() {
         if (detalhes.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material reservado no momento.</td>
+                <td colspan="9" style="text-align: center;">Nenhum material nos detalhes.</td>
             `;
-            reservadosTableBody.appendChild(emptyRow);
+            eservadosTableBody.appendChild(emptyRow);
         }
+    } else {
+        console.error("Tabela de detalhes não encontrada.");
+    
     }
 }
 
