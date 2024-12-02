@@ -1122,34 +1122,33 @@ if (recebimentoForm) {
 }
 
 
+// Função para atualizar a tabela de materiais recebidos
+var recebidosTableElement = document.getElementById("recebidosTable");
+var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-        // Função para atualizar a tabela de materiais recebidos
-        var recebidosTableElement = document.getElementById("recebidosTable");
-        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
+function atualizarTabelaRecebidos() {
+    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    if (recebidosTable) {
+        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-        function atualizarTabelaRecebidos() {
-            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-            if (recebidosTable) {
-                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+        recebidos.forEach(function (item, index) {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td>${item.dataAtual}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${item.guardado}</td>
+            `;
+            recebidosTable.appendChild(newRow);
+        });
 
-                recebidos.forEach(function (item, index) {
-                    var newRow = document.createElement("tr");
-                    newRow.innerHTML = `
-                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                        <td>${item.local}</td>
-                        <td>${item.item}</td>
-                        <td>${item.quantidade}</td>
-                        <td>${item.destino}</td>
-                        <td>${item.dataAtual}</td>
-                        <td>${item.horario}</td>
-                        <td>${item.recebido}</td>
-                        <td>${item.guardado}</td>
-                    `;
-                    recebidosTable.appendChild(newRow);
-                });
-
-                                // Mensagem para tabela vazia
-        if (detalhes.length === 0) {
+        // Mensagem para tabela vazia
+        if (recebidos.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
                 <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
@@ -1157,10 +1156,10 @@ if (recebimentoForm) {
             recebidosTable.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de detalhes não encontrada.");
-            }
-            
-        }
+        console.error("Tabela de materiais recebidos não encontrada.");
+    }
+}
+
 
         atualizarTabelaRecebidos();
 
