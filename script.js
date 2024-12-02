@@ -1124,8 +1124,9 @@ if (recebimentoForm) {
 
 
         // Função para atualizar a tabela de materiais recebidos
+        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
         var recebidosTableElement = document.getElementById("recebidosTable");
-        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
+        var recebidosTableBody = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
         function atualizarTabelaRecebidos() {
             var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
@@ -1148,17 +1149,17 @@ if (recebimentoForm) {
                     recebidosTable.appendChild(newRow);
                 });
 
-                                // Mensagem para tabela vazia
-        if (detalhes.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
-            `;
-            recebidosTable.appendChild(emptyRow);
-        }
-    } else {
-        console.error("Tabela de detalhes não encontrada.");
-            }
+       // Mensagem para tabela vazia
+       if (recebidos.length === 0) {
+        var emptyRow = document.createElement("tr");
+        emptyRow.innerHTML = `
+            <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
+        `;
+        recebidosTableBody.appendChild(emptyRow);
+    }
+} else {
+    console.error("Tabela de materiais recebidos não encontrada.");
+}
             
         }
 
