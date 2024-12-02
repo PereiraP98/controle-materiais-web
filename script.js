@@ -654,37 +654,31 @@ if (excluirReservadosButton) {
 }
 
 
+// Atualiza a tabela de reservados e adiciona o evento de solicitação
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableElement = document.getElementById("reservadosTable");
-    var reservadosTableBody = reservadosTableElement ? reservadosTableElement.querySelector("tbody") : null;
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
 
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
-            // Usamos 'let' para garantir o escopo correto
-            let currentItem = item;
-            let currentIndex = index;
-
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${currentItem.local}</td>
-                <td>${currentItem.item}</td>
-                <td>${currentItem.destino}</td>
-                <td>${currentItem.quantidade}</td>
-                <td><button class="solicitar-button" data-index="${currentIndex}">Solicitar</button></td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
             `;
-
             reservadosTableBody.appendChild(newRow);
 
-            // Adiciona evento ao botão de "Solicitar"
+            // Adiciona o evento ao botão de solicitar
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(currentItem, currentIndex);
-                    // Não removemos o item aqui; ele será removido após a confirmação
+                    solicitarItemReservado(index);
                 });
             }
         });
@@ -698,9 +692,15 @@ function atualizarTabelaReservados() {
             reservadosTableBody.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de itens reservados não encontrada.");
+        console.error("Tabela de materiais reservados não encontrada.");
     }
 }
+
+// Atualiza as tabelas ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+    atualizarTabelaSolicitados();
+});
 
 
 
