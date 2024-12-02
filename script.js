@@ -895,38 +895,75 @@ document.addEventListener("DOMContentLoaded", function () {
         // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
 
         // Função para abrir a janela flutuante de recebimento
-        function abrirJanelaRecebimento(index) {
-            var detalhe = detalhes[index];
-            // Preenche os campos da janela com os dados atuais
-            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-            if (recebimentoQuantidadeInput) {
-                recebimentoQuantidadeInput.value = detalhe.quantidade;
-            }
-            var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-            if (recebimentoHorarioInput) {
-                recebimentoHorarioInput.value = horarioAtual;
-            }
-            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-            if (recebimentoIndexInput) {
-                recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
-            }
-            var janelaRecebimento = document.getElementById("janelaRecebimento");
-            if (janelaRecebimento) {
-                janelaRecebimento.style.display = "block";
-            }
-        }
+function abrirJanelaRecebimento(index) {
+    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || []; // Carrega os detalhes do localStorage
+    var detalhe = detalhes[index]; // Obtém o detalhe correspondente ao índice fornecido
 
-        // Fecha a janela de recebimento
-        var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
-        if (cancelarRecebimentoButton) {
-            cancelarRecebimentoButton.addEventListener("click", function () {
-                var janelaRecebimento = document.getElementById("janelaRecebimento");
-                if (janelaRecebimento) {
-                    janelaRecebimento.style.display = "none";
-                }
-            });
-        }
+    if (!detalhe) {
+        alert("Erro: Detalhe não encontrado para o índice fornecido.");
+        return;
+    }
+
+    // Preenche os campos da janela com os dados do item selecionado
+    var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+    var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+    var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+
+    if (recebimentoQuantidadeInput) {
+        recebimentoQuantidadeInput.value = detalhe.quantidade || "1"; // Define a quantidade ou padrão como 1
+    }
+
+    if (recebimentoHorarioInput) {
+        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        recebimentoHorarioInput.value = horarioAtual; // Define o horário atual
+    }
+
+    if (recebimentoIndexInput) {
+        recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
+    }
+
+    // Mostra a janela de recebimento e o overlay
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        overlay.classList.add("active");
+        janelaRecebimento.classList.remove("hidden");
+
+        // Define animação de entrada para a janela
+        janelaRecebimento.style.animation = "slideDown 0.3s forwards";
+    } else {
+        alert("Erro: Elementos da janela de recebimento não encontrados.");
+    }
+}
+
+
+        // Função para fechar a janela de recebimento
+function fecharJanelaRecebimento() {
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        // Animação de saída para a janela
+        janelaRecebimento.style.animation = "slideUp 0.3s forwards";
+
+        // Remove o overlay após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaRecebimento.classList.add("hidden");
+
+            // Reseta as propriedades de animação
+            janelaRecebimento.style.animation = "";
+        }, 300); // Tempo igual à duração da animação
+    }
+}
+
+// Evento de clique para o botão de cancelar
+var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
+if (cancelarRecebimentoButton) {
+    cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
+}
+
 
         // Confirma o recebimento
         var recebimentoForm = document.getElementById("recebimentoForm");
@@ -1335,4 +1372,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
-
