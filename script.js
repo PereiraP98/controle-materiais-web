@@ -245,6 +245,7 @@ if (janelaForm) {
 
         // Atualiza a tabela de solicitados na página index.html
         atualizarTabelaSolicitados();
+        atualizarTabelaReservados();
 
         // Atualiza a tabela de detalhes se estiver na página detalhes.html
         if (window.location.pathname.includes("detalhes.html")) {
