@@ -656,7 +656,8 @@ if (excluirReservadosButton) {
 
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
+    var reservadosTableElement = document.getElementById("reservadosTable");
+    var reservadosTableBody = reservadosTableElement ? reservadosTableElement.querySelector("tbody") : null;
 
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
