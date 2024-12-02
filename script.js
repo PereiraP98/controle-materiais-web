@@ -710,7 +710,6 @@ function atualizarTabelaSolicitados() {
                 newRow.innerHTML = `
                     <td>${item.local}</td>
                     <td>${item.item}</td>
-                    <td>${item.quantidade || "1"}</td>
                     <td>${item.destino}</td>
                 `;
                 solicitadosTableBody.appendChild(newRow);
