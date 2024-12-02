@@ -961,13 +961,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-        // Função para fechar a janela de recebimento
+ // Função para fechar a janela de recebimento
 function fecharJanelaRecebimento() {
     var janelaRecebimento = document.getElementById("janelaRecebimento");
     var overlay = document.getElementById("overlay");
 
     if (janelaRecebimento && overlay) {
-        // Animação de saída para a janela
+        // Adiciona animação de saída para a janela
         janelaRecebimento.style.animation = "slideUp 0.3s forwards";
 
         // Remove o overlay após a animação
@@ -977,6 +977,7 @@ function fecharJanelaRecebimento() {
 
             // Reseta as propriedades de animação
             janelaRecebimento.style.animation = "";
+            document.body.classList.remove("modal-open"); // Garante que a rolagem da página seja reativada
         }, 300); // Tempo igual à duração da animação
     }
 }
@@ -987,90 +988,92 @@ if (cancelarRecebimentoButton) {
     cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
 }
 
+// Confirma o recebimento
+var recebimentoForm = document.getElementById("recebimentoForm");
+if (recebimentoForm) {
+    recebimentoForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-        // Confirma o recebimento
-        var recebimentoForm = document.getElementById("recebimentoForm");
-        if (recebimentoForm) {
-            recebimentoForm.addEventListener("submit", function (event) {
-                event.preventDefault();
+        var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+        var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+        var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
 
-                var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-                var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-                var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+        var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
+        var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
+        var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
 
-                var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
-                var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
-                var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
-
-                // Validações
-                if (index === -1 || isNaN(index)) {
-                    alert("Erro ao identificar o item a ser recebido.");
-                    return;
-                }
-
-                if (!quantidadeRecebida) {
-                    alert("Por favor, insira a quantidade recebida.");
-                    return;
-                }
-
-                if (!horarioRecebido) {
-                    alert("Por favor, insira o horário de recebimento.");
-                    return;
-                }
-
-                var detalhe = detalhes[index];
-
-                // Limpa os intervals do cronômetro
-                if (intervalMap.has(index)) {
-                    clearInterval(intervalMap.get(index));
-                    intervalMap.delete(index);
-                }
-
-                // Cria um novo objeto para materiais recebidos
-                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-                recebidos.push({
-                    local: detalhe.local,
-                    item: detalhe.item,
-                    quantidade: quantidadeRecebida,
-                    destino: detalhe.destino,
-                    dataAtual: detalhe.dataAtual,
-                    horario: detalhe.horario,
-                    recebido: horarioRecebido,
-                    guardado: '' // Pode ser preenchido posteriormente
-                });
-                localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-                // Remove o item da lista de detalhes
-                detalhes.splice(index, 1);
-                localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-                // Também remove o item correspondente de 'solicitados'
-                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-                var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
-                    return itemSolicitado.local === detalhe.local &&
-                        itemSolicitado.item === detalhe.item &&
-                        itemSolicitado.destino === detalhe.destino;
-                });
-
-                if (solicitadosIndex !== -1) {
-                    solicitados.splice(solicitadosIndex, 1);
-                    localStorage.setItem("solicitados", JSON.stringify(solicitados));
-                }
-
-                // Atualiza a tabela
-                atualizarTabelaDetalhes();
-
-                // Atualiza a tabela de recebidos
-                atualizarTabelaRecebidos();
-
-                var janelaRecebimento = document.getElementById("janelaRecebimento");
-                if (janelaRecebimento) {
-                    janelaRecebimento.style.display = "none";
-                }
-
-                alert("Material recebido com sucesso!");
-            });
+        // Validações
+        if (index === -1 || isNaN(index)) {
+            alert("Erro ao identificar o item a ser recebido.");
+            return;
         }
+
+        if (!quantidadeRecebida) {
+            alert("Por favor, insira a quantidade recebida.");
+            return;
+        }
+
+        if (!horarioRecebido) {
+            alert("Por favor, insira o horário de recebimento.");
+            return;
+        }
+
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        var detalhe = detalhes[index];
+
+        if (!detalhe) {
+            alert("Erro ao encontrar o material nos detalhes.");
+            return;
+        }
+
+        // Limpa os intervals do cronômetro
+        if (intervalMap.has(index)) {
+            clearInterval(intervalMap.get(index));
+            intervalMap.delete(index);
+        }
+
+        // Cria um novo objeto para materiais recebidos
+        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        recebidos.push({
+            local: detalhe.local,
+            item: detalhe.item,
+            quantidade: quantidadeRecebida,
+            destino: detalhe.destino,
+            dataAtual: detalhe.dataAtual,
+            horario: detalhe.horario,
+            recebido: horarioRecebido,
+            guardado: '' // Pode ser preenchido posteriormente
+        });
+        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+        // Remove o item da lista de detalhes
+        detalhes.splice(index, 1);
+        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+        // Também remove o item correspondente de 'solicitados'
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
+            return itemSolicitado.local === detalhe.local &&
+                itemSolicitado.item === detalhe.item &&
+                itemSolicitado.destino === detalhe.destino;
+        });
+
+        if (solicitadosIndex !== -1) {
+            solicitados.splice(solicitadosIndex, 1);
+            localStorage.setItem("solicitados", JSON.stringify(solicitados));
+        }
+
+        // Atualiza as tabelas
+        atualizarTabelaDetalhes();
+        atualizarTabelaRecebidos();
+
+        // Fecha a janela de recebimento
+        fecharJanelaRecebimento();
+
+        alert("Material recebido com sucesso!");
+    });
+}
+
 
         // Função para atualizar a tabela de materiais recebidos
         var recebidosTableElement = document.getElementById("recebidosTable");
