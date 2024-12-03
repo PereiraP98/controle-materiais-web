@@ -1,3 +1,4 @@
+
 // script.js
 
 // Map para armazenar os IDs dos intervals para cada detalhe
@@ -177,23 +178,15 @@ if (janelaForm) {
         }
 
         if (fromReservados === "true" && itemIndex >= 0) {
-            // Obtemos o array de itens reservados do localStorage
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        
-            if (itemIndex < reservados.length) {
-                // Remover o item do array com base no índice fornecido
-                reservados.splice(itemIndex, 1);
-        
-                // Atualizar o localStorage com o array atualizado
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-        
-                // Atualizar visualmente a tabela de materiais reservados
-                atualizarTabelaReservados();
-            } else {
-                console.error("Índice inválido para remoção de materiais reservados.");
-            }
+            reservados.splice(itemIndex, 1);
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
         }
-        
+
+        // Limpa os campos ocultos após a submissão
+        if (fromReservadosInput) fromReservadosInput.value = "false";
+        if (itemIndexInput) itemIndexInput.value = "-1";
 
         // Registro da solicitação nos dados locais
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
@@ -253,7 +246,6 @@ if (janelaForm) {
 
         // Atualiza a tabela de solicitados na página index.html
         atualizarTabelaSolicitados();
-        atualizarTabelaReservados ();
 
         // Atualiza a tabela de detalhes se estiver na página detalhes.html
         if (window.location.pathname.includes("detalhes.html")) {
@@ -282,7 +274,6 @@ function abrirJanelaSolicitacao(dados, index) {
 
     // Define os campos ocultos somente se o index for válido
     if (typeof index !== 'undefined') {
-        itemIndexInput.value = index;
         if (fromReservadosInput) fromReservadosInput.value = "true";
         if (itemIndexInput) itemIndexInput.value = index;
     } else {
@@ -666,8 +657,7 @@ if (excluirReservadosButton) {
 
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableElement = document.getElementById("reservadosTable");
-    var reservadosTableBody = reservadosTableElement ? reservadosTableElement.querySelector("tbody") : null;
+    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
 
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
@@ -698,17 +688,6 @@ function atualizarTabelaReservados() {
                 });
             }
         });
-
-        // Mensagem para tabela vazia
-        if (reservados.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="6" style="text-align: center;">Nenhum material reservado no momento.</td>
-            `;
-            reservadosTableBody.appendChild(emptyRow);
-        }
-    } else {
-        console.error("Tabela de itens reservados não encontrada.");
     }
 }
 
@@ -732,6 +711,7 @@ function atualizarTabelaSolicitados() {
                 newRow.innerHTML = `
                     <td>${item.local}</td>
                     <td>${item.item}</td>
+                    <td>${item.quantidade || "1"}</td>
                     <td>${item.destino}</td>
                 `;
                 solicitadosTableBody.appendChild(newRow);
@@ -741,7 +721,6 @@ function atualizarTabelaSolicitados() {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
-
 
 
 
@@ -1132,33 +1111,34 @@ if (recebimentoForm) {
 }
 
 
-// Função para atualizar a tabela de materiais recebidos
-var recebidosTableElement = document.getElementById("recebidosTable");
-var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-function atualizarTabelaRecebidos() {
-    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-    if (recebidosTable) {
-        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+        // Função para atualizar a tabela de materiais recebidos
+        var recebidosTableElement = document.getElementById("recebidosTable");
+        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-        recebidos.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.quantidade}</td>
-                <td>${item.destino}</td>
-                <td>${item.dataAtual}</td>
-                <td>${item.horario}</td>
-                <td>${item.recebido}</td>
-                <td>${item.guardado}</td>
-            `;
-            recebidosTable.appendChild(newRow);
-        });
+        function atualizarTabelaRecebidos() {
+            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            if (recebidosTable) {
+                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-        // Mensagem para tabela vazia
-        if (recebidos.length === 0) {
+                recebidos.forEach(function (item, index) {
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.dataAtual}</td>
+                        <td>${item.horario}</td>
+                        <td>${item.recebido}</td>
+                        <td>${item.guardado}</td>
+                    `;
+                    recebidosTable.appendChild(newRow);
+                });
+
+                                // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
             var emptyRow = document.createElement("tr");
             emptyRow.innerHTML = `
                 <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
@@ -1166,10 +1146,10 @@ function atualizarTabelaRecebidos() {
             recebidosTable.appendChild(emptyRow);
         }
     } else {
-        console.error("Tabela de materiais recebidos não encontrada.");
-    }
-}
-
+        console.error("Tabela de detalhes não encontrada.");
+            }
+            
+        }
 
         atualizarTabelaRecebidos();
 
