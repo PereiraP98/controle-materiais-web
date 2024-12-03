@@ -78,46 +78,86 @@ if (backToPanelButton) {
 var abrirSolicitacaoButton = document.getElementById("abrirSolicitacaoButton");
 if (abrirSolicitacaoButton) {
     abrirSolicitacaoButton.addEventListener("click", function () {
-        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        var horarioInput = document.getElementById("horario");
-        if (horarioInput) {
-            horarioInput.value = horarioAtual; // Preenche o horário atual
+        var localSelect = document.getElementById("local");
+        var itemInput = document.getElementById("item");
+        var destinoSelect = document.getElementById("destino");
+
+        var local = localSelect ? localSelect.value.trim() : "";
+        var item = itemInput ? itemInput.value.trim() : "";
+        var destino = destinoSelect ? destinoSelect.value.trim() : "";
+
+        // Validação dos campos
+        if (!local || !item || !destino) {
+            alert("Por favor, preencha todos os campos.");
+            return;
         }
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "block";
+
+        if (!/^\d{5}$/.test(item)) {
+            alert("O código do item deve ter exatamente 5 dígitos.");
+            return;
+        }
+
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de solicitação
+                    abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de solicitação com os dados preenchidos
+            abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
         }
     });
 }
 
-// Cancelar a solicitação e fechar a janela flutuante (Página Index)
+// Cancelar a solicitação e fechar a janela flutuante
 var cancelarSolicitacaoButton = document.getElementById("cancelarSolicitacaoButton");
 if (cancelarSolicitacaoButton) {
     cancelarSolicitacaoButton.addEventListener("click", function () {
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
+        fecharJanelaSolicitacao();
     });
 }
+
 
 // Confirmar a solicitação e registrar os dados (Página Index)
 var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
         event.preventDefault();
-
+        var fromReservadosInput = document.getElementById("fromReservados");
+        var itemIndexInput = document.getElementById("itemIndex");
         var quantidadeInput = document.getElementById("quantidade");
         var horarioInput = document.getElementById("horario");
-        var localSelect = document.getElementById("local");
+        var localInput = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
+        // Fecha a janela de solicitação
+        fecharJanelaSolicitacao();
 
         var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
         var horario = horarioInput ? horarioInput.value.trim() : "";
-        var local = localSelect ? localSelect.value.trim() : "";
+        var local = localInput ? localInput.value.trim() : "";
         var item = itemInput ? itemInput.value.trim() : "";
         var destino = destinoSelect ? destinoSelect.value.trim() : "";
+
+        // Obter os valores dos campos ocultos
+        var fromReservados = fromReservadosInput ? fromReservadosInput.value : "false";
+        var itemIndex = itemIndexInput ? parseInt(itemIndexInput.value) : -1;
 
         // Validação dos campos
         if (!quantidade || !horario || !local || !item || !destino) {
@@ -136,27 +176,31 @@ if (janelaForm) {
             return;
         }
 
+        if (fromReservados === "true" && itemIndex >= 0) {
+            // Obtemos o array de itens reservados do localStorage
+            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+        
+            if (itemIndex < reservados.length) {
+                // Remover o item do array com base no índice fornecido
+                reservados.splice(itemIndex, 1);
+        
+                // Atualizar o localStorage com o array atualizado
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+        
+                // Atualizar visualmente a tabela de materiais reservados
+                atualizarTabelaReservados();
+            } else {
+                console.error("Índice inválido para remoção de materiais reservados.");
+            }
+        }
+        
+
+        // Registro da solicitação nos dados locais
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric"
         });
-
-        var solicitadosTable = document.getElementById("solicitadosTable");
-        var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${local}</td>
-            <td>${item}</td>
-            <td>${destino}</td>
-        `;
-        if (solicitadosTableBody) {
-            solicitadosTableBody.appendChild(newRow);
-        }
-
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        solicitados.push({ local: local, item: item, destino: destino });
-        localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
         // Calcular o timestamp baseado no horário inserido pelo usuário
         var dataAtualObj = new Date();
@@ -177,17 +221,11 @@ if (janelaForm) {
             0  // milissegundos
         );
 
-        // NÃO adiciona um dia se o horário for no passado ou igual ao atual
-        // Isso garante que o horário seja tratado como do mesmo dia
-        // Se precisar tratar como próximo dia apenas para horários futuros, mantenha a lógica abaixo
-        // Porém, pelo seu feedback, removemos a adição de um dia para horários passados
-
-        // Obter o timestamp (em milissegundos)
         var timestamp = timestampDate.getTime();
-
         var agora = Date.now();
         var isFuture = timestamp > agora;
 
+        // Adiciona aos detalhes
         var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         detalhes.push({
             local: local,
@@ -196,10 +234,15 @@ if (janelaForm) {
             destino: destino,
             dataAtual: dataAtual,
             horario: horario,
-            timestamp: timestamp, // Usamos o timestamp calculado
-            isFuture: isFuture    // Indica se o horário é no futuro
+            timestamp: timestamp,
+            isFuture: isFuture
         });
         localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+        // Adiciona aos solicitados
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        solicitados.push({ local: local, item: item, destino: destino });
+        localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
         var janelaSolicitacao = document.getElementById("janelaSolicitacao");
         if (janelaSolicitacao) {
@@ -208,6 +251,10 @@ if (janelaForm) {
 
         alert("Material solicitado com sucesso!");
 
+        // Atualiza a tabela de solicitados na página index.html
+        atualizarTabelaSolicitados();
+        atualizarTabelaReservados ();
+
         // Atualiza a tabela de detalhes se estiver na página detalhes.html
         if (window.location.pathname.includes("detalhes.html")) {
             atualizarTabelaDetalhes();
@@ -215,31 +262,129 @@ if (janelaForm) {
     });
 }
 
+// Função para abrir a janela de solicitação com dados preenchidos
+function abrirJanelaSolicitacao(dados, index) {
+    var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    var localInput = document.getElementById("local");
+    var itemInput = document.getElementById("item");
+    var destinoSelect = document.getElementById("destino");
+    var horarioInput = document.getElementById("horario");
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
+    var quantidadeInput = document.getElementById("quantidade");
+
+    if (localInput) localInput.value = dados.local || "";
+    if (itemInput) itemInput.value = dados.item || "";
+    if (destinoSelect) destinoSelect.value = dados.destino || "";
+    if (horarioInput) horarioInput.value = horarioAtual;
+    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1";
+
+    // Define os campos ocultos somente se o index for válido
+    if (typeof index !== 'undefined') {
+        itemIndexInput.value = index;
+        if (fromReservadosInput) fromReservadosInput.value = "true";
+        if (itemIndexInput) itemIndexInput.value = index;
+    } else {
+        if (fromReservadosInput) fromReservadosInput.value = "false";
+        if (itemIndexInput) itemIndexInput.value = "-1";
+    }
+
+    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+    var overlay = document.getElementById("overlay");
+    if (janelaSolicitacao && overlay) {
+        // Resetar propriedades
+        janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
+        janelaSolicitacao.style.animation = 'none';
+        janelaSolicitacao.style.transform = '';
+        janelaSolicitacao.style.opacity = '';
+        janelaSolicitacao.offsetHeight; // Força um reflow
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaSolicitacao.classList.remove("hidden");
+        janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
+    }
+}
+
+
+
+// Função para fechar a janela de solicitação
+function fecharJanelaSolicitacao() {
+    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaSolicitacao && overlay) {
+        // Aplica a animação de saída
+        janelaSolicitacao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaSolicitacao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaSolicitacao.style.animation = '';
+            janelaSolicitacao.style.transform = '';
+            janelaSolicitacao.style.opacity = '';
+            janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
+        }, 300); // Duração da animação
+    }
+
+    // Limpa os campos ocultos
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
+    if (fromReservadosInput) fromReservadosInput.value = "false";
+    if (itemIndexInput) itemIndexInput.value = "-1";
+}
+
+
+
+
+
+// Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
     var atencaoMensagem = document.getElementById("atencaoMensagem");
     var confirmarAtencao = document.getElementById("confirmarAtencao");
     var cancelarAtencao = document.getElementById("cancelarAtencao");
+    var overlay = document.getElementById("overlay");
 
-    if (janelaAtencao && atencaoMensagem) {
+    if (janelaAtencao && atencaoMensagem && overlay) {
         // Define a mensagem dinâmica
         atencaoMensagem.textContent = mensagem;
 
-        // Remove a classe 'hidden' para exibir a janela
+        // Resetar propriedades
+        janelaAtencao.style.animation = 'none';
+        janelaAtencao.style.transform = '';
+        janelaAtencao.style.opacity = '';
+        janelaAtencao.offsetHeight; // Força um reflow
+
+        // Exibe o overlay e adiciona a classe 'active' para a animação
+        overlay.classList.add("active");
+
+        // Remove a classe 'hidden' e adiciona a animação de entrada
         janelaAtencao.classList.remove("hidden");
+        janelaAtencao.style.animation = 'slideDown 0.3s forwards';
+
+        // Adiciona a classe para impedir a rolagem
+        document.body.classList.add('modal-open');
 
         // Adiciona os eventos nos botões
         if (confirmarAtencao) {
             confirmarAtencao.onclick = function () {
                 if (onConfirm) onConfirm(); // Executa a ação de confirmação
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
 
         if (cancelarAtencao) {
             cancelarAtencao.onclick = function () {
                 if (onCancel) onCancel(); // Executa a ação de cancelamento
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
     } else {
@@ -248,9 +393,31 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
 }
 
 
+// Função para fechar a janela de atenção com animação
+function fecharJanelaAtencao() {
+    var janelaAtencao = document.getElementById("janelaAtencao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaAtencao && overlay) {
+        // Animação de saída
+        janelaAtencao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaAtencao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaAtencao.style.animation = '';
+            janelaAtencao.style.transform = '';
+            janelaAtencao.style.opacity = '';
+        }, 300); // Tempo igual à duração da animação
+    }
+}
 
 
-// Exemplo de uso ao reservar ou solicitar um material já solicitado
+
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
 
@@ -275,178 +442,226 @@ if (reservarButton) {
             return;
         }
 
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de reserva
+                    abrirJanelaReserva({ local, item, destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de reserva
+            abrirJanelaReserva({ local, item, destino });
+        }
+    });
+}
+
+
+
+// Função para abrir a janela de reserva
+function abrirJanelaReserva(dados) {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+
+    // Limpar o campo de quantidade e definir valor padrão
+    if (reservaQuantidadeInput) reservaQuantidadeInput.value = "1";
+
+    // Armazenar os dados do item a ser reservado
+    janelaReserva.dataset.local = dados.local;
+    janelaReserva.dataset.item = dados.item;
+    janelaReserva.dataset.destino = dados.destino;
+
+    var overlay = document.getElementById("overlay");
+    if (janelaReserva && overlay) {
+        // Resetar propriedades
+        janelaReserva.style.display = ''; // Remove qualquer display:none inline
+        janelaReserva.style.animation = 'none';
+        janelaReserva.style.transform = '';
+        janelaReserva.style.opacity = '';
+        janelaReserva.offsetHeight; // Força um reflow
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaReserva.classList.remove("hidden");
+        janelaReserva.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
+    }
+}
+
+
+
+
+// Função para fechar a janela de reserva
+function fecharJanelaReserva() {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaReserva && overlay) {
+        // Aplica a animação de saída
+        janelaReserva.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaReserva.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaReserva.style.animation = '';
+            janelaReserva.style.transform = '';
+            janelaReserva.style.opacity = '';
+            janelaReserva.style.display = ''; // Remove qualquer display:none inline
+        }, 300); // Duração da animação
+    }
+}
+
+
+
+
+// Evento para cancelar a reserva
+var cancelarReservaButton = document.getElementById("cancelarReservaButton");
+if (cancelarReservaButton) {
+    cancelarReservaButton.addEventListener("click", function () {
+        fecharJanelaReserva();
+    });
+}
+
+
+// Evento para confirmar a reserva
+var janelaReservaForm = document.getElementById("janelaReservaForm");
+if (janelaReservaForm) {
+    janelaReservaForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+        var quantidade = reservaQuantidadeInput ? reservaQuantidadeInput.value.trim() : "1";
+
+        var janelaReserva = document.getElementById("janelaReserva");
+
+        // Recuperar os dados armazenados
+        var local = janelaReserva.dataset.local;
+        var item = janelaReserva.dataset.item;
+        var destino = janelaReserva.dataset.destino;
+
+        // Adicionar ao localStorage
+        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+        reservados.push({ local, item, destino, quantidade });
+        localStorage.setItem("reservados", JSON.stringify(reservados));
+        // Fecha a janela de reserva
+        fecharJanelaReserva();
+
+        // Atualiza a tabela de reservados
+        atualizarTabelaReservados();
+
+        if (janelaReserva) {
+            janelaReserva.style.display = "none";
+        }
+
+        alert("Material reservado com sucesso!");
+    });
+}
+
+// Função para excluir itens da tabela de materiais reservados
+var excluirReservadosButton = document.getElementById("excluirReservadosButton");
+
+if (excluirReservadosButton) {
+    excluirReservadosButton.addEventListener("click", function () {
         var reservadosTable = document.getElementById("reservadosTable");
         var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+        var selectAllReservadosCheckbox = document.getElementById("selectAllReservadosCheckbox");
 
         if (!reservadosTableBody) {
             alert("Tabela de materiais reservados não encontrada.");
             return;
         }
 
-        // Adicionar o item à tabela de reservados
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td>${local}</td>
-            <td>${item}</td>
-            <td>${destino}</td>
-            <td><button class="solicitarButton">Solicitar</button></td>
-        `;
-        reservadosTableBody.appendChild(newRow);
-
-        // Adicionar o evento ao botão "Solicitar"
-        var solicitarButton = newRow.querySelector(".solicitarButton");
-        if (solicitarButton) {
-            solicitarButton.addEventListener("click", function () {
-                abrirJanelaSolicitacao({
-                    local: local,
-                    item: item,
-                    destino: destino,
-                });
-
-                // Remover apenas o item correspondente do localStorage
-                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-                reservados = reservados.filter((reservado) => 
-                    reservado.local !== local || 
-                    reservado.item !== item || 
-                    reservado.destino !== destino
-                );
-
-                // Atualizar o localStorage
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                // Remover a linha da tabela
-                newRow.remove();
-
-                alert("Material solicitado e removido da lista de reservados!");
-            });
+        // Verifica se há itens na tabela
+        if (reservadosTableBody.rows.length === 0) {
+            alert("A lista de materiais reservados está vazia! Adicione itens para poder realizar a exclusão.");
+            excluirReservadosButton.textContent = "Excluir Itens";
+            return;
         }
 
-        // Adicionar ao localStorage
-        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        reservados.push({ local, item, destino });
-        localStorage.setItem("reservados", JSON.stringify(reservados));
+        // Seleciona todas as colunas de checkbox
+        var checkboxColumns = reservadosTable.querySelectorAll(".checkbox-column");
+        var checkboxes = reservadosTableBody.querySelectorAll(".delete-checkbox");
 
-        alert("Material reservado com sucesso!");
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
+
+        // Verifica se a coluna está oculta
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+        if (isHidden) {
+            // Exibir a coluna "SELECIONE"
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            excluirReservadosButton.textContent = "Confirmar Exclusão";
+
+            // Adiciona evento para "Selecionar Todos" no cabeçalho
+            if (selectAllReservadosCheckbox) {
+                selectAllReservadosCheckbox.addEventListener("change", function () {
+                    // Marca ou desmarca todas as caixas de seleção
+                    var isChecked = this.checked;
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            }
+        } else {
+            // Processar exclusão
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja excluir.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+
+                selectedCheckboxes.forEach((checkbox) => {
+                    var row = checkbox.closest("tr");
+                    var rowIndex = Array.from(reservadosTableBody.rows).indexOf(row);
+
+                    // Remove do array de reservados
+                    reservados.splice(rowIndex, 1);
+
+                    // Remove a linha da tabela
+                    row.remove();
+                });
+
+                // Atualiza o localStorage
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+
+                alert("Itens excluídos com sucesso!");
+
+                // Ocultar novamente a coluna "SELECIONE"
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                excluirReservadosButton.textContent = "Excluir Itens";
+
+                // Desmarcar a caixa "Selecionar Todos"
+                if (selectAllReservadosCheckbox) selectAllReservadosCheckbox.checked = false;
+            }
+        }
     });
 }
-
-
-
-// Função para atualizar a tabela de materiais reservados
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
-            `;
-
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona evento ao botão de "Solicitar"
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    // Chama a função para abrir a janela de solicitação
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino
-                    });
-
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((_, i) => i !== index);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
-                });
-            }
-        });
-    }
-}
-
-function abrirJanelaSolicitacao(dados) {
-    var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    // Preencher os campos da janela de solicitação
-    var localInput = document.getElementById("local");
-    var itemInput = document.getElementById("item");
-    var destinoSelect = document.getElementById("destino");
-    var horarioInput = document.getElementById("horario");
-
-    if (localInput) localInput.value = dados.local || "";
-    if (itemInput) itemInput.value = dados.item || "";
-    if (destinoSelect) destinoSelect.value = dados.destino || "";
-    if (horarioInput) horarioInput.value = horarioAtual;
-
-    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-    if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
-    }
-}
-
-
-
-function atualizarTabelaReservados() {
-    var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-    var reservadosTableBody = document.querySelector("#reservadosTable tbody");
-
-    if (reservadosTableBody) {
-        reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        reservados.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
-            `;
-
-            reservadosTableBody.appendChild(newRow);
-
-            // Adiciona evento ao botão de "Solicitar"
-            var solicitarButton = newRow.querySelector(".solicitar-button");
-            if (solicitarButton) {
-                solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao({
-                        local: item.local,
-                        item: item.item,
-                        destino: item.destino,
-                    });
-
-                    // Remove o item da lista de reservados
-                    reservados.splice(index, 1);
-                    localStorage.setItem("reservados", JSON.stringify(reservados));
-
-                    // Atualiza a tabela de reservados
-                    atualizarTabelaReservados();
-                });
-            }
-        });
-    }
-}
-
-
-
-// Carrega os dados ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
-
-// Chamada inicial para atualizar a tabela ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
 
 
 // Função para atualizar a tabela de materiais reservados
@@ -480,62 +695,63 @@ function atualizarTabelaReservados() {
                 });
             }
         });
+
+        // Mensagem para tabela vazia
+        if (reservados.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="6" style="text-align: center;">Nenhum material reservado no momento.</td>
+            `;
+            reservadosTableBody.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de itens reservados não encontrada.");
+    
+
     }
-}
-
-// Carrega os dados ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    atualizarTabelaReservados();
-});
 
 
 
-
-
-
-
-// Função para abrir a janela de solicitação com dados preenchidos
-function abrirJanelaSolicitacao(dados) {
-    var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    var localInput = document.getElementById("local");
-    var itemInput = document.getElementById("item");
-    var destinoSelect = document.getElementById("destino");
-    var horarioInput = document.getElementById("horario");
-
-    if (localInput) localInput.value = dados.local || "";
-    if (itemInput) itemInput.value = dados.item || "";
-    if (destinoSelect) destinoSelect.value = dados.destino || "";
-    if (horarioInput) horarioInput.value = horarioAtual;
-
-    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-    if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
-    }
+    
 }
 
 
 
-
-// Carregar os itens solicitados armazenados no localStorage na página index
-document.addEventListener("DOMContentLoaded", function () {
+function atualizarTabelaSolicitados() {
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     var solicitadosTable = document.getElementById("solicitadosTable");
     var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
     if (solicitadosTableBody) {
-        // Limpa a tabela antes de recarregar
-        solicitadosTableBody.innerHTML = "";
-        solicitados.forEach(function(item) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-            `;
-            solicitadosTableBody.appendChild(newRow);
-        });
+        solicitadosTableBody.innerHTML = ""; // Limpa a tabela
+
+        if (solicitados.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `<td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>`;
+            solicitadosTableBody.appendChild(emptyRow);
+        } else {
+            solicitados.forEach((item) => {
+                var newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.destino}</td>
+                `;
+                solicitadosTableBody.appendChild(newRow);
+            });
+        }
+    } else {
+        console.error("Tabela de materiais solicitados não encontrada.");
     }
+}
+
+
+
+
+// Carrega os dados ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    atualizarTabelaReservados();
+    atualizarTabelaSolicitados();
 
     // Código específico para detalhes.html
     if (window.location.pathname.includes("detalhes.html")) {
@@ -567,10 +783,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
+
+            var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            var detalhesTableElement = document.getElementById("detalhesTable");
+            var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
+
             if (detalhesTable) {
                 detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-                detalhes.forEach(function(detalhe, index) {
+                detalhes.forEach(function (detalhe, index) {
                     var newRow = document.createElement("tr");
 
                     // Determina se o horário é no futuro ou no passado
@@ -601,514 +822,651 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
 
-// Manipulação do tempo e eventos de hover
-var tempoCell = newRow.querySelector(".tempo-cell");
-if (tempoCell) {
-    // Função para atualizar o tempo na célula
-    function updateTimeCell(showSeconds = false) {
-        const now = Date.now();
-        const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
-    
-        // Define tempos limites
-        const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-        const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
-    
-        if (elapsed > maxTime) {
-            console.log("Adicionando classe oscillation para a linha:", newRow);
-            newRow.classList.add("oscillation");
-            newRow.style.background = ""; // Remove estilos inline conflitantes
-        } else {
-            console.log("Removendo classe oscillation para a linha:", newRow);
-            newRow.classList.remove("oscillation");
-    
-            // Gradiente dinâmico para preenchimento da barra
-            let backgroundGradient;
-            if (elapsed <= midTime) {
-                const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
-            } else {
-                const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
-            }
-    
-            // Atualiza o fundo da linha inteira
-            newRow.style.background = backgroundGradient;
-        }
-    
-    // Atualiza o campo de tempo
-    if (detalhe.isFuture) {
-        const remaining = detalhe.timestamp - now;
-        if (remaining <= 0) {
-            detalhe.isFuture = false;
-            detalhe.timestamp = now;
-        }
-        tempoCell.textContent = formatTime(remaining, showSeconds);
-    } else {
-        tempoCell.textContent = formatTime(elapsed, showSeconds);
-    }
-    }
-    
-    
-    
+                    // Manipulação do tempo e eventos de hover
+                    var tempoCell = newRow.querySelector(".tempo-cell");
+                    if (tempoCell) {
+                        // Função para atualizar o tempo na célula
+                        function updateTimeCell(showSeconds = false) {
+                            const now = Date.now();
+                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
 
+                            // Define tempos limites
+                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
 
+                            if (elapsed > maxTime) {
+                                newRow.classList.add("oscillation");
+                                newRow.style.background = ""; // Remove estilos inline conflitantes
+                            } else {
+                                newRow.classList.remove("oscillation");
 
+                                // Gradiente dinâmico para preenchimento da barra
+                                let backgroundGradient;
+                                if (elapsed <= midTime) {
+                                    const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                                    backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                                } else {
+                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                                    backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                                }
 
+                                // Atualiza o fundo da linha inteira
+                                newRow.style.background = backgroundGradient;
+                            }
 
-    if (detalhe.isFuture) {
-        // Inicializa a atualização contínua do tempo e do gradiente
-        const countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, countdownInterval);
-    } else {
-        // Inicializa a contagem de tempo decorrido e o gradiente após o tempo máximo
-        const elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, elapsedInterval);
-    }
-        
+                            // Atualiza o campo de tempo
+                            if (detalhe.isFuture) {
+                                const remaining = detalhe.timestamp - now;
+                                if (remaining <= 0) {
+                                    detalhe.isFuture = false;
+                                    detalhe.timestamp = now;
+                                }
+                                tempoCell.textContent = formatTime(remaining, showSeconds);
+                            } else {
+                                tempoCell.textContent = formatTime(elapsed, showSeconds);
+                            }
+                        }
 
+                        // Inicializa a contagem
+                        if (detalhe.isFuture) {
+                            // Inicia a contagem regressiva a cada segundo
+                            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, countdownInterval);
+                        } else {
+                            // Inicia a contagem do tempo decorrido a cada segundo
+                            var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, elapsedInterval);
+                        }
 
-    // Inicializa a contagem
-    if (detalhe.isFuture) {
-        // Inicia a contagem regressiva a cada segundo
-        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-        intervalMap.set(index, countdownInterval);
-    } else {
-        // Inicia a contagem do tempo decorrido a cada segundo
-        var elapsedInterval = setInterval(() => {
-            var elapsed = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsed, false);
-        }, 1000);
-        intervalMap.set(index, elapsedInterval);
-    }
+                        // Exibição inicial
+                        updateTimeCell(false);
 
+                        // Eventos de hover para exibir e ocultar os segundos
+                        newRow.addEventListener("mouseover", function () {
+                            // Pausa o intervalo padrão, se existir
+                            if (intervalMap.has(index)) {
+                                clearInterval(intervalMap.get(index));
+                                intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+                            }
 
-    // Exibição inicial
-    updateTimeCell(false);
-    // Eventos de hover para exibir e ocultar os segundos
-    var hoverInterval = null;
+                            // Atualiza imediatamente com segundos e inicia um intervalo de hover
+                            updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+                            if (!tempoCell._hoverInterval) {
+                                tempoCell._hoverInterval = setInterval(() => {
+                                    const elapsedHover = Date.now() - detalhe.timestamp;
+                                    tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+                                }, 1000);
+                            }
+                        });
 
-// Adiciona eventos à linha inteira
-newRow.addEventListener("mouseover", function () {
-    // Pausa o intervalo padrão, se existir
-    if (intervalMap.has(index)) {
-        clearInterval(intervalMap.get(index));
-        intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
-    }
+                        newRow.addEventListener("mouseout", function () {
+                            // Para a contagem dos segundos durante o hover
+                            if (tempoCell._hoverInterval) {
+                                clearInterval(tempoCell._hoverInterval);
+                                delete tempoCell._hoverInterval; // Remove a referência ao intervalo
+                            }
 
-    // Atualiza imediatamente com segundos e inicia um intervalo de hover
-    updateTimeCell(true); // Atualiza para exibir HH:MM:SS
-    if (!tempoCell._hoverInterval) {
-        tempoCell._hoverInterval = setInterval(() => {
-            const elapsedHover = Date.now() - detalhe.timestamp;
-            tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
-        }, 1000);
-    }
-});
+                            // Verifica se o item é futuro ou passado e retoma a contagem normal
+                            if (detalhe.isFuture) {
+                                if (!intervalMap.has(index)) {
+                                    // Reinicia a contagem regressiva apenas se não estiver já ativa
+                                    var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                                    intervalMap.set(index, countdownInterval);
+                                }
+                            } else {
+                                if (!intervalMap.has(index)) {
+                                    // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
+                                    var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                                    intervalMap.set(index, elapsedInterval);
+                                }
+                            }
 
-newRow.addEventListener("mouseout", function () {
-    // Para a contagem dos segundos durante o hover
-    if (tempoCell._hoverInterval) {
-        clearInterval(tempoCell._hoverInterval);
-        delete tempoCell._hoverInterval; // Remove a referência ao intervalo
-    }
+                            // Volta para o formato HH:MM
+                            const elapsed = Date.now() - detalhe.timestamp;
+                            tempoCell.textContent = formatTime(elapsed, false);
+                        });
 
-    // Verifica se o item é futuro ou passado e retoma a contagem normal
-    if (detalhe.isFuture) {
-        if (!intervalMap.has(index)) {
-            // Reinicia a contagem regressiva apenas se não estiver já ativa
-            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-            intervalMap.set(index, countdownInterval);
-        }
-    } else {
-        if (!intervalMap.has(index)) {
-            // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
-            var elapsedInterval = setInterval(() => {
-                var elapsed = Date.now() - detalhe.timestamp;
-                tempoCell.textContent = formatTime(elapsed, false);
-            }, 1000);
-            intervalMap.set(index, elapsedInterval);
-        }
-    }
-
-    // Volta para o formato HH:MM
-    const elapsed = Date.now() - detalhe.timestamp;
-    tempoCell.textContent = formatTime(elapsed, false);
-});
+                        
 
                     }
+
+                    
                 });
+
+                // Mensagem para tabela vazia
+        if (detalhes.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
+            `;
+            detalhesTable.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de detalhes não encontrada.");
             }
+            
         }
 
         atualizarTabelaDetalhes();
 
+        // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
+
         // Função para abrir a janela flutuante de recebimento
-        function abrirJanelaRecebimento(index) {
-            var detalhe = detalhes[index];
-            // Preenche os campos da janela com os dados atuais
-            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-            if (recebimentoQuantidadeInput) {
-                recebimentoQuantidadeInput.value = detalhe.quantidade;
-            }
-            var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-            if (recebimentoHorarioInput) {
-                recebimentoHorarioInput.value = horarioAtual;
-            }
-            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-            if (recebimentoIndexInput) {
-                recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
-            }
-            var janelaRecebimento = document.getElementById("janelaRecebimento");
-            if (janelaRecebimento) {
-                janelaRecebimento.style.display = "block";
-            }
+function abrirJanelaRecebimento(index) {
+    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || []; // Carrega os detalhes do localStorage
+    var detalhe = detalhes[index]; // Obtém o detalhe correspondente ao índice fornecido
+
+    if (!detalhe) {
+        alert("Erro: Detalhe não encontrado para o índice fornecido.");
+        return;
+    }
+
+    // Preenche os campos da janela com os dados do item selecionado
+    var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+    var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+    var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+
+    if (recebimentoQuantidadeInput) {
+        recebimentoQuantidadeInput.value = detalhe.quantidade || "1"; // Define a quantidade ou padrão como 1
+    }
+
+    if (recebimentoHorarioInput) {
+        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        recebimentoHorarioInput.value = horarioAtual; // Define o horário atual
+    }
+
+    if (recebimentoIndexInput) {
+        recebimentoIndexInput.value = index; // Armazena o índice para uso posterior
+    }
+
+    // Mostra a janela de recebimento e o overlay
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        overlay.classList.add("active");
+        janelaRecebimento.classList.remove("hidden");
+
+        // Define animação de entrada para a janela
+        janelaRecebimento.style.animation = "slideDown 0.3s forwards";
+    } else {
+        alert("Erro: Elementos da janela de recebimento não encontrados.");
+    }
+}
+
+// Evento para fechar a janela de recebimento e remover o overlay
+document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        overlay.classList.remove("active"); // Remove o escurecimento da página
+        janelaRecebimento.classList.add("hidden"); // Oculta a janela de recebimento
+
+        // Reseta estilos e animações
+        janelaRecebimento.style.animation = "";
+        janelaRecebimento.style.display = ""; // Garante que o display seja resetado
+    }
+});
+
+// Garantia de reset do overlay ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    var overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.classList.remove("active"); // Remove qualquer estado residual
+    }
+});
+
+
+ // Função para fechar a janela de recebimento
+function fecharJanelaRecebimento() {
+    var janelaRecebimento = document.getElementById("janelaRecebimento");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaRecebimento && overlay) {
+        // Adiciona animação de saída para a janela
+        janelaRecebimento.style.animation = "slideUp 0.3s forwards";
+
+        // Remove o overlay após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaRecebimento.classList.add("hidden");
+
+            // Reseta as propriedades de animação
+            janelaRecebimento.style.animation = "";
+            document.body.classList.remove("modal-open"); // Garante que a rolagem da página seja reativada
+        }, 300); // Tempo igual à duração da animação
+    }
+}
+
+// Evento de clique para o botão de cancelar
+var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
+if (cancelarRecebimentoButton) {
+    cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
+}
+
+// Confirma o recebimento
+var recebimentoForm = document.getElementById("recebimentoForm");
+if (recebimentoForm) {
+    recebimentoForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+        var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+        var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+
+        var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
+        var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
+        var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
+
+        // Validações
+        if (index === -1 || isNaN(index)) {
+            alert("Erro ao identificar o item a ser recebido.");
+            return;
+        }
+
+        if (!quantidadeRecebida) {
+            alert("Por favor, insira a quantidade recebida.");
+            return;
+        }
+
+        if (!horarioRecebido) {
+            alert("Por favor, insira o horário de recebimento.");
+            return;
+        }
+
+        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+        var detalhe = detalhes[index];
+
+        if (!detalhe) {
+            alert("Erro ao encontrar o material nos detalhes.");
+            return;
+        }
+
+        // Limpa os intervals do cronômetro
+        if (intervalMap.has(index)) {
+            clearInterval(intervalMap.get(index));
+            intervalMap.delete(index);
+        }
+
+        // Cria um novo objeto para materiais recebidos
+        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        recebidos.push({
+            local: detalhe.local,
+            item: detalhe.item,
+            quantidade: quantidadeRecebida,
+            destino: detalhe.destino,
+            dataAtual: detalhe.dataAtual,
+            horario: detalhe.horario,
+            recebido: horarioRecebido,
+            guardado: '' // Pode ser preenchido posteriormente
+        });
+        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+        // Remove o item da lista de detalhes
+        detalhes.splice(index, 1);
+        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+        // Também remove o item correspondente de 'solicitados'
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
+            return itemSolicitado.local === detalhe.local &&
+                itemSolicitado.item === detalhe.item &&
+                itemSolicitado.destino === detalhe.destino;
+        });
+
+        if (solicitadosIndex !== -1) {
+            solicitados.splice(solicitadosIndex, 1);
+            localStorage.setItem("solicitados", JSON.stringify(solicitados));
+        }
+
+        // Atualiza as tabelas
+        atualizarTabelaDetalhes(); // Atualiza a tabela de detalhes para remover o item
+        atualizarTabelaRecebidos(); // Atualiza a tabela de recebidos com o novo item
+        if (window.location.pathname.includes("index.html")) {
+            atualizarTabelaSolicitados(); // Atualiza a tabela de solicitados, se na página index
         }
 
         // Fecha a janela de recebimento
-        var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
-        if (cancelarRecebimentoButton) {
-            cancelarRecebimentoButton.addEventListener("click", function () {
-                var janelaRecebimento = document.getElementById("janelaRecebimento");
-                if (janelaRecebimento) {
-                    janelaRecebimento.style.display = "none";
-                }
-            });
-        }
+        fecharJanelaRecebimento();
 
-        // Confirma o recebimento
-        var recebimentoForm = document.getElementById("recebimentoForm");
-        if (recebimentoForm) {
-            recebimentoForm.addEventListener("submit", function (event) {
-                event.preventDefault();
-
-                var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-                var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-                var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-
-                var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
-                var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
-                var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
-
-                // Validações
-                if (index === -1 || isNaN(index)) {
-                    alert("Erro ao identificar o item a ser recebido.");
-                    return;
-                }
-
-                if (!quantidadeRecebida) {
-                    alert("Por favor, insira a quantidade recebida.");
-                    return;
-                }
-
-                if (!horarioRecebido) {
-                    alert("Por favor, insira o horário de recebimento.");
-                    return;
-                }
-
-                var detalhe = detalhes[index];
-
-                // Limpa os intervals do cronômetro
-                if (intervalMap.has(index)) {
-                    clearInterval(intervalMap.get(index));
-                    intervalMap.delete(index);
-                }
-
-                // Cria um novo objeto para materiais recebidos
-                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-                recebidos.push({
-                    local: detalhe.local,
-                    item: detalhe.item,
-                    quantidade: quantidadeRecebida,
-                    destino: detalhe.destino,
-                    dataAtual: detalhe.dataAtual,
-                    horario: detalhe.horario,
-                    recebido: horarioRecebido,
-                    guardado: '' // Pode ser preenchido posteriormente
-                });
-                localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-                // Remove o item da lista de detalhes
-                detalhes.splice(index, 1);
-                localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-                // Também remove o item correspondente de 'solicitados'
-                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-                var solicitadosIndex = solicitados.findIndex(function(itemSolicitado) {
-                    return itemSolicitado.local === detalhe.local &&
-                        itemSolicitado.item === detalhe.item &&
-                        itemSolicitado.destino === detalhe.destino;
-                });
-
-                if (solicitadosIndex !== -1) {
-                    solicitados.splice(solicitadosIndex, 1);
-                    localStorage.setItem("solicitados", JSON.stringify(solicitados));
-                }
-
-                // Atualiza a tabela
-                atualizarTabelaDetalhes();
-
-                // Atualiza a tabela de recebidos
-                atualizarTabelaRecebidos();
-
-                var janelaRecebimento = document.getElementById("janelaRecebimento");
-                if (janelaRecebimento) {
-                    janelaRecebimento.style.display = "none";
-                }
-
-                alert("Material recebido com sucesso!");
-            });
-        }
-
-        // Função para atualizar a tabela de materiais recebidos
-        var recebidosTableElement = document.getElementById("recebidosTable");
-        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
-
-        function atualizarTabelaRecebidos() {
-            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-            if (recebidosTable) {
-                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-                recebidos.forEach(function(item, index) {
-                    var newRow = document.createElement("tr");
-                    newRow.innerHTML = `
-                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                        <td>${item.local}</td>
-                        <td>${item.item}</td>
-                        <td>${item.quantidade}</td>
-                        <td>${item.destino}</td>
-                        <td>${item.dataAtual}</td>
-                        <td>${item.horario}</td>
-                        <td>${item.recebido}</td>
-                        <td>${item.guardado}</td>
-                    `;
-                    recebidosTable.appendChild(newRow);
-                });
-            }
-        }
-
-        atualizarTabelaRecebidos();
-
-// Função para gerenciar a exclusão de itens
-// Função para gerenciar a exclusão de itens
-// Função para excluir itens da tabela de materiais solicitados
-var excluirItensButton = document.getElementById("excluirItensButton");
-
-if (excluirItensButton) {
-    excluirItensButton.addEventListener("click", function () {
-        var detalhesTable = document.getElementById("detalhesTable");
-        var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
-        var selectAllCheckbox = document.getElementById("selectAllCheckbox");
-
-        if (!detalhesTableBody) {
-            alert("Tabela de materiais solicitados não encontrada.");
-            return;
-        }
-
-        // Verifica se há itens na tabela
-        if (detalhesTableBody.rows.length === 0) {
-            alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
-            excluirItensButton.textContent = "Excluir Itens";
-            return;
-        }
-
-        // Seleciona todas as colunas de checkbox
-        var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
-        var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
-
-        if (!checkboxColumns.length) {
-            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
-            return;
-        }
-
-        // Verifica se a coluna está oculta
-        var isHidden = checkboxColumns[0].classList.contains("hidden");
-
-        if (isHidden) {
-            // Exibir a coluna "SELECIONE"
-            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-            excluirItensButton.textContent = "Confirmar Exclusão";
-
-            // Adiciona evento para "Selecionar Todos" no cabeçalho
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener("change", function () {
-                    // Marca ou desmarca todas as caixas de seleção
-                    var isChecked = this.checked;
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.checked = isChecked;
-                    });
-                });
-            }
-        } else {
-            // Processar exclusão
-            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
-
-            if (selectedCheckboxes.length === 0) {
-                alert("Selecione os itens que deseja excluir.");
-                return;
-            }
-
-            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-                var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-
-                selectedCheckboxes.forEach((checkbox) => {
-                    var row = checkbox.closest("tr");
-                    var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
-
-                    // Remove do array de detalhes
-                    var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
-
-                    // Remove o item correspondente da lista de solicitados em index
-                    solicitados = solicitados.filter((itemSolicitado) => {
-                        return !(
-                            itemSolicitado.local === detalheExcluido.local &&
-                            itemSolicitado.item === detalheExcluido.item &&
-                            itemSolicitado.destino === detalheExcluido.destino
-                        );
-                    });
-
-                    // Remove a linha da tabela
-                    row.remove();
-                });
-
-                // Atualiza o localStorage
-                localStorage.setItem("detalhes", JSON.stringify(detalhes));
-                localStorage.setItem("solicitados", JSON.stringify(solicitados));
-
-                alert("Itens excluídos com sucesso!");
-
-                // Ocultar novamente a coluna "SELECIONE"
-                checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                excluirItensButton.textContent = "Excluir Itens";
-
-                // Desmarcar a caixa "Selecionar Todos"
-                if (selectAllCheckbox) selectAllCheckbox.checked = false;
-
-                // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
-                if (window.location.pathname.includes("index.html")) {
-                    atualizarTabelaSolicitados();
-                }
-            }
-        }
+        alert("Material recebido com sucesso!");
     });
 }
 
-// Função para atualizar a tabela de materiais solicitados na página index.html
-function atualizarTabelaSolicitados() {
-    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    var solicitadosTable = document.getElementById("solicitadosTable");
-    var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
 
-    if (solicitadosTableBody) {
-        solicitadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
+// Função para atualizar a tabela de materiais recebidos
+var recebidosTableElement = document.getElementById("recebidosTable");
+var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
 
-        solicitados.forEach(function (item) {
+function atualizarTabelaRecebidos() {
+    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    if (recebidosTable) {
+        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+        recebidos.forEach(function (item, index) {
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
                 <td>${item.local}</td>
                 <td>${item.item}</td>
+                <td>${item.quantidade}</td>
                 <td>${item.destino}</td>
+                <td>${item.dataAtual}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${item.guardado}</td>
             `;
-            solicitadosTableBody.appendChild(newRow);
+            recebidosTable.appendChild(newRow);
         });
+
+        // Mensagem para tabela vazia
+        if (recebidos.length === 0) {
+            var emptyRow = document.createElement("tr");
+            emptyRow.innerHTML = `
+                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
+            `;
+            recebidosTable.appendChild(emptyRow);
+        }
+    } else {
+        console.error("Tabela de materiais recebidos não encontrada.");
     }
 }
 
 
-// Função para excluir itens da tabela de materiais recebidos
-var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
+        atualizarTabelaRecebidos();
 
-if (excluirRecebidosButton) {
-    excluirRecebidosButton.addEventListener("click", function () {
-        var recebidosTable = document.getElementById("recebidosTable");
-        var recebidosTableBody = recebidosTable ? recebidosTable.querySelector("tbody") : null;
-        var selectAllRecebidosCheckbox = document.getElementById("selectAllRecebidosCheckbox");
+        // Função para excluir itens da tabela de materiais solicitados
+        var excluirItensButton = document.getElementById("excluirItensButton");
 
-        if (!recebidosTableBody) {
-            alert("Tabela de materiais recebidos não encontrada.");
-            return;
+        if (excluirItensButton) {
+            excluirItensButton.addEventListener("click", function () {
+                var detalhesTable = document.getElementById("detalhesTable");
+                var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
+                var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+
+                if (!detalhesTableBody) {
+                    alert("Tabela de materiais solicitados não encontrada.");
+                    return;
+                }
+
+                // Verifica se há itens na tabela
+                if (detalhesTableBody.rows.length === 0) {
+                    alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
+                    excluirItensButton.textContent = "Excluir Itens";
+                    return;
+                }
+
+                // Seleciona todas as colunas de checkbox
+                var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+                var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
+
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                // Verifica se a coluna está oculta
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir a coluna "SELECIONE"
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    excluirItensButton.textContent = "Confirmar Exclusão";
+
+                    // Adiciona evento para "Selecionar Todos" no cabeçalho
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener("change", function () {
+                            // Marca ou desmarca todas as caixas de seleção
+                            var isChecked = this.checked;
+                            checkboxes.forEach((checkbox) => {
+                                checkbox.checked = isChecked;
+                            });
+                        });
+                    }
+                } else {
+                    // Processar exclusão
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
+
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+                        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+
+                        selectedCheckboxes.forEach((checkbox) => {
+                            var row = checkbox.closest("tr");
+                            var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
+
+                            // Remove do array de detalhes
+                            var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
+
+                            // Remove o item correspondente da lista de solicitados em index
+                            solicitados = solicitados.filter((itemSolicitado) => {
+                                return !(
+                                    itemSolicitado.local === detalheExcluido.local &&
+                                    itemSolicitado.item === detalheExcluido.item &&
+                                    itemSolicitado.destino === detalheExcluido.destino
+                                );
+                            });
+
+                            // Remove a linha da tabela
+                            row.remove();
+                        });
+
+                        // Atualiza o localStorage
+                        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+
+                        alert("Itens excluídos com sucesso!");
+
+                        // Ocultar novamente a coluna "SELECIONE"
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        excluirItensButton.textContent = "Excluir Itens";
+
+                        // Desmarcar a caixa "Selecionar Todos"
+                        if (selectAllCheckbox) selectAllCheckbox.checked = false;
+
+                        // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
+                        if (window.location.pathname.includes("index.html")) {
+                            atualizarTabelaSolicitados();
+                        }
+                    }
+                }
+            });
         }
 
-        // Verifica se há itens na tabela
-        if (recebidosTableBody.rows.length === 0) {
-            alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
-            excluirRecebidosButton.textContent = "Excluir Itens";
-            return;
+        // Função para excluir itens da tabela de materiais recebidos
+        var excluirRecebidosButton = document.getElementById("excluirRecebidosButton");
+
+        if (excluirRecebidosButton) {
+            excluirRecebidosButton.addEventListener("click", function () {
+                var recebidosTable = document.getElementById("recebidosTable");
+                var recebidosTableBody = recebidosTable ? recebidosTable.querySelector("tbody") : null;
+                var selectAllRecebidosCheckbox = document.getElementById("selectAllRecebidosCheckbox");
+
+                if (!recebidosTableBody) {
+                    alert("Tabela de materiais recebidos não encontrada.");
+                    return;
+                }
+
+                // Verifica se há itens na tabela
+                if (recebidosTableBody.rows.length === 0) {
+                    alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
+                    excluirRecebidosButton.textContent = "Excluir Itens";
+                    return;
+                }
+
+                // Seleciona todas as colunas de checkbox
+                var checkboxColumns = recebidosTable.querySelectorAll(".checkbox-column");
+                var checkboxes = recebidosTableBody.querySelectorAll(".delete-checkbox");
+
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                // Verifica se a coluna está oculta
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir a coluna "SELECIONE"
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    excluirRecebidosButton.textContent = "Confirmar Exclusão";
+
+                    // Adiciona evento para "Selecionar Todos" no cabeçalho
+                    if (selectAllRecebidosCheckbox) {
+                        selectAllRecebidosCheckbox.addEventListener("change", function () {
+                            // Marca ou desmarca todas as caixas de seleção
+                            var isChecked = this.checked;
+                            checkboxes.forEach((checkbox) => {
+                                checkbox.checked = isChecked;
+                            });
+                        });
+                    }
+                } else {
+                    // Processar exclusão
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja excluir.");
+                        return;
+                    }
+
+                    if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+
+                        selectedCheckboxes.forEach((checkbox) => {
+                            var row = checkbox.closest("tr");
+                            var rowIndex = Array.from(recebidosTableBody.rows).indexOf(row);
+
+                            // Remove do array de itens recebidos
+                            recebidos.splice(rowIndex, 1);
+
+                            // Remove a linha da tabela
+                            row.remove();
+                        });
+
+                        // Atualiza o localStorage
+                        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                        alert("Itens excluídos com sucesso!");
+
+                        // Ocultar novamente a coluna "SELECIONE"
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        excluirRecebidosButton.textContent = "Excluir Itens";
+
+                        // Desmarcar a caixa "Selecionar Todos"
+                        if (selectAllRecebidosCheckbox) selectAllRecebidosCheckbox.checked = false;
+                    }
+                }
+            });
         }
 
-        // Seleciona todas as colunas de checkbox
-        var checkboxColumns = recebidosTable.querySelectorAll(".checkbox-column");
-        var checkboxes = recebidosTableBody.querySelectorAll(".delete-checkbox");
+        // Função para reportar itens atrasados
+        var reportarItensButton = document.getElementById("reportarItensButton");
+        var selectAllCheckbox = document.getElementById("selectAllCheckbox");
 
-        if (!checkboxColumns.length) {
-            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
-            return;
-        }
+        if (reportarItensButton) {
+            reportarItensButton.addEventListener("click", function () {
+                var detalhesTable = document.getElementById("detalhesTable");
+                var detalhesTableBody = detalhesTable ? detalhesTable.querySelector("tbody") : null;
 
-        // Verifica se a coluna está oculta
-        var isHidden = checkboxColumns[0].classList.contains("hidden");
+                if (!detalhesTableBody) {
+                    alert("Tabela de materiais solicitados não encontrada.");
+                    return;
+                }
 
-        if (isHidden) {
-            // Exibir a coluna "SELECIONE"
-            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-            excluirRecebidosButton.textContent = "Confirmar Exclusão";
+                var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
+                var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
 
-            // Adiciona evento para "Selecionar Todos" no cabeçalho
-            if (selectAllRecebidosCheckbox) {
-                selectAllRecebidosCheckbox.addEventListener("change", function () {
-                    // Marca ou desmarca todas as caixas de seleção
-                    var isChecked = this.checked;
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.checked = isChecked;
+                if (!checkboxColumns.length) {
+                    alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+                    return;
+                }
+
+                var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+                if (isHidden) {
+                    // Exibir as caixas de seleção e resetar marcações
+                    checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+                    checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
+                    reportarItensButton.textContent = "Confirmar Reporte";
+
+                    // Vincular a função ao checkbox de selecionar todos
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener("change", function () {
+                            checkboxes.forEach((checkbox) => {
+                                var row = checkbox.closest("tr");
+                                var horaCell = row.children[6].textContent; // Coluna "HORA"
+
+                                // Verifica se o item está atrasado (30 minutos ou mais)
+                                if (verificarAtraso(horaCell)) {
+                                    checkbox.checked = this.checked; // Marca apenas itens atrasados
+                                }
+                            });
+                        });
+                    }
+                } else {
+                    // Verifica itens selecionados
+                    var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Selecione os itens que deseja reportar.");
+                        return;
+                    }
+
+                    // Verificar se todos os itens selecionados estão atrasados
+                    var detalhesReportados = [];
+                    var erro = false;
+
+                    selectedCheckboxes.forEach((checkbox) => {
+                        var row = checkbox.closest("tr");
+                        var horaCell = row.children[6].textContent; // Coluna "HORA"
+                        var local = row.children[1].textContent; // Local do material
+                        var item = row.children[2].textContent;  // Código do item
+
+                        if (!verificarAtraso(horaCell)) {
+                            alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
+                            erro = true;
+                            checkbox.checked = false; // Desmarca o item não atrasado
+                        } else {
+                            detalhesReportados.push(`• ${local} - ${item}`);
+                        }
                     });
-                });
-            }
-        } else {
-            // Processar exclusão
-            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
-            if (selectedCheckboxes.length === 0) {
-                alert("Selecione os itens que deseja excluir.");
-                return;
-            }
+                    if (erro) {
+                        return; // Interrompe o processo se houver erro
+                    }
 
-            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
-                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+                    // Confirmar com a lista dos itens reportados
+                    var confirmacao = confirm(
+                        `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
+                    );
 
-                selectedCheckboxes.forEach((checkbox) => {
-                    var row = checkbox.closest("tr");
-                    var rowIndex = Array.from(recebidosTableBody.rows).indexOf(row);
-
-                    // Remove do array de itens recebidos
-                    recebidos.splice(rowIndex, 1);
-
-                    // Remove a linha da tabela
-                    row.remove();
-                });
-
-                // Atualiza o localStorage
-                localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-                alert("Itens excluídos com sucesso!");
-
-                // Ocultar novamente a coluna "SELECIONE"
-                checkboxColumns.forEach((column) => column.classList.add("hidden"));
-                excluirRecebidosButton.textContent = "Excluir Itens";
-
-                // Desmarcar a caixa "Selecionar Todos"
-                if (selectAllRecebidosCheckbox) selectAllRecebidosCheckbox.checked = false;
-            }
+                    if (confirmacao) {
+                        alert("Reporte realizado com sucesso!");
+                        checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                        reportarItensButton.textContent = "Reportar";
+                    }
+                }
+            });
         }
-    });
-}
 
+        // Função para verificar se um item está atrasado
+        function verificarAtraso(horaSolicitada) {
+            var agora = new Date();
+            var [horas, minutos] = horaSolicitada.split(":").map(Number);
 
-        
+            var horarioSolicitado = new Date();
+            horarioSolicitado.setHours(horas, minutos, 0, 0);
 
+            var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
 
-
-
-        
+            return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
+        }
     }
 });
