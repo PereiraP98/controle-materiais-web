@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos de Materiais</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h2>Resumo de Materiais</h2>
+    <div class="chart-container">
+        <canvas id="solicitadosRecebidosChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="mediaAtrasosChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Total de Materiais Solicitados e Recebidos
+        const ctx1 = document.getElementById('solicitadosRecebidosChart').getContext('2d');
+        const solicitadosRecebidosChart = new Chart(ctx1, {
+            type: 'bar', // Gráfico de barras
+            data: {
+                labels: ['Materiais Solicitados', 'Materiais Recebidos'], // Categorias
+                datasets: [{
+                    label: 'Quantidade',
+                    data: [120, 95], // Dados iniciais (podem ser dinâmicos)
+                    backgroundColor: ['#3498db', '#2ecc71'], // Cores das barras
+                    borderColor: ['#2980b9', '#27ae60'], // Bordas das barras
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Média de Tempo de Entrega e Atrasos
+        const ctx2 = document.getElementById('mediaAtrasosChart').getContext('2d');
+        const mediaAtrasosChart = new Chart(ctx2, {
+            type: 'doughnut', // Gráfico de rosca
+            data: {
+                labels: ['Média de Entrega', 'Materiais em Atraso'], // Categorias
+                datasets: [{
+                    label: 'Estatísticas',
+                    data: [30, 10], // Dados iniciais (em minutos ou proporções)
+                    backgroundColor: ['#f1c40f', '#e74c3c'], // Cores das fatias
+                    borderColor: ['#f39c12', '#c0392b'], // Bordas das fatias
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right'
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
