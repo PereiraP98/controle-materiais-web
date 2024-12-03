@@ -177,15 +177,23 @@ if (janelaForm) {
         }
 
         if (fromReservados === "true" && itemIndex >= 0) {
+            // Obtemos o array de itens reservados do localStorage
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-            reservados.splice(itemIndex, 1);
-            localStorage.setItem("reservados", JSON.stringify(reservados));
-            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
+        
+            if (itemIndex < reservados.length) {
+                // Remover o item do array com base no índice fornecido
+                reservados.splice(itemIndex, 1);
+        
+                // Atualizar o localStorage com o array atualizado
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+        
+                // Atualizar visualmente a tabela de materiais reservados
+                atualizarTabelaReservados();
+            } else {
+                console.error("Índice inválido para remoção de materiais reservados.");
+            }
         }
-
-        // Limpa os campos ocultos após a submissão
-        if (fromReservadosInput) fromReservadosInput.value = "false";
-        if (itemIndexInput) itemIndexInput.value = "-1";
+        
 
         // Registro da solicitação nos dados locais
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
