@@ -6,7 +6,6 @@
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Adicionando Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -82,6 +81,8 @@
             <section class="graficos-container">
                 <h2>Gráficos</h2>
                 <canvas id="graficoMateriais" width="400" height="200"></canvas>
+                <h3>Média de Tempo de Entrega</h3>
+                <canvas id="graficoMediaTempo" width="400" height="200"></canvas>
             </section>
         </div>
 
@@ -107,11 +108,11 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const dadosGrafico = {
-                labels: ['Solicitados', 'Recebidos', 'Em Atraso', 'Média de Entrega'],
+            // Dados do gráfico de controle de materiais
+            const dadosGraficoMateriais = {
+                labels: ['Solicitados', 'Recebidos', 'Em Atraso', 'Materiais Reportados'],
                 datasets: [{
                     label: 'Controle de Materiais',
                     data: [20, 15, 5, 8], // Dados fictícios
@@ -119,31 +120,23 @@
                         'rgba(75, 192, 192, 0.2)', // Solicitados
                         'rgba(0, 255, 0, 0.2)',   // Recebidos (verde)
                         'rgba(255, 99, 132, 0.2)', // Em atraso
-                        'rgba(54, 162, 235, 0.2)'  // Média de entrega
+                        'rgba(255, 206, 86, 0.2)'  // Materiais Reportados (amarelo)
                     ],
                     borderColor: [
                         'rgba(75, 192, 192, 1)',
                         'rgba(0, 255, 0, 1)',
                         'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
+                        'rgba(255, 206, 86, 1)'
                     ],
                     borderWidth: 1
                 }]
             };
 
-            const opcoesGrafico = {
+            const opcoesGraficoMateriais = {
                 responsive: true,
                 plugins: {
                     legend: {
                         position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const label = context.label || '';
-                                return `${label}: ${context.raw}`;
-                            }
-                        }
                     }
                 },
                 scales: {
@@ -163,11 +156,74 @@
                 }
             };
 
-            const ctx = document.getElementById('graficoMateriais').getContext('2d');
-            new Chart(ctx, {
+            const ctxMateriais = document.getElementById('graficoMateriais').getContext('2d');
+            new Chart(ctxMateriais, {
                 type: 'bar',
-                data: dadosGrafico,
-                options: opcoesGrafico
+                data: dadosGraficoMateriais,
+                options: opcoesGraficoMateriais
+            });
+
+            // Dados do gráfico de média de tempo de entrega
+            const dadosGraficoMediaTempo = {
+                labels: ['CA', 'VF', 'VD', 'R01'],
+                datasets: [{
+                    label: 'Média de Tempo (HH:MM)',
+                    data: [12, 18, 10, 15], // Dados fictícios de tempo em minutos
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)', // CA
+                        'rgba(153, 102, 255, 0.2)', // VF
+                        'rgba(255, 159, 64, 0.2)', // VD
+                        'rgba(255, 205, 86, 0.2)'  // R01
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            const opcoesGraficoMediaTempo = {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const minutos = context.raw;
+                                const horas = Math.floor(minutos / 60);
+                                const minutosRestantes = minutos % 60;
+                                return `${context.label}: ${String(horas).padStart(2, '0')}:${String(minutosRestantes).padStart(2, '0')}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tempo em Minutos'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Locais'
+                        }
+                    }
+                }
+            };
+
+            const ctxMediaTempo = document.getElementById('graficoMediaTempo').getContext('2d');
+            new Chart(ctxMediaTempo, {
+                type: 'bar',
+                data: dadosGraficoMediaTempo,
+                options: opcoesGraficoMediaTempo
             });
         });
     </script>
