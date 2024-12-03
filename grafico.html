@@ -1,65 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráficos de Materiais</title>
+    <title>Controle de Materiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-
-        .chart-container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-    </style>
 </head>
 <body>
-    <h2>Resumo de Materiais</h2>
-    <div class="chart-container">
-        <canvas id="solicitadosRecebidosChart"></canvas>
-    </div>
-    <div class="chart-container">
-        <canvas id="mediaAtrasosChart"></canvas>
-    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <header>
+        <div class="header-container">
+            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <h1>Controle de Materiais</h1>
+            <div class="header-buttons">
+                <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                </button>
+                <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-container">
+        <div class="column">
+            <section class="solicitacao-container">
+                <h2>Solicitação de Materiais</h2>
+                <form id="materialForm">
+                    <label for="local">Local:</label>
+                    <select id="local" name="local" required>
+                        <option value="CA">CA</option>
+                        <option value="VF">VF</option>
+                        <option value="VD">VD</option>
+                        <option value="VE">VE</option>
+                        <option value="EX">EX</option>
+                        <option value="R01">R01</option>
+                    </select>
+
+                    <label for="item">Código do Item:</label>
+                    <input type="text" id="item" name="item" placeholder="Ex: 20239" maxlength="5" pattern="\d{5}" required>
+
+                    <label for="destino">Destino:</label>
+                    <select id="destino" name="destino" required>
+                        <option value="PICKING">PICKING</option>
+                        <option value="MESA">MESA</option>
+                    </select>
+
+                    <div class="button-container">
+                        <button type="button" id="abrirSolicitacaoButton">Solicitar</button>
+                        <button type="button" id="reservarButton">Reservar</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="materiais-reservados">
+                <div class="header-with-button" style="display: flex; align-items: center; justify-content: space-between;">
+                    <h2>Materiais Reservados</h2>
+                    <button id="excluirReservadosButton" class="excluir-itens-button">Excluir Itens</button>
+                </div>
+                <table id="reservadosTable">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-column hidden"><input type="checkbox" id="selectAllReservadosCheckbox"></th>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>DESTINO</th>
+                            <th>QTD</th>
+                            <th>SOLICITAR</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div class="column">
+            <section class="graficos-container">
+                <h2>Gráficos</h2>
+                <canvas id="graficoMateriais" width="400" height="200"></canvas>
+                <h3>Média de Tempo de Entrega</h3>
+                <canvas id="graficoMediaTempo" width="400" height="200"></canvas>
+            </section>
+        </div>
+
+        <div class="column">
+            <section class="materiais-solicitados">
+                <h2>Materiais Solicitados</h2>
+                <table id="solicitadosTable">
+                    <thead>
+                        <tr>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>DESTINO</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
 
     <script>
-        // Gráfico de Total de Materiais Solicitados e Recebidos
-        const ctx1 = document.getElementById('solicitadosRecebidosChart').getContext('2d');
-        const solicitadosRecebidosChart = new Chart(ctx1, {
-            type: 'bar', // Gráfico de barras
-            data: {
-                labels: ['Materiais Solicitados', 'Materiais Recebidos'], // Categorias
+        document.addEventListener('DOMContentLoaded', function () {
+            // Dados do gráfico de controle de materiais
+            const dadosGraficoMateriais = {
+                labels: ['Solicitados', 'Recebidos', 'Em Atraso', 'Materiais Reportados'],
                 datasets: [{
-                    label: 'Quantidade',
-                    data: [120, 95], // Dados iniciais (podem ser dinâmicos)
-                    backgroundColor: ['#3498db', '#2ecc71'], // Cores das barras
-                    borderColor: ['#2980b9', '#27ae60'], // Bordas das barras
+                    label: 'Controle de Materiais',
+                    data: [20, 15, 5, 8], // Dados fictícios
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)', // Solicitados
+                        'rgba(0, 255, 0, 0.2)',   // Recebidos (verde)
+                        'rgba(255, 99, 132, 0.2)', // Em atraso
+                        'rgba(255, 206, 86, 0.2)'  // Materiais Reportados (amarelo)
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(0, 255, 0, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
                     borderWidth: 1
                 }]
-            },
-            options: {
+            };
+
+            const opcoesGraficoMateriais = {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    tooltip: {
-                        enabled: true
+                        position: 'top',
                     }
                 },
                 scales: {
@@ -69,37 +146,85 @@
                             display: true,
                             text: 'Quantidade'
                         }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Categorias'
+                        }
                     }
                 }
-            }
-        });
+            };
 
-        // Gráfico de Média de Tempo de Entrega e Atrasos
-        const ctx2 = document.getElementById('mediaAtrasosChart').getContext('2d');
-        const mediaAtrasosChart = new Chart(ctx2, {
-            type: 'doughnut', // Gráfico de rosca
-            data: {
-                labels: ['Média de Entrega', 'Materiais em Atraso'], // Categorias
+            const ctxMateriais = document.getElementById('graficoMateriais').getContext('2d');
+            new Chart(ctxMateriais, {
+                type: 'bar',
+                data: dadosGraficoMateriais,
+                options: opcoesGraficoMateriais
+            });
+
+            // Dados do gráfico de média de tempo de entrega
+            const dadosGraficoMediaTempo = {
+                labels: ['CA', 'VF', 'VD', 'R01'],
                 datasets: [{
-                    label: 'Estatísticas',
-                    data: [30, 10], // Dados iniciais (em minutos ou proporções)
-                    backgroundColor: ['#f1c40f', '#e74c3c'], // Cores das fatias
-                    borderColor: ['#f39c12', '#c0392b'], // Bordas das fatias
+                    label: 'Média de Tempo (HH:MM)',
+                    data: [12, 18, 10, 15], // Dados fictícios de tempo em minutos
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)', // CA
+                        'rgba(153, 102, 255, 0.2)', // VF
+                        'rgba(255, 159, 64, 0.2)', // VD
+                        'rgba(255, 205, 86, 0.2)'  // R01
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
                     borderWidth: 1
                 }]
-            },
-            options: {
+            };
+
+            const opcoesGraficoMediaTempo = {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'right'
+                        position: 'top',
                     },
                     tooltip: {
-                        enabled: true
+                        callbacks: {
+                            label: function (context) {
+                                const minutos = context.raw;
+                                const horas = Math.floor(minutos / 60);
+                                const minutosRestantes = minutos % 60;
+                                return `${context.label}: ${String(horas).padStart(2, '0')}:${String(minutosRestantes).padStart(2, '0')}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tempo em Minutos'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Locais'
+                        }
                     }
                 }
-            }
+            };
+
+            const ctxMediaTempo = document.getElementById('graficoMediaTempo').getContext('2d');
+            new Chart(ctxMediaTempo, {
+                type: 'bar',
+                data: dadosGraficoMediaTempo,
+                options: opcoesGraficoMediaTempo
+            });
         });
     </script>
 </body>
