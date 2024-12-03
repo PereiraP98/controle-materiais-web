@@ -693,8 +693,11 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(currentItem, currentIndex);
-                    // Não removemos o item aqui; ele será removido após a confirmação
+                    abrirJanelaSolicitacao(item);
+                    // Remove o item da lista de reservados
+                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
+                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
+                    atualizarTabelaReservados();
                 });
             }
         });
