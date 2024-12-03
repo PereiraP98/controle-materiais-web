@@ -282,6 +282,7 @@ function abrirJanelaSolicitacao(dados, index) {
 
     // Define os campos ocultos somente se o index for válido
     if (typeof index !== 'undefined') {
+        itemIndexInput.value = index;
         if (fromReservadosInput) fromReservadosInput.value = "true";
         if (itemIndexInput) itemIndexInput.value = index;
     } else {
