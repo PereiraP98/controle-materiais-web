@@ -1,4 +1,3 @@
-
 // script.js
 
 // Map para armazenar os IDs dos intervals para cada detalhe
@@ -98,26 +97,42 @@ if (abrirSolicitacaoButton) {
             return;
         }
 
-        // Abrir a janela de solicitação com os dados preenchidos
-        abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de solicitação
+                    abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de solicitação com os dados preenchidos
+            abrirJanelaSolicitacao({ local: local, item: item, destino: destino });
+        }
     });
 }
 
-// Cancelar a solicitação e fechar a janela flutuante (Página Index)
+// Cancelar a solicitação e fechar a janela flutuante
 var cancelarSolicitacaoButton = document.getElementById("cancelarSolicitacaoButton");
 if (cancelarSolicitacaoButton) {
     cancelarSolicitacaoButton.addEventListener("click", function () {
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
-        // Limpa os campos ocultos
-        var fromReservadosInput = document.getElementById("fromReservados");
-        var itemIndexInput = document.getElementById("itemIndex");
-        if (fromReservadosInput) fromReservadosInput.value = "false";
-        if (itemIndexInput) itemIndexInput.value = "-1";
+        fecharJanelaSolicitacao();
     });
 }
+
 
 // Confirmar a solicitação e registrar os dados (Página Index)
 var janelaForm = document.getElementById("janelaForm");
@@ -131,6 +146,8 @@ if (janelaForm) {
         var localInput = document.getElementById("local");
         var itemInput = document.getElementById("item");
         var destinoSelect = document.getElementById("destino");
+        // Fecha a janela de solicitação
+        fecharJanelaSolicitacao();
 
         var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
         var horario = horarioInput ? horarioInput.value.trim() : "";
@@ -159,13 +176,11 @@ if (janelaForm) {
             return;
         }
 
-        // Lógica para remover o item reservado após a confirmação
         if (fromReservados === "true" && itemIndex >= 0) {
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
             reservados.splice(itemIndex, 1);
             localStorage.setItem("reservados", JSON.stringify(reservados));
-            // Atualiza a tabela de reservados
-            atualizarTabelaReservados();
+            atualizarTabelaReservados(); // Atualiza a tabela imediatamente
         }
 
         // Limpa os campos ocultos após a submissão
@@ -248,11 +263,13 @@ function abrirJanelaSolicitacao(dados, index) {
     var horarioInput = document.getElementById("horario");
     var fromReservadosInput = document.getElementById("fromReservados");
     var itemIndexInput = document.getElementById("itemIndex");
+    var quantidadeInput = document.getElementById("quantidade");
 
     if (localInput) localInput.value = dados.local || "";
     if (itemInput) itemInput.value = dados.item || "";
     if (destinoSelect) destinoSelect.value = dados.destino || "";
     if (horarioInput) horarioInput.value = horarioAtual;
+    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1";
 
     // Define os campos ocultos somente se o index for válido
     if (typeof index !== 'undefined') {
@@ -264,43 +281,132 @@ function abrirJanelaSolicitacao(dados, index) {
     }
 
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-    if (janelaSolicitacao) {
-        janelaSolicitacao.style.display = "block";
+    var overlay = document.getElementById("overlay");
+    if (janelaSolicitacao && overlay) {
+        // Resetar propriedades
+        janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
+        janelaSolicitacao.style.animation = 'none';
+        janelaSolicitacao.style.transform = '';
+        janelaSolicitacao.style.opacity = '';
+        janelaSolicitacao.offsetHeight; // Força um reflow
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaSolicitacao.classList.remove("hidden");
+        janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
     }
 }
 
-// Função para mostrar uma janela de atenção (pode ser utilizada se necessário)
+
+
+// Função para fechar a janela de solicitação
+function fecharJanelaSolicitacao() {
+    var janelaSolicitacao = document.getElementById("janelaSolicitacao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaSolicitacao && overlay) {
+        // Aplica a animação de saída
+        janelaSolicitacao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaSolicitacao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaSolicitacao.style.animation = '';
+            janelaSolicitacao.style.transform = '';
+            janelaSolicitacao.style.opacity = '';
+            janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
+        }, 300); // Duração da animação
+    }
+
+    // Limpa os campos ocultos
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
+    if (fromReservadosInput) fromReservadosInput.value = "false";
+    if (itemIndexInput) itemIndexInput.value = "-1";
+}
+
+
+
+
+
+// Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     var janelaAtencao = document.getElementById("janelaAtencao");
     var atencaoMensagem = document.getElementById("atencaoMensagem");
     var confirmarAtencao = document.getElementById("confirmarAtencao");
     var cancelarAtencao = document.getElementById("cancelarAtencao");
+    var overlay = document.getElementById("overlay");
 
-    if (janelaAtencao && atencaoMensagem) {
+    if (janelaAtencao && atencaoMensagem && overlay) {
         // Define a mensagem dinâmica
         atencaoMensagem.textContent = mensagem;
 
-        // Remove a classe 'hidden' para exibir a janela
+        // Resetar propriedades
+        janelaAtencao.style.animation = 'none';
+        janelaAtencao.style.transform = '';
+        janelaAtencao.style.opacity = '';
+        janelaAtencao.offsetHeight; // Força um reflow
+
+        // Exibe o overlay e adiciona a classe 'active' para a animação
+        overlay.classList.add("active");
+
+        // Remove a classe 'hidden' e adiciona a animação de entrada
         janelaAtencao.classList.remove("hidden");
+        janelaAtencao.style.animation = 'slideDown 0.3s forwards';
+
+        // Adiciona a classe para impedir a rolagem
+        document.body.classList.add('modal-open');
 
         // Adiciona os eventos nos botões
         if (confirmarAtencao) {
             confirmarAtencao.onclick = function () {
                 if (onConfirm) onConfirm(); // Executa a ação de confirmação
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
 
         if (cancelarAtencao) {
             cancelarAtencao.onclick = function () {
                 if (onCancel) onCancel(); // Executa a ação de cancelamento
-                janelaAtencao.classList.add("hidden"); // Oculta a janela de atenção
+                fecharJanelaAtencao(); // Fecha a janela de atenção
             };
         }
     } else {
         console.error("Elementos da janela de atenção não encontrados.");
     }
 }
+
+
+// Função para fechar a janela de atenção com animação
+function fecharJanelaAtencao() {
+    var janelaAtencao = document.getElementById("janelaAtencao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaAtencao && overlay) {
+        // Animação de saída
+        janelaAtencao.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaAtencao.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaAtencao.style.animation = '';
+            janelaAtencao.style.transform = '';
+            janelaAtencao.style.opacity = '';
+        }, 300); // Tempo igual à duração da animação
+    }
+}
+
+
 
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
@@ -326,19 +432,228 @@ if (reservarButton) {
             return;
         }
 
+        // Verifica se o item já foi solicitado
+        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+        var itemJaSolicitado = solicitados.some(function (solicitado) {
+            return (
+                solicitado.local === local &&
+                solicitado.item === item &&
+                solicitado.destino === destino
+            );
+        });
+
+        if (itemJaSolicitado) {
+            mostrarJanelaAtencao(
+                "Este item já foi solicitado. Deseja continuar?",
+                function () {
+                    // onConfirm: Abre a janela de reserva
+                    abrirJanelaReserva({ local, item, destino });
+                },
+                function () {
+                    // onCancel: Não faz nada
+                }
+            );
+        } else {
+            // Abrir a janela de reserva
+            abrirJanelaReserva({ local, item, destino });
+        }
+    });
+}
+
+
+
+// Função para abrir a janela de reserva
+function abrirJanelaReserva(dados) {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+
+    // Limpar o campo de quantidade e definir valor padrão
+    if (reservaQuantidadeInput) reservaQuantidadeInput.value = "1";
+
+    // Armazenar os dados do item a ser reservado
+    janelaReserva.dataset.local = dados.local;
+    janelaReserva.dataset.item = dados.item;
+    janelaReserva.dataset.destino = dados.destino;
+
+    var overlay = document.getElementById("overlay");
+    if (janelaReserva && overlay) {
+        // Resetar propriedades
+        janelaReserva.style.display = ''; // Remove qualquer display:none inline
+        janelaReserva.style.animation = 'none';
+        janelaReserva.style.transform = '';
+        janelaReserva.style.opacity = '';
+        janelaReserva.offsetHeight; // Força um reflow
+        // Exibe o overlay
+        overlay.classList.add("active");
+        // Remove a classe 'hidden' e aplica a animação
+        janelaReserva.classList.remove("hidden");
+        janelaReserva.style.animation = 'slideDown 0.3s forwards';
+        // Bloqueia a rolagem da página
+        document.body.classList.add('modal-open');
+    }
+}
+
+
+
+
+// Função para fechar a janela de reserva
+function fecharJanelaReserva() {
+    var janelaReserva = document.getElementById("janelaReserva");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaReserva && overlay) {
+        // Aplica a animação de saída
+        janelaReserva.style.animation = 'slideUp 0.3s forwards';
+
+        // Remove o overlay e a classe 'modal-open' após a animação
+        setTimeout(function () {
+            overlay.classList.remove("active");
+            janelaReserva.classList.add("hidden");
+            document.body.classList.remove('modal-open');
+
+            // Reseta as propriedades de animação e transformação
+            janelaReserva.style.animation = '';
+            janelaReserva.style.transform = '';
+            janelaReserva.style.opacity = '';
+            janelaReserva.style.display = ''; // Remove qualquer display:none inline
+        }, 300); // Duração da animação
+    }
+}
+
+
+
+
+// Evento para cancelar a reserva
+var cancelarReservaButton = document.getElementById("cancelarReservaButton");
+if (cancelarReservaButton) {
+    cancelarReservaButton.addEventListener("click", function () {
+        fecharJanelaReserva();
+    });
+}
+
+
+// Evento para confirmar a reserva
+var janelaReservaForm = document.getElementById("janelaReservaForm");
+if (janelaReservaForm) {
+    janelaReservaForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+        var quantidade = reservaQuantidadeInput ? reservaQuantidadeInput.value.trim() : "1";
+
+        var janelaReserva = document.getElementById("janelaReserva");
+
+        // Recuperar os dados armazenados
+        var local = janelaReserva.dataset.local;
+        var item = janelaReserva.dataset.item;
+        var destino = janelaReserva.dataset.destino;
+
         // Adicionar ao localStorage
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        reservados.push({ local, item, destino });
+        reservados.push({ local, item, destino, quantidade });
         localStorage.setItem("reservados", JSON.stringify(reservados));
+        // Fecha a janela de reserva
+        fecharJanelaReserva();
 
         // Atualiza a tabela de reservados
         atualizarTabelaReservados();
+
+        if (janelaReserva) {
+            janelaReserva.style.display = "none";
+        }
 
         alert("Material reservado com sucesso!");
     });
 }
 
-// Função para atualizar a tabela de materiais reservados
+// Função para excluir itens da tabela de materiais reservados
+var excluirReservadosButton = document.getElementById("excluirReservadosButton");
+
+if (excluirReservadosButton) {
+    excluirReservadosButton.addEventListener("click", function () {
+        var reservadosTable = document.getElementById("reservadosTable");
+        var reservadosTableBody = reservadosTable ? reservadosTable.querySelector("tbody") : null;
+        var selectAllReservadosCheckbox = document.getElementById("selectAllReservadosCheckbox");
+
+        if (!reservadosTableBody) {
+            alert("Tabela de materiais reservados não encontrada.");
+            return;
+        }
+
+        // Verifica se há itens na tabela
+        if (reservadosTableBody.rows.length === 0) {
+            alert("A lista de materiais reservados está vazia! Adicione itens para poder realizar a exclusão.");
+            excluirReservadosButton.textContent = "Excluir Itens";
+            return;
+        }
+
+        // Seleciona todas as colunas de checkbox
+        var checkboxColumns = reservadosTable.querySelectorAll(".checkbox-column");
+        var checkboxes = reservadosTableBody.querySelectorAll(".delete-checkbox");
+
+        if (!checkboxColumns.length) {
+            alert("A coluna 'SELECIONE' não foi configurada corretamente.");
+            return;
+        }
+
+        // Verifica se a coluna está oculta
+        var isHidden = checkboxColumns[0].classList.contains("hidden");
+
+        if (isHidden) {
+            // Exibir a coluna "SELECIONE"
+            checkboxColumns.forEach((column) => column.classList.remove("hidden"));
+            excluirReservadosButton.textContent = "Confirmar Exclusão";
+
+            // Adiciona evento para "Selecionar Todos" no cabeçalho
+            if (selectAllReservadosCheckbox) {
+                selectAllReservadosCheckbox.addEventListener("change", function () {
+                    // Marca ou desmarca todas as caixas de seleção
+                    var isChecked = this.checked;
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            }
+        } else {
+            // Processar exclusão
+            var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
+
+            if (selectedCheckboxes.length === 0) {
+                alert("Selecione os itens que deseja excluir.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir os itens selecionados?")) {
+                var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+
+                selectedCheckboxes.forEach((checkbox) => {
+                    var row = checkbox.closest("tr");
+                    var rowIndex = Array.from(reservadosTableBody.rows).indexOf(row);
+
+                    // Remove do array de reservados
+                    reservados.splice(rowIndex, 1);
+
+                    // Remove a linha da tabela
+                    row.remove();
+                });
+
+                // Atualiza o localStorage
+                localStorage.setItem("reservados", JSON.stringify(reservados));
+
+                alert("Itens excluídos com sucesso!");
+
+                // Ocultar novamente a coluna "SELECIONE"
+                checkboxColumns.forEach((column) => column.classList.add("hidden"));
+                excluirReservadosButton.textContent = "Excluir Itens";
+
+                // Desmarcar a caixa "Selecionar Todos"
+                if (selectAllReservadosCheckbox) selectAllReservadosCheckbox.checked = false;
+            }
+        }
+    });
+}
+
+
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableBody = document.querySelector("#reservadosTable tbody");
@@ -347,12 +662,18 @@ function atualizarTabelaReservados() {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
+            // Usamos 'let' para garantir o escopo correto
+            let currentItem = item;
+            let currentIndex = index;
+
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.destino}</td>
-                <td><button class="solicitar-button" data-index="${index}">Solicitar</button></td>
+                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                <td>${currentItem.local}</td>
+                <td>${currentItem.item}</td>
+                <td>${currentItem.destino}</td>
+                <td>${currentItem.quantidade}</td>
+                <td><button class="solicitar-button" data-index="${currentIndex}">Solicitar</button></td>
             `;
 
             reservadosTableBody.appendChild(newRow);
@@ -361,14 +682,15 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    var index = parseInt(this.getAttribute('data-index'));
-                    abrirJanelaSolicitacao(item, index);
+                    abrirJanelaSolicitacao(currentItem, currentIndex);
                     // Não removemos o item aqui; ele será removido após a confirmação
                 });
             }
         });
     }
 }
+
+
 
 // Função para atualizar a tabela de materiais solicitados na página index.html
 function atualizarTabelaSolicitados() {
