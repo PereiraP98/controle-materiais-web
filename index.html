@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
     <header>
+        <!-- Ajuste no header-container -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
+            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
                 </button>
+                <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
         </div>
     </header>
     <main class="main-container">
+        <!-- Coluna Esquerda -->
         <div class="column">
+            <!-- Janela de Solicitação -->
             <section class="solicitacao-container">
                 <h2>Solicitação de Materiais</h2>
                 <form id="materialForm">
@@ -56,7 +64,9 @@
                 </form>
             </section>
 
+            <!-- Materiais Reservados -->
             <section class="materiais-reservados">
+                <!-- Ajuste aqui para posicionar o botão ao lado do título -->
                 <div class="header-with-button" style="display: flex; align-items: center; justify-content: space-between;">
                     <h2>Materiais Reservados</h2>
                     <button id="excluirReservadosButton" class="excluir-itens-button">Excluir Itens</button>
@@ -68,25 +78,32 @@
                             <th>LOCAL</th>
                             <th>ITEM</th>
                             <th>DESTINO</th>
-                            <th>QTD</th>
+                            <th>QTD</th> <!-- Nova coluna para a quantidade -->
                             <th>SOLICITAR</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <!-- Registros de materiais reservados -->
+                    </tbody>
                 </table>
             </section>
         </div>
 
+        <!-- Coluna Central -->
         <div class="column">
+            <!-- Gráficos -->
             <section class="graficos-container">
                 <h2>Gráficos</h2>
-                <canvas id="graficoMateriais" width="400" height="200"></canvas>
-                <h3>Média de Tempo de Entrega</h3>
-                <canvas id="graficoMediaTempo" width="400" height="200"></canvas>
+                <div id="graficoPlaceholder">
+                    <!-- Placeholder para futuros gráficos -->
+                    <p>Gráficos serão exibidos aqui.</p>
+                </div>
             </section>
         </div>
 
+        <!-- Coluna Direita -->
         <div class="column">
+            <!-- Materiais Solicitados -->
             <section class="materiais-solicitados">
                 <h2>Materiais Solicitados</h2>
                 <table id="solicitadosTable">
@@ -97,135 +114,84 @@
                             <th>DESTINO</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <!-- Registros de materiais solicitados -->
+                    </tbody>
                 </table>
                 <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
             </section>
         </div>
     </main>
 
+    <!-- Janela Flutuante de Solicitação -->
+    <div id="janelaSolicitacao" class="janela-flutuante hidden">
+        <h2>Solicitação de Material</h2>
+        <form id="janelaForm">
+            <!-- Campos ocultos para armazenar informações sobre o item reservado -->
+            <input type="hidden" id="fromReservados" name="fromReservados" value="false">
+            <input type="hidden" id="itemIndex" name="itemIndex" value="-1">
+
+            <label for="quantidade">Quantidade do Material:</label>
+            <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
+
+            <label for="horario">Horário de Solicitação:</label>
+            <input type="time" id="horario" name="horario">
+
+            <div class="button-container">
+                <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
+                <button type="submit" id="confirmarSolicitacaoButton">Solicitar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela Flutuante de Reserva -->
+    <div id="janelaReserva" class="janela-flutuante hidden">
+        <h2>Reservar Material</h2>
+        <form id="janelaReservaForm">
+            <label for="reservaQuantidade">Quantidade do Material:</label>
+            <input type="number" id="reservaQuantidade" name="reservaQuantidade" value="1" min="1" required>
+
+            <div class="button-container">
+                <button type="button" id="cancelarReservaButton">Cancelar</button>
+                <button type="submit" id="confirmarReservaButton">Reservar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela Flutuante de Atenção -->
+    <div id="janelaAtencao" class="janela-flutuante hidden">
+        <h2>Atenção</h2>
+        <p id="atencaoMensagem">Mensagem de atenção.</p>
+        <div class="button-container">
+            <button type="button" id="confirmarAtencao">Confirmar</button>
+            <button type="button" id="cancelarAtencao">Cancelar</button>
+        </div>
+    </div>
+
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Chama a função de verificação de autenticação
+        checkAuthentication();
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Dados do gráfico de controle de materiais
-            const dadosGraficoMateriais = {
-                labels: ['Solicitados', 'Recebidos', 'Em Atraso', 'Materiais Reportados'],
-                datasets: [{
-                    label: 'Total de itens',
-                    data: [20, 15, 5, 8], // Dados fictícios
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)', // Solicitados
-                        'rgba(0, 255, 0, 0.2)',   // Recebidos (verde)
-                        'rgba(255, 99, 132, 0.2)', // Em atraso
-                        'rgba(255, 206, 86, 0.2)'  // Materiais Reportados (amarelo)
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(0, 255, 0, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            };
+            // Verificar o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
 
-            const opcoesGraficoMateriais = {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Quantidade'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Categorias'
-                        }
-                    }
-                }
-            };
-
-            const ctxMateriais = document.getElementById('graficoMateriais').getContext('2d');
-            new Chart(ctxMateriais, {
-                type: 'bar',
-                data: dadosGraficoMateriais,
-                options: opcoesGraficoMateriais
-            });
-
-            // Dados do gráfico de média de tempo de entrega
-            const dadosGraficoMediaTempo = {
-                labels: ['CA', 'VF', 'VD', 'R01'],
-                datasets: [{
-                    label: 'Média de Tempo (HH:MM)',
-                    data: [75, 48, 35, 87], // Dados fictícios de tempo em minutos
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)', // CA
-                        'rgba(153, 102, 255, 0.2)', // VF
-                        'rgba(255, 159, 64, 0.2)', // VD
-                        'rgba(255, 205, 86, 0.2)'  // R01
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 205, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            };
-
-            const opcoesGraficoMediaTempo = {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const minutos = context.raw;
-                                const horas = Math.floor(minutos / 60);
-                                const minutosRestantes = minutos % 60;
-                                return `${context.label}: ${String(horas).padStart(2, '0')}:${String(minutosRestantes).padStart(2, '0')}`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Tempo em Minutos'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Locais'
-                        }
-                    }
-                }
-            };
-
-            const ctxMediaTempo = document.getElementById('graficoMediaTempo').getContext('2d');
-            new Chart(ctxMediaTempo, {
-                type: 'bar',
-                data: dadosGraficoMediaTempo,
-                options: opcoesGraficoMediaTempo
-            });
+            // Aplicar o tema escuro, se configurado
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
         });
     </script>
+
 </body>
 </html>
