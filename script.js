@@ -664,7 +664,6 @@ if (excluirReservadosButton) {
 }
 
 
-// Função para atualizar a tabela de materiais reservados
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableElement = document.getElementById("reservadosTable");
@@ -673,7 +672,11 @@ function atualizarTabelaReservados() {
     if (reservadosTableBody) {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
-        reservados.forEach(function (item) {
+        reservados.forEach(function (item, index) {
+            // Usamos 'let' para garantir o escopo correto
+            let currentItem = item;
+            let currentIndex = index;
+
             var newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -690,11 +693,8 @@ function atualizarTabelaReservados() {
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(item);
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    atualizarTabelaReservados();
+                    abrirJanelaSolicitacao(currentItem, currentIndex);
+                    // Não removemos o item aqui; ele será removido após a confirmação
                 });
             }
         });
@@ -709,15 +709,8 @@ function atualizarTabelaReservados() {
         }
     } else {
         console.error("Tabela de itens reservados não encontrada.");
-    
-
     }
-
-
-
-    
 }
-
 
 
 
