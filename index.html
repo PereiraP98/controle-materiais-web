@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
-    <!-- Fonte e estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,7 +13,7 @@
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Container do cabeçalho -->
+        <!-- Ajuste no header-container -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
@@ -26,6 +25,7 @@
                 </button>
                 <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
+                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
@@ -66,7 +66,7 @@
 
             <!-- Materiais Reservados -->
             <section class="materiais-reservados">
-                <!-- Título e botão de exclusão -->
+                <!-- Ajuste aqui para posicionar o botão ao lado do título -->
                 <div class="header-with-button" style="display: flex; align-items: center; justify-content: space-between;">
                     <h2>Materiais Reservados</h2>
                     <button id="excluirReservadosButton" class="excluir-itens-button">Excluir Itens</button>
@@ -78,7 +78,7 @@
                             <th>LOCAL</th>
                             <th>ITEM</th>
                             <th>DESTINO</th>
-                            <th>QTD</th>
+                            <th>QTD</th> <!-- Nova coluna para a quantidade -->
                             <th>SOLICITAR</th>
                         </tr>
                     </thead>
@@ -173,21 +173,12 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- Inclua os scripts do Firebase antes do seu script.js -->
-    <!-- Firebase App (sempre necessário) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-    <!-- Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
-    <!-- Seu script.js -->
     <script src="script.js"></script>
-
-    <!-- Chamada da função de verificação de autenticação -->
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
 
-    <!-- Script para gerenciar o tema escuro, se necessário -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Verificar o tema salvo no localStorage
