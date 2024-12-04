@@ -1,7 +1,84 @@
 // script.js
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getDatabase, ref, set, get, update, remove, child, onValue } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+// Configuração do Firebase (usando seus dados)
+const firebaseConfig = {
+    apiKey: "AIzaSyBqNLzD5LwITAPOW0FT5fbeREAWknSy3F0",
+    authDomain: "data-controledemateriais-3c60a.firebaseapp.com",
+    databaseURL: "https://data-controledemateriais-3c60a-default-rtdb.firebaseio.com",
+    projectId: "data-controledemateriais-3c60a",
+    storageBucket: "data-controledemateriais-3c60a.appspot.com",
+    messagingSenderId: "768434090655",
+    appId: "1:768434090655:web:9eb319969ee3dcf1cee8aa"
+  };
+
+
+  // Inicializa o Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+
 // Map para armazenar os IDs dos intervals para cada detalhe
 const intervalMap = new Map();
+
+// Função genérica para salvar dados
+function salvarDados(caminho, dados) {
+    set(ref(database, caminho), dados)
+      .then(() => {
+        console.log(`Dados salvos com sucesso em ${caminho}!`);
+      })
+      .catch((error) => {
+        console.error(`Erro ao salvar dados em ${caminho}:`, error);
+      });
+  }
+
+
+// Função genérica para carregar dados
+function carregarDados(caminho, callback) {
+    get(ref(database, caminho))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const dados = snapshot.val();
+          console.log(`Dados carregados de ${caminho}:`, dados);
+          callback(dados);
+        } else {
+          console.log(`Nenhum dado encontrado em ${caminho}.`);
+          callback([]);
+        }
+      })
+      .catch((error) => {
+        console.error(`Erro ao carregar dados de ${caminho}:`, error);
+        callback([]);
+      });
+  }
+
+  // Função genérica para atualizar dados
+function atualizarDados(caminho, dadosAtualizados) {
+    update(ref(database, caminho), dadosAtualizados)
+      .then(() => {
+        console.log(`Dados atualizados com sucesso em ${caminho}!`);
+      })
+      .catch((error) => {
+        console.error(`Erro ao atualizar dados em ${caminho}:`, error);
+      });
+  }
+
+
+  // Função genérica para remover dados
+function removerDados(caminho) {
+    remove(ref(database, caminho))
+      .then(() => {
+        console.log(`Dados removidos com sucesso de ${caminho}!`);
+      })
+      .catch((error) => {
+        console.error(`Erro ao remover dados de ${caminho}:`, error);
+      });
+  }
+
+
+
 
 // Lógica de login
 var loginForm = document.getElementById("loginForm");
@@ -134,132 +211,126 @@ if (cancelarSolicitacaoButton) {
 }
 
 
-// Confirmar a solicitação e registrar os dados (Página Index)
-var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
-    janelaForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        var fromReservadosInput = document.getElementById("fromReservados");
-        var itemIndexInput = document.getElementById("itemIndex");
-        var quantidadeInput = document.getElementById("quantidade");
-        var horarioInput = document.getElementById("horario");
-        var localInput = document.getElementById("local");
-        var itemInput = document.getElementById("item");
-        var destinoSelect = document.getElementById("destino");
-        // Fecha a janela de solicitação
-        fecharJanelaSolicitacao();
+  janelaForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    // ... (restante do seu código)
+    var fromReservadosInput = document.getElementById("fromReservados");
+    var itemIndexInput = document.getElementById("itemIndex");
+    var quantidadeInput = document.getElementById("quantidade");
+    var horarioInput = document.getElementById("horario");
+    var localInput = document.getElementById("local");
+    var itemInput = document.getElementById("item");
+    var destinoSelect = document.getElementById("destino");
 
-        var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
-        var horario = horarioInput ? horarioInput.value.trim() : "";
-        var local = localInput ? localInput.value.trim() : "";
-        var item = itemInput ? itemInput.value.trim() : "";
-        var destino = destinoSelect ? destinoSelect.value.trim() : "";
+    var quantidade = quantidadeInput ? quantidadeInput.value.trim() : "";
+    var horario = horarioInput ? horarioInput.value.trim() : "";
+    var local = localInput ? localInput.value.trim() : "";
+    var item = itemInput ? itemInput.value.trim() : "";
+    var destino = destinoSelect ? destinoSelect.value.trim() : "";
 
-        // Obter os valores dos campos ocultos
-        var fromReservados = fromReservadosInput ? fromReservadosInput.value : "false";
-        var itemIndex = itemIndexInput ? parseInt(itemIndexInput.value) : -1;
+    // Obter os valores dos campos ocultos
+    var fromReservados = fromReservadosInput ? fromReservadosInput.value : "false";
+    var itemIndex = itemIndexInput ? parseInt(itemIndexInput.value) : -1;
 
-        // Validação dos campos
-        if (!quantidade || !horario || !local || !item || !destino) {
-            alert("Por favor, preencha todos os campos.");
-            return;
+    // Validação dos campos
+    if (!quantidade || !horario || !local || !item || !destino) {
+      alert("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    if (!/^\d{5}$/.test(item)) {
+      alert("O código do item deve ter exatamente 5 dígitos.");
+      return;
+    }
+
+    // Verifica se o horário está no formato HH:MM
+    if (!/^\d{2}:\d{2}$/.test(horario)) {
+      alert("O horário deve estar no formato HH:MM.");
+      return;
+    }
+
+    if (fromReservados === "true" && itemIndex >= 0) {
+      // Remove o item de 'reservados' no Firebase
+      carregarDados("reservados", function (reservados) {
+        if (itemIndex < reservados.length) {
+          reservados.splice(itemIndex, 1);
+          salvarDados("reservados", reservados);
+          atualizarTabelaReservados();
+        } else {
+          console.error("Índice inválido para remoção de materiais reservados.");
         }
+      });
+    }
 
-        if (!/^\d{5}$/.test(item)) {
-            alert("O código do item deve ter exatamente 5 dígitos.");
-            return;
-        }
-
-        // Verifica se o horário está no formato HH:MM
-        if (!/^\d{2}:\d{2}$/.test(horario)) {
-            alert("O horário deve estar no formato HH:MM.");
-            return;
-        }
-
-        if (fromReservados === "true" && itemIndex >= 0) {
-            // Obtemos o array de itens reservados do localStorage
-            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        
-            if (itemIndex < reservados.length) {
-                // Remover o item do array com base no índice fornecido
-                reservados.splice(itemIndex, 1);
-        
-                // Atualizar o localStorage com o array atualizado
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-        
-                // Atualizar visualmente a tabela de materiais reservados
-                atualizarTabelaReservados();
-            } else {
-                console.error("Índice inválido para remoção de materiais reservados.");
-            }
-        }
-        
-
-        // Registro da solicitação nos dados locais
-        var dataAtual = new Date().toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
-
-        // Calcular o timestamp baseado no horário inserido pelo usuário
-        var dataAtualObj = new Date();
-
-        // Extrair o horário inserido pelo usuário (horario)
-        var horarioParts = horario.split(':');
-        var horas = parseInt(horarioParts[0], 10);
-        var minutos = parseInt(horarioParts[1], 10);
-
-        // Criar um novo objeto Date com a data atual e o horário inserido pelo usuário
-        var timestampDate = new Date(
-            dataAtualObj.getFullYear(),
-            dataAtualObj.getMonth(),
-            dataAtualObj.getDate(),
-            horas,
-            minutos,
-            0, // segundos
-            0  // milissegundos
-        );
-
-        var timestamp = timestampDate.getTime();
-        var agora = Date.now();
-        var isFuture = timestamp > agora;
-
-        // Adiciona aos detalhes
-        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        detalhes.push({
-            local: local,
-            item: item,
-            quantidade: quantidade,
-            destino: destino,
-            dataAtual: dataAtual,
-            horario: horario,
-            timestamp: timestamp,
-            isFuture: isFuture
-        });
-        localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-        // Adiciona aos solicitados
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        solicitados.push({ local: local, item: item, destino: destino });
-        localStorage.setItem("solicitados", JSON.stringify(solicitados));
-
-        var janelaSolicitacao = document.getElementById("janelaSolicitacao");
-        if (janelaSolicitacao) {
-            janelaSolicitacao.style.display = "none";
-        }
-
-        alert("Material solicitado com sucesso!");
-
-        // Atualiza a tabela de solicitados na página index.html
-        atualizarTabelaSolicitados();
-        atualizarTabelaReservados ();
-
-        // Atualiza a tabela de detalhes se estiver na página detalhes.html
-        if (window.location.pathname.includes("detalhes.html")) {
-            atualizarTabelaDetalhes();
-        }
+    // Registro da solicitação nos dados
+    var dataAtual = new Date().toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
     });
+
+    // Calcular o timestamp baseado no horário inserido pelo usuário
+    var dataAtualObj = new Date();
+
+    // Extrair o horário inserido pelo usuário (horario)
+    var horarioParts = horario.split(':');
+    var horas = parseInt(horarioParts[0], 10);
+    var minutos = parseInt(horarioParts[1], 10);
+
+    // Criar um novo objeto Date com a data atual e o horário inserido pelo usuário
+    var timestampDate = new Date(
+      dataAtualObj.getFullYear(),
+      dataAtualObj.getMonth(),
+      dataAtualObj.getDate(),
+      horas,
+      minutos,
+      0, // segundos
+      0  // milissegundos
+    );
+
+    var timestamp = timestampDate.getTime();
+    var agora = Date.now();
+    var isFuture = timestamp > agora;
+
+    // Adiciona aos detalhes no Firebase
+    carregarDados("detalhes", function (detalhes) {
+      detalhes = detalhes || [];
+      detalhes.push({
+        local: local,
+        item: item,
+        quantidade: quantidade,
+        destino: destino,
+        dataAtual: dataAtual,
+        horario: horario,
+        timestamp: timestamp,
+        isFuture: isFuture
+      });
+      salvarDados("detalhes", detalhes);
+
+      // Atualiza a tabela de detalhes se estiver na página detalhes.html
+      if (window.location.pathname.includes("detalhes.html")) {
+        atualizarTabelaDetalhes();
+      }
+    });
+
+    // Adiciona aos solicitados no Firebase
+    carregarDados("solicitados", function (solicitados) {
+      solicitados = solicitados || [];
+      solicitados.push({ local: local, item: item, destino: destino });
+      salvarDados("solicitados", solicitados);
+
+      // Atualiza a tabela de solicitados na página index.html
+      atualizarTabelaSolicitados();
+    });
+
+    // Fecha a janela de solicitação
+    fecharJanelaSolicitacao();
+    alert("Material solicitado com sucesso!");
+
+    // Atualiza a tabela de reservados
+    atualizarTabelaReservados();
+  });
 }
 
 // Função para abrir a janela de solicitação com dados preenchidos
@@ -718,32 +789,33 @@ function atualizarTabelaReservados() {
 
 
 function atualizarTabelaSolicitados() {
-    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-    var solicitadosTable = document.getElementById("solicitadosTable");
-    var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
-
-    if (solicitadosTableBody) {
+    carregarDados("solicitados", function (solicitados) {
+      var solicitadosTable = document.getElementById("solicitadosTable");
+      var solicitadosTableBody = solicitadosTable ? solicitadosTable.querySelector("tbody") : null;
+  
+      if (solicitadosTableBody) {
         solicitadosTableBody.innerHTML = ""; // Limpa a tabela
-
-        if (solicitados.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `<td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>`;
-            solicitadosTableBody.appendChild(emptyRow);
+  
+        if (!solicitados || solicitados.length === 0) {
+          var emptyRow = document.createElement("tr");
+          emptyRow.innerHTML = `<td colspan="4" style="text-align: center;">Nenhum material solicitado no momento.</td>`;
+          solicitadosTableBody.appendChild(emptyRow);
         } else {
-            solicitados.forEach((item) => {
-                var newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td>${item.local}</td>
-                    <td>${item.item}</td>
-                    <td>${item.destino}</td>
-                `;
-                solicitadosTableBody.appendChild(newRow);
-            });
+          solicitados.forEach((item) => {
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+              <td>${item.local}</td>
+              <td>${item.item}</td>
+              <td>${item.destino}</td>
+            `;
+            solicitadosTableBody.appendChild(newRow);
+          });
         }
-    } else {
+      } else {
         console.error("Tabela de materiais solicitados não encontrada.");
-    }
-}
+      }
+    });
+  }
 
 
 
@@ -781,173 +853,163 @@ document.addEventListener("DOMContentLoaded", function () {
             return timeString;
         }
 
-        // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
-
-            var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-            var detalhesTableElement = document.getElementById("detalhesTable");
-            var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
-
-            if (detalhesTable) {
+            carregarDados("detalhes", function (detalhes) {
+              var detalhesTableElement = document.getElementById("detalhesTable");
+              var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
+          
+              if (detalhesTable) {
                 detalhesTable.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-                detalhes.forEach(function (detalhe, index) {
+          
+                if (!detalhes || detalhes.length === 0) {
+                  var emptyRow = document.createElement("tr");
+                  emptyRow.innerHTML = `
+                    <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
+                  `;
+                  detalhesTable.appendChild(emptyRow);
+                } else {
+                  detalhes.forEach(function (detalhe, index) {
                     var newRow = document.createElement("tr");
-
+          
                     // Determina se o horário é no futuro ou no passado
                     var agora = Date.now();
                     detalhe.isFuture = detalhe.timestamp > agora;
-
+          
                     // Calcula o tempo restante ou decorrido
                     var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
-
+          
                     newRow.innerHTML = `
-                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                        <td>${detalhe.local}</td>
-                        <td>${detalhe.item}</td>
-                        <td>${detalhe.quantidade}</td>
-                        <td>${detalhe.destino}</td>
-                        <td>${detalhe.dataAtual}</td>
-                        <td>${detalhe.horario}</td>
-                        <td><button class="receberButton">Receber</button></td>
-                        <td class="tempo-cell">${tempoDisplay}</td>
+                      <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                      <td>${detalhe.local}</td>
+                      <td>${detalhe.item}</td>
+                      <td>${detalhe.quantidade}</td>
+                      <td>${detalhe.destino}</td>
+                      <td>${detalhe.dataAtual}</td>
+                      <td>${detalhe.horario}</td>
+                      <td><button class="receberButton">Receber</button></td>
+                      <td class="tempo-cell">${tempoDisplay}</td>
                     `;
                     detalhesTable.appendChild(newRow);
-
+          
                     // Adiciona o evento de clique ao botão Receber
                     var receberButton = newRow.querySelector(".receberButton");
                     if (receberButton) {
-                        receberButton.addEventListener("click", function () {
-                            abrirJanelaRecebimento(index);
-                        });
+                      receberButton.addEventListener("click", function () {
+                        abrirJanelaRecebimento(index);
+                      });
                     }
-
+          
                     // Manipulação do tempo e eventos de hover
                     var tempoCell = newRow.querySelector(".tempo-cell");
                     if (tempoCell) {
-                        // Função para atualizar o tempo na célula
-                        function updateTimeCell(showSeconds = false) {
-                            const now = Date.now();
-                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
-
-                            // Define tempos limites
-                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
-
-                            if (elapsed > maxTime) {
-                                newRow.classList.add("oscillation");
-                                newRow.style.background = ""; // Remove estilos inline conflitantes
-                            } else {
-                                newRow.classList.remove("oscillation");
-
-                                // Gradiente dinâmico para preenchimento da barra
-                                let backgroundGradient;
-                                if (elapsed <= midTime) {
-                                    const percentage = (elapsed / midTime) * 100; // Progresso da barra
-                                    backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
-                                } else {
-                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
-                                    backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
-                                }
-
-                                // Atualiza o fundo da linha inteira
-                                newRow.style.background = backgroundGradient;
-                            }
-
-                            // Atualiza o campo de tempo
-                            if (detalhe.isFuture) {
-                                const remaining = detalhe.timestamp - now;
-                                if (remaining <= 0) {
-                                    detalhe.isFuture = false;
-                                    detalhe.timestamp = now;
-                                }
-                                tempoCell.textContent = formatTime(remaining, showSeconds);
-                            } else {
-                                tempoCell.textContent = formatTime(elapsed, showSeconds);
-                            }
+                      // Função para atualizar o tempo na célula
+                      function updateTimeCell(showSeconds = false) {
+                        const now = Date.now();
+                        const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+          
+                        // Define tempos limites
+                        const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
+                        const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+          
+                        if (elapsed > maxTime) {
+                          newRow.classList.add("oscillation");
+                          newRow.style.background = ""; // Remove estilos inline conflitantes
+                        } else {
+                          newRow.classList.remove("oscillation");
+          
+                          // Gradiente dinâmico para preenchimento da barra
+                          let backgroundGradient;
+                          if (elapsed <= midTime) {
+                            const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                            backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
+                          } else {
+                            const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                            backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
+                          }
+          
+                          // Atualiza o fundo da linha inteira
+                          newRow.style.background = backgroundGradient;
                         }
-
-                        // Inicializa a contagem
+          
+                        // Atualiza o campo de tempo
                         if (detalhe.isFuture) {
-                            // Inicia a contagem regressiva a cada segundo
+                          const remaining = detalhe.timestamp - now;
+                          if (remaining <= 0) {
+                            detalhe.isFuture = false;
+                            detalhe.timestamp = now;
+                          }
+                          tempoCell.textContent = formatTime(remaining, showSeconds);
+                        } else {
+                          tempoCell.textContent = formatTime(elapsed, showSeconds);
+                        }
+                      }
+          
+                      // Inicializa a contagem
+                      if (detalhe.isFuture) {
+                        // Inicia a contagem regressiva a cada segundo
+                        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                        intervalMap.set(index, countdownInterval);
+                      } else {
+                        // Inicia a contagem do tempo decorrido a cada segundo
+                        var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                        intervalMap.set(index, elapsedInterval);
+                      }
+          
+                      // Exibição inicial
+                      updateTimeCell(false);
+          
+                      // Eventos de hover para exibir e ocultar os segundos
+                      newRow.addEventListener("mouseover", function () {
+                        // Pausa o intervalo padrão, se existir
+                        if (intervalMap.has(index)) {
+                          clearInterval(intervalMap.get(index));
+                          intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+                        }
+          
+                        // Atualiza imediatamente com segundos e inicia um intervalo de hover
+                        updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+                        if (!tempoCell._hoverInterval) {
+                          tempoCell._hoverInterval = setInterval(() => {
+                            const elapsedHover = Date.now() - detalhe.timestamp;
+                            tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+                          }, 1000);
+                        }
+                      });
+          
+                      newRow.addEventListener("mouseout", function () {
+                        // Para a contagem dos segundos durante o hover
+                        if (tempoCell._hoverInterval) {
+                          clearInterval(tempoCell._hoverInterval);
+                          delete tempoCell._hoverInterval; // Remove a referência ao intervalo
+                        }
+          
+                        // Verifica se o item é futuro ou passado e retoma a contagem normal
+                        if (detalhe.isFuture) {
+                          if (!intervalMap.has(index)) {
+                            // Reinicia a contagem regressiva apenas se não estiver já ativa
                             var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, countdownInterval);
+                          }
                         } else {
-                            // Inicia a contagem do tempo decorrido a cada segundo
+                          if (!intervalMap.has(index)) {
+                            // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
                             var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, elapsedInterval);
+                          }
                         }
-
-                        // Exibição inicial
-                        updateTimeCell(false);
-
-                        // Eventos de hover para exibir e ocultar os segundos
-                        newRow.addEventListener("mouseover", function () {
-                            // Pausa o intervalo padrão, se existir
-                            if (intervalMap.has(index)) {
-                                clearInterval(intervalMap.get(index));
-                                intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
-                            }
-
-                            // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                            updateTimeCell(true); // Atualiza para exibir HH:MM:SS
-                            if (!tempoCell._hoverInterval) {
-                                tempoCell._hoverInterval = setInterval(() => {
-                                    const elapsedHover = Date.now() - detalhe.timestamp;
-                                    tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
-                                }, 1000);
-                            }
-                        });
-
-                        newRow.addEventListener("mouseout", function () {
-                            // Para a contagem dos segundos durante o hover
-                            if (tempoCell._hoverInterval) {
-                                clearInterval(tempoCell._hoverInterval);
-                                delete tempoCell._hoverInterval; // Remove a referência ao intervalo
-                            }
-
-                            // Verifica se o item é futuro ou passado e retoma a contagem normal
-                            if (detalhe.isFuture) {
-                                if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem regressiva apenas se não estiver já ativa
-                                    var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
-                                    intervalMap.set(index, countdownInterval);
-                                }
-                            } else {
-                                if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
-                                    var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
-                                    intervalMap.set(index, elapsedInterval);
-                                }
-                            }
-
-                            // Volta para o formato HH:MM
-                            const elapsed = Date.now() - detalhe.timestamp;
-                            tempoCell.textContent = formatTime(elapsed, false);
-                        });
-
-                        
-
+          
+                        // Volta para o formato HH:MM
+                        const elapsed = Date.now() - detalhe.timestamp;
+                        tempoCell.textContent = formatTime(elapsed, false);
+                      });
                     }
-
-                    
-                });
-
-                // Mensagem para tabela vazia
-        if (detalhes.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
-            `;
-            detalhesTable.appendChild(emptyRow);
-        }
-    } else {
-        console.error("Tabela de detalhes não encontrada.");
-            }
-            
-        }
-
-        atualizarTabelaDetalhes();
+                  });
+                }
+              } else {
+                console.error("Tabela de detalhes não encontrada.");
+              }
+            });
+          }
 
         // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
 
