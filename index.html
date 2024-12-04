@@ -7,6 +7,29 @@
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Adicione os scripts do Firebase antes do seu script.js -->
+    <!-- Firebase App (sempre necessário) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <!-- Firebase Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+    <!-- Inicialização do Firebase -->
+    <script>
+      // Configuração do Firebase do seu aplicativo web
+      const firebaseConfig = {
+      apiKey: "AIzaSyBqNLzD5LwITAPOW0FT5fbeREAWknSy3F0",
+      authDomain: "data-controledemateriais-3c60a.firebaseapp.com",
+      databaseURL: "https://data-controledemateriais-3c60a-default-rtdb.firebaseio.com",
+      projectId: "data-controledemateriais-3c60a",
+      storageBucket: "data-controledemateriais-3c60a.firebasestorage.app",
+      messagingSenderId: "768434090655",
+      appId: "1:768434090655:web:9eb319969ee3dcf1cee8aa"
+      };
+      // Inicializa o Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <!-- Seu script.js deve vir após a inicialização do Firebase -->
+    <script src="script.js" defer></script>
 </head>
 <body>
     <!-- Overlay -->
@@ -172,8 +195,29 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+    <!-- Inclusão dos scripts do Firebase -->
+    <!-- Firebase App (sempre necessário) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <!-- Firebase Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+    <!-- Inicialização do Firebase -->
+    <script>
+      // Configuração do Firebase do seu aplicativo web
+      const firebaseConfig = {
+        apiKey: "AIzaSyBqN... [REDACTED]",
+        authDomain: "data-controledemateriais-3c60a.firebaseapp.com",
+        databaseURL: "https://data-controledemateriais-3c60a-default-rtdb.firebaseio.com",
+        projectId: "data-controledemateriais-3c60a",
+        storageBucket: "data-controledemateriais-3c60a.appspot.com",
+        messagingSenderId: "768434090655",
+        appId: "1:768434090655:web:9eb319969ee3dcf1cee8aa"
+      };
+      // Inicializa o Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <!-- Seu script.js deve vir após a inicialização do Firebase -->
+    <script src="script.js" defer></script>
+
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
