@@ -1,42 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
+    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
+    <!-- Fonte e estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
-    <!-- Adicione os scripts do Firebase antes do seu script.js -->
-    <!-- Firebase App (sempre necessário) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-    <!-- Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
-    <!-- Inicialização do Firebase -->
-    <script>
-      // Configuração do Firebase do seu aplicativo web
-      const firebaseConfig = {
-      apiKey: "AIzaSyBqNLzD5LwITAPOW0FT5fbeREAWknSy3F0",
-      authDomain: "data-controledemateriais-3c60a.firebaseapp.com",
-      databaseURL: "https://data-controledemateriais-3c60a-default-rtdb.firebaseio.com",
-      projectId: "data-controledemateriais-3c60a",
-      storageBucket: "data-controledemateriais-3c60a.firebasestorage.app",
-      messagingSenderId: "768434090655",
-      appId: "1:768434090655:web:9eb319969ee3dcf1cee8aa"
-      };
-      // Inicializa o Firebase
-      firebase.initializeApp(firebaseConfig);
-    </script>
-    <!-- Seu script.js deve vir após a inicialização do Firebase -->
-    <script src="script.js" defer></script>
 </head>
 <body>
     <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Ajuste no header-container -->
+        <!-- Container do cabeçalho -->
         <div class="header-container">
             <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
             <h1>Controle de Materiais</h1>
@@ -48,7 +26,6 @@
                 </button>
                 <!-- Botão de Logout -->
                 <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout (imagem fornecida) -->
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
             </div>
@@ -89,7 +66,7 @@
 
             <!-- Materiais Reservados -->
             <section class="materiais-reservados">
-                <!-- Ajuste aqui para posicionar o botão ao lado do título -->
+                <!-- Título e botão de exclusão -->
                 <div class="header-with-button" style="display: flex; align-items: center; justify-content: space-between;">
                     <h2>Materiais Reservados</h2>
                     <button id="excluirReservadosButton" class="excluir-itens-button">Excluir Itens</button>
@@ -101,7 +78,7 @@
                             <th>LOCAL</th>
                             <th>ITEM</th>
                             <th>DESTINO</th>
-                            <th>QTD</th> <!-- Nova coluna para a quantidade -->
+                            <th>QTD</th>
                             <th>SOLICITAR</th>
                         </tr>
                     </thead>
@@ -195,34 +172,22 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Inclusão dos scripts do Firebase -->
+    <!-- Scripts -->
+    <!-- Inclua os scripts do Firebase antes do seu script.js -->
     <!-- Firebase App (sempre necessário) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
     <!-- Firebase Database -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
-    <!-- Inicialização do Firebase -->
-    <script>
-      // Configuração do Firebase do seu aplicativo web
-      const firebaseConfig = {
-        apiKey: "AIzaSyBqN... [REDACTED]",
-        authDomain: "data-controledemateriais-3c60a.firebaseapp.com",
-        databaseURL: "https://data-controledemateriais-3c60a-default-rtdb.firebaseio.com",
-        projectId: "data-controledemateriais-3c60a",
-        storageBucket: "data-controledemateriais-3c60a.appspot.com",
-        messagingSenderId: "768434090655",
-        appId: "1:768434090655:web:9eb319969ee3dcf1cee8aa"
-      };
-      // Inicializa o Firebase
-      firebase.initializeApp(firebaseConfig);
-    </script>
-    <!-- Seu script.js deve vir após a inicialização do Firebase -->
-    <script src="script.js" defer></script>
+    <!-- Seu script.js -->
+    <script src="script.js"></script>
 
+    <!-- Chamada da função de verificação de autenticação -->
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
 
+    <!-- Script para gerenciar o tema escuro, se necessário -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Verificar o tema salvo no localStorage
