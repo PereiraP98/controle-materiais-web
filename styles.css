@@ -741,5 +741,19 @@ body.dark-mode .cancelar-button:hover {
     color: #ffffff;
 }
 
+input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="date"]:focus {
+    border-color: #215C98;
+    box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
+}
 
 
