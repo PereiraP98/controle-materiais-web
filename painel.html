@@ -7,18 +7,29 @@
     <title>Painel - Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+    </style>
 </head>
 <body class="painel-page">
     <header>
-        <!-- Header -->
         <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+            </div>
             <h1>Painel de Controle</h1>
-            <!-- Botão de Logout -->
-            <div class="logout-container">
-                <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout -->
+            <div class="header-buttons">
+                <!-- Botão de Logout -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema (Inicialmente tema escuro) -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
                 </button>
             </div>
         </div>
@@ -50,19 +61,18 @@
         // Chama a função de verificação de autenticação
         checkAuthentication();
     </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Verificar o tema salvo no localStorage
-        const savedTheme = localStorage.getItem('theme');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
 
-        // Aplicar o tema escuro, se configurado
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-    });
-</script>
-
+            // Aplicar o tema escuro, se configurado
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
 </body>
 </html>
