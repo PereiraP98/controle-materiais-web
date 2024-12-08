@@ -752,12 +752,61 @@ body {
     background-color: #f3f4f6;
     color: #333;
     text-align: center;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
     color: #215C98;
+    margin: 20px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Container de consulta */
+.consulta-container {
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.consulta-container h2 {
+    color: #215C98;
     margin-bottom: 20px;
+}
+
+.consulta-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.consulta-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.consulta-container input:focus {
+    outline: none;
+    border-color: #215C98;
+    box-shadow: 0 0 5px rgba(33, 92, 152, 0.5);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 button {
@@ -766,20 +815,32 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #215C98;
-    color: white;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
+    transform: scale(1.05);
+}
+
+.back-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: #d32f2f;
+}
+
+.calendar-button {
+    background-color: #215C98;
+    color: white;
+}
+
+.calendar-button:hover {
     background-color: #17406d;
 }
 
-.hidden {
-    display: none;
-}
-
-/* Modal do calendário */
+/* Modal de calendário */
 #calendarModal {
     position: fixed;
     top: 0;
@@ -878,3 +939,13 @@ button:hover {
     color: #666;
 }
 
+/* Tema Escuro */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #eaeaea;
+}
+
+body.dark-mode .consulta-container {
+    background-color: #2e2e2e;
+    color: #eaeaea;
+}
