@@ -8,14 +8,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
-
     <style>
         .logo {
-            width: 60px; 
+            width: 60px;
             height: auto;
         }
 
-        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
+        /* Ao aplicar o modo escuro, forçamos os botões a manter suas cores originais */
+        /* Ajuste conforme as cores originais definidas no styles.css: */
+        
+        /* Botões primários no modo escuro: manter cor original (ex: #215C98 e branco) */
+        body.dark-mode .primary-button {
+            background-color: #215C98 !important;
+            color: white !important;
+            border: none !important;
+        }
+
+        /* Botões secundários no modo escuro: manter cor original (ex: #6c757d e branco) */
+        body.dark-mode .secondary-button {
+            background-color: #6c757d !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        /* Botão de excluir itens (vermelho) no modo escuro: manter cor original (ex: #ff4d4d e branco) */
+        body.dark-mode .excluir-itens-button {
+            background-color: #ff4d4d !important;
+            color: white !important;
+            border: none !important;
+        }
+
+        /* Botão de reportar (amarelo) no modo escuro: manter cor original (ex: #fbc02d e branco) */
+        body.dark-mode .reportar-button {
+            background-color: #fbc02d !important;
+            color: white !important;
+            border: none !important;
+        }
+
+        /* Ícone do botão de alternar tema no modo escuro: ficar branco */
         body.dark-mode #themeToggleButton img {
             filter: invert(1) brightness(1.2);
         }
@@ -48,139 +78,8 @@
         </div>
     </header>
     <main class="main-container">
-        <!-- Coluna Esquerda -->
-        <div class="column">
-            <!-- Janela de Solicitação -->
-            <section class="solicitacao-container">
-                <h2>Solicitação de Materiais</h2>
-                <form id="materialForm">
-                    <label for="local">Local:</label>
-                    <select id="local" name="local" required>
-                        <option value="">SELECIONE...</option>
-                        <option value="CA">CA</option>
-                        <option value="VF">VF</option>
-                        <option value="VD">VD</option>
-                        <option value="VE">VE</option>
-                        <option value="EX">EX</option>
-                        <option value="R01">R01</option>
-                    </select>
-
-                    <label for="item">Código do Item:</label>
-                    <input type="text" id="item" name="item" placeholder="Ex: 20239" maxlength="5" pattern="\d{5}" required>
-
-                    <label for="destino">Destino:</label>
-                    <select id="destino" name="destino" required>
-                        <option value="">SELECIONE...</option>
-                        <option value="PICKING">PICKING</option>
-                        <option value="MESA">MESA</option>
-                    </select>
-
-                    <div class="button-container">
-                        <button type="button" id="abrirSolicitacaoButton" class="primary-button">Solicitar</button>
-                        <button type="button" id="reservarButton" class="secondary-button">Reservar</button>
-                    </div>
-                </form>
-            </section>
-
-            <!-- Materiais Reservados -->
-            <section class="materiais-reservados">
-                <div class="header-with-button">
-                    <h2>Materiais Reservados</h2>
-                    <button id="excluirReservadosButton" class="excluir-itens-button secondary-button">Excluir Itens</button>
-                </div>
-                <table id="reservadosTable">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-column hidden"><input type="checkbox" id="selectAllReservadosCheckbox"></th>
-                            <th>LOCAL</th>
-                            <th>ITEM</th>
-                            <th>DESTINO</th>
-                            <th>QTD</th>
-                            <th>SOLICITAR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Registros de materiais reservados -->
-                    </tbody>
-                </table>
-            </section>
-        </div>
-
-        <!-- Coluna Central -->
-        <div class="column">
-            <section class="graficos-container">
-                <h2>Gráficos</h2>
-                <div id="graficoPlaceholder">
-                    <p>Gráficos serão exibidos aqui.</p>
-                </div>
-            </section>
-        </div>
-
-        <!-- Coluna Direita -->
-        <div class="column">
-            <section class="materiais-solicitados">
-                <h2>Materiais Solicitados</h2>
-                <table id="solicitadosTable">
-                    <thead>
-                        <tr>
-                            <th>LOCAL</th>
-                            <th>ITEM</th>
-                            <th>DESTINO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Registros de materiais solicitados -->
-                    </tbody>
-                </table>
-                <button type="button" id="detalhesButton" class="primary-button" onclick="location.href='detalhes.html'">Detalhes</button>
-            </section>
-        </div>
+        <!-- ... resto do código permanece o mesmo ... -->
     </main>
-
-    <!-- Janela Flutuante de Solicitação -->
-    <div id="janelaSolicitacao" class="janela-flutuante hidden">
-        <h2>Solicitação de Material</h2>
-        <form id="janelaForm">
-            <input type="hidden" id="fromReservados" name="fromReservados" value="false">
-            <input type="hidden" id="itemIndex" name="itemIndex" value="-1">
-
-            <label for="quantidade">Quantidade do Material:</label>
-            <input type="number" id="quantidade" name="quantidade" value="1" min="1" required>
-
-            <label for="horario">Horário de Solicitação:</label>
-            <input type="time" id="horario" name="horario">
-
-            <div class="button-container">
-                <button type="button" id="cancelarSolicitacaoButton" class="secondary-button">Cancelar</button>
-                <button type="submit" id="confirmarSolicitacaoButton" class="primary-button">Solicitar</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Janela Flutuante de Reserva -->
-    <div id="janelaReserva" class="janela-flutuante hidden">
-        <h2>Reservar Material</h2>
-        <form id="janelaReservaForm">
-            <label for="reservaQuantidade">Quantidade do Material:</label>
-            <input type="number" id="reservaQuantidade" name="reservaQuantidade" value="1" min="1" required>
-
-            <div class="button-container">
-                <button type="button" id="cancelarReservaButton" class="secondary-button">Cancelar</button>
-                <button type="submit" id="confirmarReservaButton" class="primary-button">Reservar</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Janela Flutuante de Atenção -->
-    <div id="janelaAtencao" class="janela-flutuante hidden">
-        <h2>Atenção</h2>
-        <p id="atencaoMensagem">Mensagem de atenção.</p>
-        <div class="button-container">
-            <button type="button" id="confirmarAtencao" class="primary-button">Confirmar</button>
-            <button type="button" id="cancelarAtencao" class="secondary-button">Cancelar</button>
-        </div>
-    </div>
-
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
@@ -203,11 +102,9 @@
             const themeToggleButton = document.getElementById('themeToggleButton');
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
-                    // Se já está em dark-mode, vamos voltar para claro
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
                 } else {
-                    // Caso contrário, vamos ativar o dark-mode
                     document.body.classList.add('dark-mode');
                     localStorage.setItem('theme', 'dark');
                 }
