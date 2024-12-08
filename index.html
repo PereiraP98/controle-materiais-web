@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
+        /* Ajuste do tamanho da logo diretamente aqui ou no styles.css */
         .logo {
-            width: 60px;
+            width: 80px; /* Aumente o tamanho conforme desejado */
             height: auto;
         }
     </style>
@@ -35,7 +36,7 @@
                 <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
-                <!-- Botão de Alternar Tema (Inicialmente tema escuro) -->
+                <!-- Botão de Alternar Tema -->
                 <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
                 </button>
@@ -184,17 +185,6 @@
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-        });
     </script>
 </body>
 </html>
