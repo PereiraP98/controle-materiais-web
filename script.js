@@ -145,7 +145,7 @@ if (janelaForm) {
         var fromReservados = fromReservadosInput ? fromReservadosInput.value : "false";
         var itemIndex = itemIndexInput ? parseInt(itemIndexInput.value) : -1;
 
-        // Agora sim, fechar a janela depois de ter os valores
+        // Fecha a janela após pegar os valores
         fecharJanelaSolicitacao();
 
         var quantidadeInput = document.getElementById("quantidade");
@@ -176,7 +176,7 @@ if (janelaForm) {
             return;
         }
 
-        // Se a solicitação veio de um item reservado, remove o item agora, após a confirmação
+        // Se a solicitação veio de um item reservado, remove o item agora
         if (fromReservados === "true" && itemIndex >= 0) {
             var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
             if (itemIndex < reservados.length && itemIndex >= 0) {
@@ -233,11 +233,14 @@ if (janelaForm) {
 
         alert("Material solicitado com sucesso!");
 
-        // Após a solicitação ser finalizada com sucesso, redefinimos LOCAL e DESTINO para "SELECIONE..."
+        // Após a solicitação ser finalizada com sucesso, redefinimos LOCAL, DESTINO e ITEM
         var localSelect = document.getElementById("local");
         var destinoSelectField = document.getElementById("destino");
+        var itemInputReset = document.getElementById("item");
+
         if (localSelect) localSelect.value = "";
         if (destinoSelectField) destinoSelectField.value = "";
+        if (itemInputReset) itemInputReset.value = "";
 
         atualizarTabelaSolicitados();
         atualizarTabelaReservados();
