@@ -1,264 +1,241 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-
     <style>
-        .logo {
-            width: 60px;
-            height: auto;
-        }
-
-        /* Estilo da Janela de Consulta */
-        .consulta-container {
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: auto;
-            width: 50%;
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
 
-        .consulta-container h2 {
-            margin-bottom: 20px;
+        h1 {
             color: #215C98;
+            margin-bottom: 20px;
         }
 
-        .consulta-container .button-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-        }
-
-        .consulta-container button {
-            flex: 1;
-            padding: 12px 18px;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
             border: none;
             border-radius: 5px;
-            font-size: 1em;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .consulta-container .back-button {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .consulta-container .back-button:hover {
-            background-color: #d32f2f;
-        }
-
-        .consulta-container .confirm-button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: not-allowed; /* Desabilitado inicialmente */
-        }
-
-        .consulta-container .confirm-button.enabled {
-            cursor: pointer;
-            background-color: #4CAF50;
-        }
-
-        .consulta-container .confirm-button.enabled:hover {
-            background-color: #388E3C;
-        }
-
-        .consulta-container .calendar-button {
             background-color: #215C98;
             color: white;
+            transition: background-color 0.3s ease;
         }
 
-        .consulta-container .calendar-button:hover {
+        button:hover {
             background-color: #17406d;
         }
 
-        /* Janela Flutuante */
-        .janela-flutuante {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+        .hidden {
             display: none;
-            width: 400px;
         }
 
-        .janela-flutuante h3 {
-            margin-bottom: 15px;
-            color: #215C98;
-        }
-
-        .janela-flutuante button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-        }
-
-        .janela-flutuante .ok-button {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .janela-flutuante .ok-button:hover {
-            background-color: #388E3C;
-        }
-
-        .janela-flutuante .cancel-button {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .janela-flutuante .cancel-button:hover {
-            background-color: #d32f2f;
-        }
-
-        /* Overlay */
-        #overlay {
+        /* Modal de calendário */
+        .calendar-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        /* Tema Escuro */
-        body.dark-mode .consulta-container,
-        body.dark-mode .janela-flutuante {
-            background-color: #2e2e2e;
-            color: #eaeaea;
-            border: 1px solid #4a4a4a;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        .calendar-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
-        body.dark-mode .consulta-container .back-button {
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #215C98;
+        }
+
+        .calendar-header button {
             background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        body.dark-mode .consulta-container .back-button:hover {
+        .calendar-header button:hover {
             background-color: #d32f2f;
         }
 
-        body.dark-mode .consulta-container .calendar-button {
-            background-color: #215C98;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
-        body.dark-mode .consulta-container .calendar-button:hover {
-            background-color: #17406d;
+        .month {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .month h3 {
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: #215C98;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .day {
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .day:hover {
+            background-color: #d3e4f7;
+        }
+
+        .day.selected {
+            background-color: #215C98;
+            color: white;
+        }
+
+        .weekday {
+            font-weight: bold;
+            color: #666;
         }
     </style>
 </head>
-<body class="painel-page">
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
-            </div>
-            <h1>Relatório de Materiais</h1>
-            <div class="header-buttons">
-                <!-- Botão de Logout -->
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
-                </button>
-                <!-- Botão de Alternar Tema -->
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
-                </button>
-            </div>
-        </div>
-    </header>
+<body>
+    <h1>Relatório de Materiais</h1>
+    <button id="openCalendar">Consultar Relatório</button>
+    <button id="confirmSelection" class="hidden">Confirmar Consulta</button>
 
-    <main class="main-container">
-        <div class="consulta-container">
-            <h2>Consultar Relatório de Materiais</h2>
-            <div class="button-container">
-                <button class="back-button" onclick="location.href='painel.html'">Voltar</button>
-                <button class="calendar-button" onclick="abrirJanelaFlutuante()">Selecionar Data</button>
-                <button class="confirm-button" id="confirmButton" disabled>Confirmar Consulta</button>
+    <div id="calendarModal" class="calendar-modal hidden">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h2 id="selectedYear">2024</h2>
+                <button id="closeCalendar">Fechar</button>
             </div>
-        </div>
-    </main>
-
-    <div id="overlay"></div>
-
-    <div class="janela-flutuante" id="janelaFlutuante">
-        <h3>Selecione a Data</h3>
-        <input type="date" id="dataRelatorio" class="date-picker">
-        <div class="button-container">
-            <button class="ok-button" onclick="confirmarData()">OK</button>
-            <button class="cancel-button" onclick="fecharJanelaFlutuante()">Cancelar</button>
+            <div id="calendarGrid" class="calendar-grid"></div>
         </div>
     </div>
 
-    <footer>
-        © 2024 COLLAB - Todos os direitos reservados.
-    </footer>
-
     <script>
-        // Lógica do tema
-        document.addEventListener('DOMContentLoaded', function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
+        document.addEventListener("DOMContentLoaded", function () {
+            const calendarModal = document.getElementById("calendarModal");
+            const openCalendarButton = document.getElementById("openCalendar");
+            const closeCalendarButton = document.getElementById("closeCalendar");
+            const confirmButton = document.getElementById("confirmSelection");
+            const calendarGrid = document.getElementById("calendarGrid");
+
+            const months = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
+            const weekdays = ["Se", "Te", "Qu", "Qu", "Se", "Sa", "Do"];
+
+            function generateCalendar(year) {
+                calendarGrid.innerHTML = "";
+
+                months.forEach((month, index) => {
+                    const monthContainer = document.createElement("div");
+                    monthContainer.className = "month";
+
+                    const monthTitle = document.createElement("h3");
+                    monthTitle.textContent = month;
+                    monthContainer.appendChild(monthTitle);
+
+                    const daysGrid = document.createElement("div");
+                    daysGrid.className = "days-grid";
+
+                    weekdays.forEach((weekday) => {
+                        const weekdayElement = document.createElement("div");
+                        weekdayElement.className = "weekday";
+                        weekdayElement.textContent = weekday;
+                        daysGrid.appendChild(weekdayElement);
+                    });
+
+                    const daysInMonth = new Date(year, index + 1, 0).getDate();
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dayElement = document.createElement("div");
+                        dayElement.className = "day";
+                        dayElement.textContent = day;
+
+                        dayElement.addEventListener("click", () => {
+                            document.querySelectorAll(".day").forEach((d) => d.classList.remove("selected"));
+                            dayElement.classList.add("selected");
+                        });
+
+                        daysGrid.appendChild(dayElement);
+                    }
+
+                    monthContainer.appendChild(daysGrid);
+                    calendarGrid.appendChild(monthContainer);
+                });
             }
 
-            document.getElementById('themeToggleButton').addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
+            openCalendarButton.addEventListener("click", () => {
+                calendarModal.classList.remove("hidden");
+                generateCalendar(2024);
+            });
+
+            closeCalendarButton.addEventListener("click", () => {
+                calendarModal.classList.add("hidden");
+            });
+
+            confirmButton.addEventListener("click", () => {
+                const selectedDay = document.querySelector(".day.selected");
+                if (selectedDay) {
+                    alert(`Relatório selecionado para o dia ${selectedDay.textContent}`);
                 } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
+                    alert("Por favor, selecione uma data.");
                 }
             });
+
+            calendarGrid.addEventListener("click", () => {
+                confirmButton.classList.remove("hidden");
+            });
         });
-
-        // Abrir janela flutuante
-        function abrirJanelaFlutuante() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('janelaFlutuante').style.display = 'block';
-        }
-
-        // Fechar janela flutuante
-        function fecharJanelaFlutuante() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('janelaFlutuante').style.display = 'none';
-        }
-
-        // Confirmar data selecionada
-        function confirmarData() {
-            const dataRelatorio = document.getElementById('dataRelatorio').value;
-            if (dataRelatorio) {
-                alert(`Data selecionada: ${new Date(dataRelatorio).toLocaleDateString('pt-BR')}`);
-                fecharJanelaFlutuante();
-                const confirmButton = document.getElementById('confirmButton');
-                confirmButton.disabled = false;
-                confirmButton.classList.add('enabled');
-                confirmButton.onclick = () => alert(`Relatório confirmado para: ${new Date(dataRelatorio).toLocaleDateString('pt-BR')}`);
-            } else {
-                alert('Por favor, selecione uma data.');
-            }
-        }
     </script>
 </body>
 </html>
