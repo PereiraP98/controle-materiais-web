@@ -1493,4 +1493,31 @@ function atualizarTabelaRecebidos() {
             return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Aplicar tema salvo
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    
+        // Selecionar o botão de alternar tema (caso exista na página)
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    // Se já está em dark-mode, vamos voltar para claro
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    // Caso contrário, vamos ativar o dark-mode
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        }
+    });
+    
 });
