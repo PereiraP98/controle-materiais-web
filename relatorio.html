@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Cabeçalho -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Materiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+
+        /* Janela centralizada */
+        .consulta-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            width: 50%;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .consulta-container h2 {
+            margin-bottom: 20px;
+            color: #215C98;
+        }
+
+        .consulta-container input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .consulta-container input:focus {
+            border-color: #215C98;
+            box-shadow: 0 0 8px rgba(33, 92, 152, 0.5);
+        }
+
+        .consulta-container .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .consulta-container button {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .consulta-container .back-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .consulta-container .back-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .consulta-container .consult-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .consulta-container .consult-button:hover {
+            background-color: #388E3C;
+        }
+
+        /* Tema escuro */
+        body.dark-mode .consulta-container {
+            background-color: #2e2e2e;
+            color: #eaeaea;
+            border: 1px solid #4a4a4a;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        body.dark-mode .consulta-container input {
+            background-color: #3a3a3a;
+            color: #eaeaea;
+            border: 1px solid #4a4a4a;
+        }
+
+        body.dark-mode .consulta-container input:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        body.dark-mode .consulta-container .back-button {
+            background-color: #f44336;
+        }
+
+        body.dark-mode .consulta-container .back-button:hover {
+            background-color: #d32f2f;
+        }
+
+        body.dark-mode .consulta-container .consult-button {
+            background-color: #4CAF50;
+        }
+
+        body.dark-mode .consulta-container .consult-button:hover {
+            background-color: #388E3C;
+        }
+    </style>
+</head>
+<body class="painel-page">
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+            </div>
+            <h1>Relatório de Materiais</h1>
+            <div class="header-buttons">
+                <!-- Botão de Logout -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="consulta-container">
+            <h2>Consultar Relatório de Materiais</h2>
+            <input type="date" id="dataRelatorio" placeholder="Selecione a data do relatório">
+            <div class="button-container">
+                <button class="back-button" onclick="location.href='painel.html'">Voltar</button>
+                <button class="consult-button" onclick="abrirCalendario()">Consultar Relatório</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verifica o tema salvo no localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+
+            // Lógica do botão de alternar tema
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+
+        function abrirCalendario() {
+            const dataInput = document.getElementById('dataRelatorio');
+            if (!dataInput.value) {
+                alert('Por favor, selecione uma data para consultar o relatório.');
+                return;
+            }
+            const dataSelecionada = new Date(dataInput.value);
+            alert(`Abrindo relatório para ${dataSelecionada.toLocaleDateString('pt-BR')}`);
+            // Adicione aqui a lógica para abrir o relatório da data selecionada.
+        }
+    </script>
+</body>
+</html>
