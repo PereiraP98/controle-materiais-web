@@ -750,12 +750,17 @@ body.dark-mode .cancelar-button:hover {
 
 
 
+
 .flatpickr-calendar {
-    font-family: 'Roboto', sans-serif;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    position: fixed !important; /* Posiciona o calendário em relação à janela */
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important; /* Centraliza horizontal e verticalmente */
+    z-index: 1000; /* Garante que o calendário fique acima de outros elementos */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para destaque */
+    border-radius: 10px; /* Bordas arredondadas */
 }
+
 
 .flatpickr-month {
     background: #215C98;
