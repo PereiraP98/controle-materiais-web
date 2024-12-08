@@ -29,7 +29,7 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* Mantemos o centramento como no código antigo */
 }
 
 .header-container .logo {
@@ -37,8 +37,8 @@ header {
 }
 
 .header-container h1 {
-    flex-grow: 1;
-    text-align: center;
+    flex-grow: 1; /* Permite que o h1 ocupe o espaço central */
+    text-align: center; /* Garante o título centralizado */
     color: white;
     font-size: 1.5em;
     font-weight: bold;
@@ -142,7 +142,7 @@ button:hover,
     transform: scale(1.03);
 }
 
-/* Botões primários e secundários para dar um ar mais profissional */
+/* Botões primários e secundários */
 .primary-button {
     background-color: #215C98;
     color: #fff;
@@ -284,7 +284,6 @@ tbody tr:hover {
     animation: slideDown 0.3s forwards;
 }
 
-/* Animação de entrada da janela */
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -296,7 +295,6 @@ tbody tr:hover {
     }
 }
 
-/* Animação de saída da janela */
 @keyframes slideUp {
     from {
         opacity: 1;
@@ -308,19 +306,16 @@ tbody tr:hover {
     }
 }
 
-/* Estilo para o botão container dentro da janela */
 .janela-flutuante .button-container {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-/* Classe para ocultar a janela */
 .janela-flutuante.hidden {
     display: none;
 }
 
-/* Estilo para impedir rolagem quando o modal estiver aberto */
 body.modal-open {
     overflow: hidden;
 }
@@ -334,7 +329,7 @@ body.modal-open {
     margin: 10px;
 }
 
-/* Estilo para o overlay */
+/* Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -346,19 +341,16 @@ body.modal-open {
     z-index: 999;
 }
 
-/* Exibir o overlay */
 .overlay.active {
     display: block;
     animation: fadeIn 0.3s forwards;
 }
 
-/* Animação de fade-in */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-/* Título e botão de exclusão */
 .title-container {
     display: flex;
     justify-content: space-between;
@@ -378,7 +370,7 @@ footer {
     font-size: 0.9em;
 }
 
-/* Estilos para a página de login */
+/* Página de login */
 .login-page {
     display: flex;
     justify-content: center;
@@ -446,14 +438,14 @@ footer {
     background-color: #17406d;
 }
 
-/* Estilo do rodapé na página de login */
+/* Rodapé na página de login */
 .login-page footer {
     position: absolute;
     bottom: 0;
     width: 100%;
 }
 
-/* Estilos para a página do painel */
+/* Página do painel */
 .painel-page .main-container {
     display: flex;
     justify-content: center;
@@ -497,7 +489,7 @@ footer {
     font-size: 0.95em;
 }
 
-/* Efeito de hover para escurecer o fundo levemente */
+/* Hover no card */
 .tool-card:hover {
     background-color: rgba(0, 0, 0, 0.05);
     transform: scale(1.05);
@@ -513,7 +505,7 @@ footer {
     font-size: 2em;
 }
 
-/* Centraliza o texto na coluna TEMPO */
+/* Centraliza texto na coluna TEMPO */
 .tempo-cell {
     text-align: center;
 }
