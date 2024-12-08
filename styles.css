@@ -10,6 +10,33 @@ body {
     background-color: #f3f4f6;
     color: #333;
     line-height: 1.6;
+    /* Transição suave entre temas */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Adicionando transições para contêineres e elementos chaves */
+.solicitacao-container,
+.materiais-reservados,
+.graficos-container,
+.materiais-solicitados,
+.detalhes-container,
+.login-container,
+.tools-container .tool-card,
+header,
+footer,
+.janela-flutuante,
+.table,
+input,
+select,
+textarea,
+button,
+.solicitacao-container .excluir-button,
+.detalhes-container .excluir-button,
+.confirmar-button,
+.cancelar-button,
+.excluir-itens-button,
+.reportar-button {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Cabeçalho */
@@ -51,7 +78,7 @@ header {
     top: 10px;
     right: 20px;
     display: flex;
-    gap: 10px; /* Espaçamento entre os botões */
+    gap: 10px; 
 }
 
 .header-buttons button {
@@ -72,14 +99,13 @@ header {
 /* Layout principal */
 .main-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Três colunas padrão */
+    grid-template-columns: 1fr 1fr 1fr; 
     grid-gap: 30px;
     padding: 30px;
 }
 
-/* Layout principal específico para detalhes.html */
 .detalhes-page .main-container {
-    grid-template-columns: 1fr 1fr; /* Duas colunas para detalhes.html */
+    grid-template-columns: 1fr 1fr; 
 }
 
 /* Colunas */
@@ -89,7 +115,6 @@ header {
     grid-gap: 30px;
 }
 
-/* Ajuste específico para .detalhes-container em detalhes.html */
 .detalhes-page .detalhes-container {
     grid-column: span 1;
     display: flex;
@@ -120,7 +145,7 @@ button,
 .detalhes-container .excluir-button,
 .confirmar-button,
 .cancelar-button {
-    background-color: #215C98; /* Cor padrão dos botões */
+    background-color: #215C98;
     color: white;
     border: none;
     border-radius: 5px;
@@ -135,8 +160,8 @@ button:hover,
 .detalhes-container .excluir-button:hover,
 .confirmar-button:hover,
 .cancelar-button:hover {
-    background-color: #17406d; /* Cor de hover */
-    transform: scale(1.03); /* Leve crescimento ao passar o mouse */
+    background-color: #17406d;
+    transform: scale(1.03);
 }
 
 /* Botões de exclusão */
@@ -153,18 +178,18 @@ button:hover,
 
 /* Estilo para o botão de excluir itens */
 .excluir-itens-button {
-    background-color: #ff4d4d; /* Vermelho claro */
-    color: white; /* Texto branco */
-    border: none; /* Sem borda */
-    padding: 8px 16px; /* Espaçamento interno */
-    font-size: 16px; /* Tamanho da fonte */
-    cursor: pointer; /* Cursor de mãozinha */
-    border-radius: 4px; /* Bordas arredondadas */
-    transition: background-color 0.3s; /* Transição suave */
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 .excluir-itens-button:hover {
-    background-color: #e60000; /* Vermelho mais escuro ao passar o mouse */
+    background-color: #e60000;
 }
 
 .reportar-button {
@@ -232,7 +257,7 @@ th {
 }
 
 .checkbox-column.hidden {
-    display: none; /* Mantém o comportamento correto de ocultar */
+    display: none;
 }
 
 /* Linhas da tabela */
@@ -257,11 +282,10 @@ tbody tr:hover {
     z-index: 1000;
     width: 400px;
     text-align: center;
-    opacity: 0; /* Começa invisível */
+    opacity: 0;
     animation: slideDown 0.3s forwards;
 }
 
-/* Animação de entrada da janela */
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -273,7 +297,6 @@ tbody tr:hover {
     }
 }
 
-/* Animação de saída da janela */
 @keyframes slideUp {
     from {
         opacity: 1;
@@ -285,19 +308,16 @@ tbody tr:hover {
     }
 }
 
-/* Estilo para o botão container dentro da janela */
 .janela-flutuante .button-container {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-/* Classe para ocultar a janela */
 .janela-flutuante.hidden {
     display: none;
 }
 
-/* Estilo para impedir rolagem quando o modal estiver aberto */
 body.modal-open {
     overflow: hidden;
 }
@@ -318,27 +338,19 @@ body.modal-open {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
-    display: none; /* Oculto por padrão */
-    z-index: 999; /* Nível acima do conteúdo da página */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
 }
 
-/* Exibir o overlay */
 .overlay.active {
     display: block;
     animation: fadeIn 0.3s forwards;
 }
 
-/* Animação de fade-in */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-}
-
-/* Animação de fade-out */
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
 }
 
 /* Título e botão de exclusão */
@@ -480,14 +492,12 @@ footer {
     font-size: 0.95em;
 }
 
-/* Efeito de hover para escurecer o fundo levemente */
 .tool-card:hover {
-    background-color: rgba(0, 0, 0, 0.05); /* Fundo levemente escurecido */
+    background-color: rgba(0, 0, 0, 0.05);
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* Ajustes no header para a página do painel */
 .painel-page header .header-container {
     justify-content: center;
 }
@@ -511,18 +521,18 @@ footer {
 
 @keyframes smoothPulse {
     0% {
-        background-color: rgb(255, 0, 0); /* Vermelho */
+        background-color: rgb(255, 0, 0);
     }
     50% {
-        background-color: rgb(255, 80, 80); /* Vermelho mais claro */
+        background-color: rgb(255, 80, 80);
     }
     100% {
-        background-color: rgb(255, 0, 0); /* Retorna ao vermelho */
+        background-color: rgb(255, 0, 0);
     }
 }
 
 .oscillation {
-    animation: smoothPulse 1s infinite ease-in-out; /* Oscilação suave */
+    animation: smoothPulse 1s infinite ease-in-out;
 }
 
 /* Janela de Atenção */
@@ -538,7 +548,7 @@ footer {
     padding: 20px;
     width: 300px;
     z-index: 1000;
-    opacity: 0; /* Começa invisível */
+    opacity: 0;
     animation: slideDown 0.3s forwards;
 }
 
@@ -620,10 +630,10 @@ body.dark-mode textarea:focus {
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
 }
 
-/* MANTER OS BOTÕES INTACTOS NO MODO ESCURO */
-/* Removemos qualquer alteração de cor nos botões em modo escuro, mantendo as cores originais */
-
-/* Apenas o ícone do tema ficará branco no modo escuro */
+/* Mantendo os botões inalterados no modo escuro */
+/* Não altera a cor original dos botões */
+ 
+/* Ícone do botão de alternar tema no modo escuro fica branco */
 body.dark-mode #themeToggleButton img {
     filter: invert(1) brightness(1.2);
 }
