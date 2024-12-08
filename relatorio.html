@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script> <!-- Tradução para PT -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 </head>
 <body>
     <header>
@@ -22,25 +22,49 @@
         <div class="detalhes-container">
             <h2>Consultar Relatório de Materiais</h2>
             <form>
-                <label for="data-relatorio">Selecione a Data:</label>
-                <input type="text" id="data-relatorio" name="data-relatorio" placeholder="Selecione uma data" readonly>
+                <input type="hidden" id="data-relatorio" name="data-relatorio"> <!-- Campo invisível para armazenar a data -->
                 <div class="button-container">
                     <button type="button" onclick="location.href='painel.html'" class="secondary-button">Voltar</button>
-                    <button type="button" id="consultarButton" class="primary-button" disabled>Consultar Relatório</button>
+                    <button type="button" id="selecionarDataButton" class="primary-button">Selecionar Data</button>
                 </div>
             </form>
         </div>
     </main>
     <script>
-        // Inicializa o Flatpickr com a localização em português
-        flatpickr("#data-relatorio", {
-            dateFormat: "d/m/Y",
-            locale: "pt", // Define a localidade para português
-            disableMobile: true,
-            onChange: function(selectedDates, dateStr) {
-                // Habilita o botão de consultar após seleção
-                const consultarButton = document.getElementById("consultarButton");
-                consultarButton.disabled = !dateStr;
+        // Inicializa o Flatpickr somente ao clicar no botão "Selecionar Data"
+        const selecionarDataButton = document.getElementById("selecionarDataButton");
+        const dataRelatorioInput = document.getElementById("data-relatorio");
+
+        let calendario;
+
+        selecionarDataButton.addEventListener("click", function () {
+            if (!calendario) {
+                calendario = flatpickr(dataRelatorioInput, {
+                    dateFormat: "d/m/Y",
+                    locale: "pt",
+                    inline: true, // Abre diretamente como um calendário embutido
+                    onChange: function(selectedDates, dateStr) {
+                        // Atualiza o botão após selecionar uma data
+                        if (dateStr) {
+                            selecionarDataButton.textContent = "Consultar Relatório";
+                            selecionarDataButton.setAttribute("data-selected", "true");
+                        }
+                    },
+                });
+
+                // Simula o clique no campo de data invisível para abrir o calendário
+                dataRelatorioInput.click();
+            } else {
+                // Simula o clique no campo para reabrir o calendário
+                dataRelatorioInput.click();
+            }
+        });
+
+        // Comportamento ao clicar em "Consultar Relatório"
+        selecionarDataButton.addEventListener("click", function () {
+            if (selecionarDataButton.getAttribute("data-selected") === "true") {
+                alert("Relatório para a data: " + dataRelatorioInput.value);
+                // Aqui você pode adicionar a lógica para consultar o relatório
             }
         });
     </script>
