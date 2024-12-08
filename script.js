@@ -550,6 +550,7 @@ if (janelaReservaForm) {
         var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
         reservados.push({ local, item, destino, quantidade });
         localStorage.setItem("reservados", JSON.stringify(reservados));
+
         // Fecha a janela de reserva
         fecharJanelaReserva();
 
@@ -561,8 +562,18 @@ if (janelaReservaForm) {
         }
 
         alert("Material reservado com sucesso!");
+
+        // Redefinir LOCAL, DESTINO e ITEM
+        var localSelect = document.getElementById("local");
+        var destinoSelectField = document.getElementById("destino");
+        var itemInputReset = document.getElementById("item");
+
+        if (localSelect) localSelect.value = "";
+        if (destinoSelectField) destinoSelectField.value = "";
+        if (itemInputReset) itemInputReset.value = "";
     });
 }
+
 
 // Função para excluir itens da tabela de materiais reservados
 var excluirReservadosButton = document.getElementById("excluirReservadosButton");
