@@ -946,9 +946,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         atualizarTabelaDetalhes();
 
-        // Restante do código específico para detalhes.html (recebimento, exclusão, reporte)
 
         // Função para abrir a janela flutuante de recebimento
+// Função para abrir a janela flutuante de recebimento
 function abrirJanelaRecebimento(index) {
     var detalhes = JSON.parse(localStorage.getItem("detalhes")) || []; // Carrega os detalhes do localStorage
     var detalhe = detalhes[index]; // Obtém o detalhe correspondente ao índice fornecido
@@ -965,6 +965,14 @@ function abrirJanelaRecebimento(index) {
 
     if (recebimentoQuantidadeInput) {
         recebimentoQuantidadeInput.value = detalhe.quantidade || "1"; // Define a quantidade ou padrão como 1
+
+        // Se a quantidade solicitada for 1, desabilita a edição.
+        // Caso contrário, habilita a edição.
+        if (detalhe.quantidade === 1) {
+            recebimentoQuantidadeInput.disabled = true;
+        } else {
+            recebimentoQuantidadeInput.disabled = false;
+        }
     }
 
     if (recebimentoHorarioInput) {
@@ -1053,17 +1061,12 @@ if (recebimentoForm) {
         var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
 
         var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
-        var quantidadeRecebida = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
+        var quantidadeRecebidaStr = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
         var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
 
         // Validações
         if (index === -1 || isNaN(index)) {
             alert("Erro ao identificar o item a ser recebido.");
-            return;
-        }
-
-        if (!quantidadeRecebida) {
-            alert("Por favor, insira a quantidade recebida.");
             return;
         }
 
@@ -1080,46 +1083,83 @@ if (recebimentoForm) {
             return;
         }
 
+        var quantidadeRecebida = parseInt(quantidadeRecebidaStr, 10);
+        if (isNaN(quantidadeRecebida) || quantidadeRecebida <= 0) {
+            alert("Por favor, insira uma quantidade válida recebida.");
+            return;
+        }
+
+        if (quantidadeRecebida > detalhe.quantidade) {
+            alert("A quantidade recebida não pode ser maior que a quantidade solicitada.");
+            return;
+        }
+
         // Limpa os intervals do cronômetro
         if (intervalMap.has(index)) {
             clearInterval(intervalMap.get(index));
             intervalMap.delete(index);
         }
 
-        // Cria um novo objeto para materiais recebidos
         var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-        recebidos.push({
-            local: detalhe.local,
-            item: detalhe.item,
-            quantidade: quantidadeRecebida,
-            destino: detalhe.destino,
-            dataAtual: detalhe.dataAtual,
-            horario: detalhe.horario,
-            recebido: horarioRecebido,
-            guardado: '' // Pode ser preenchido posteriormente
-        });
-        localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        // Remove o item da lista de detalhes
-        detalhes.splice(index, 1);
-        localStorage.setItem("detalhes", JSON.stringify(detalhes));
+        // Caso a quantidade recebida seja igual à quantidade solicitada
+        if (quantidadeRecebida === detalhe.quantidade) {
+            // Adiciona o item completamente a 'recebidos'
+            recebidos.push({
+                local: detalhe.local,
+                item: detalhe.item,
+                quantidade: quantidadeRecebida,
+                destino: detalhe.destino,
+                dataAtual: detalhe.dataAtual,
+                horario: detalhe.horario,
+                recebido: horarioRecebido,
+                guardado: ''
+            });
+            localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        // Também remove o item correspondente de 'solicitados'
-        var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-        var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
-            return itemSolicitado.local === detalhe.local &&
-                itemSolicitado.item === detalhe.item &&
-                itemSolicitado.destino === detalhe.destino;
-        });
+            // Remove o item de detalhes
+            detalhes.splice(index, 1);
+            localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-        if (solicitadosIndex !== -1) {
-            solicitados.splice(solicitadosIndex, 1);
-            localStorage.setItem("solicitados", JSON.stringify(solicitados));
+            // Remove o item correspondente de 'solicitados'
+            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+            var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
+                return itemSolicitado.local === detalhe.local &&
+                    itemSolicitado.item === detalhe.item &&
+                    itemSolicitado.destino === detalhe.destino;
+            });
+
+            if (solicitadosIndex !== -1) {
+                solicitados.splice(solicitadosIndex, 1);
+                localStorage.setItem("solicitados", JSON.stringify(solicitados));
+            }
+
+        } else {
+            // Caso a quantidade recebida seja menor do que a solicitada
+            // Adiciona apenas a quantidade recebida a 'recebidos'
+            recebidos.push({
+                local: detalhe.local,
+                item: detalhe.item,
+                quantidade: quantidadeRecebida,
+                destino: detalhe.destino,
+                dataAtual: detalhe.dataAtual,
+                horario: detalhe.horario,
+                recebido: horarioRecebido,
+                guardado: ''
+            });
+            localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+            // Atualiza a quantidade pendente no detalhe
+            detalhe.quantidade = detalhe.quantidade - quantidadeRecebida;
+            detalhes[index] = detalhe;
+            localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+            // Neste caso, não removemos o item de 'solicitados', pois ainda há quantidade pendente
         }
 
         // Atualiza as tabelas
-        atualizarTabelaDetalhes(); // Atualiza a tabela de detalhes para remover o item
-        atualizarTabelaRecebidos(); // Atualiza a tabela de recebidos com o novo item
+        atualizarTabelaDetalhes(); // Atualiza a tabela de detalhes
+        atualizarTabelaRecebidos(); // Atualiza a tabela de recebidos
         if (window.location.pathname.includes("index.html")) {
             atualizarTabelaSolicitados(); // Atualiza a tabela de solicitados, se na página index
         }
