@@ -16,7 +16,6 @@ body {
 header {
     background-color: #215C98;
     padding: 10px 20px;
-    position: relative;
 }
 
 /* Estilos para a logo */
@@ -30,15 +29,7 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center; /* Título ficará centralizado no centro do header */
-}
-
-/* Logo à esquerda */
-.logo-container {
-    position: absolute;
-    left: 20px;
-    display: flex;
-    align-items: center;
+    justify-content: center;
 }
 
 .header-container .logo {
@@ -46,11 +37,12 @@ header {
 }
 
 .header-container h1 {
+    flex-grow: 1;
+    text-align: center;
     color: white;
     font-size: 1.5em;
     font-weight: bold;
     margin: 0;
-    /* O título ficará no centro por causa do justify-content: center no .header-container */
 }
 
 /* Container para os botões do header */
@@ -71,7 +63,6 @@ header {
     justify-content: center;
 }
 
-/* Remover referência de ícones Font Awesome, caso não esteja usando */
 .header-button i {
     color: white;
     font-size: 1.4rem;
@@ -151,7 +142,7 @@ button:hover,
     transform: scale(1.03);
 }
 
-/* Botões primários e secundários */
+/* Botões primários e secundários para dar um ar mais profissional */
 .primary-button {
     background-color: #215C98;
     color: #fff;
