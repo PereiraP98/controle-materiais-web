@@ -8,8 +8,41 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <style>
+        /* Centraliza a janela de consulta apenas na página relatorio.html */
+        body.relatorio-page .detalhes-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Fundo escurecido para foco na janela apenas na página relatorio.html */
+        body.relatorio-page.modal-open {
+            background: rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Evita rolagem da página */
+        }
+
+        /* Estilo personalizado para centralizar o calendário */
+        body.relatorio-page .flatpickr-calendar {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 1001; /* Garante que o calendário fique acima de outros elementos */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    </style>
 </head>
-<body>
+<body class="relatorio-page">
     <header>
         <div class="header-container">
             <div class="logo-container">
@@ -19,7 +52,7 @@
         </div>
     </header>
     <main class="main-container">
-        <div class="relatorio-page">
+        <div class="detalhes-container">
             <h2>Consultar Relatório de Materiais</h2>
             <form>
                 <div class="field-container">
