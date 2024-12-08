@@ -22,7 +22,16 @@
         <div class="detalhes-container">
             <h2>Consultar Relatório de Materiais</h2>
             <form>
-                <input type="hidden" id="data-relatorio" name="data-relatorio"> <!-- Campo invisível para armazenar a data -->
+                <div class="field-container">
+                    <input 
+                        type="text" 
+                        id="data-relatorio" 
+                        name="data-relatorio" 
+                        placeholder="Selecione a data..." 
+                        readonly 
+                        class="date-input"
+                    >
+                </div>
                 <div class="button-container">
                     <button type="button" onclick="location.href='painel.html'" class="secondary-button">Voltar</button>
                     <button type="button" id="selecionarDataButton" class="primary-button">Selecionar Data</button>
@@ -31,41 +40,38 @@
         </div>
     </main>
     <script>
-        // Inicializa o Flatpickr somente ao clicar no botão "Selecionar Data"
-        const selecionarDataButton = document.getElementById("selecionarDataButton");
         const dataRelatorioInput = document.getElementById("data-relatorio");
+        const selecionarDataButton = document.getElementById("selecionarDataButton");
 
-        let calendario;
-
-        selecionarDataButton.addEventListener("click", function () {
-            if (!calendario) {
-                calendario = flatpickr(dataRelatorioInput, {
-                    dateFormat: "d/m/Y",
-                    locale: "pt",
-                    inline: true, // Abre diretamente como um calendário embutido
-                    onChange: function(selectedDates, dateStr) {
-                        // Atualiza o botão após selecionar uma data
-                        if (dateStr) {
-                            selecionarDataButton.textContent = "Consultar Relatório";
-                            selecionarDataButton.setAttribute("data-selected", "true");
-                        }
-                    },
-                });
-
-                // Simula o clique no campo de data invisível para abrir o calendário
-                dataRelatorioInput.click();
-            } else {
-                // Simula o clique no campo para reabrir o calendário
-                dataRelatorioInput.click();
+        // Inicializa o calendário Flatpickr
+        const calendario = flatpickr(dataRelatorioInput, {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            allowInput: false, // Impede entrada manual no campo
+            clickOpens: true, // Abre o calendário ao clicar no campo
+            onClose: function (selectedDates, dateStr) {
+                if (dateStr) {
+                    // Atualiza o botão para "Consultar Relatório" após selecionar a data
+                    selecionarDataButton.textContent = "Consultar Relatório";
+                    selecionarDataButton.setAttribute("data-selected", "true");
+                }
             }
         });
 
-        // Comportamento ao clicar em "Consultar Relatório"
+        // Configura o comportamento do botão "Selecionar Data"
         selecionarDataButton.addEventListener("click", function () {
             if (selecionarDataButton.getAttribute("data-selected") === "true") {
                 alert("Relatório para a data: " + dataRelatorioInput.value);
-                // Aqui você pode adicionar a lógica para consultar o relatório
+                // Adicione aqui a lógica para consultar o relatório
+            } else {
+                // Abre o calendário ao clicar no botão
+                calendario.open();
             }
+        });
+
+        // Também abre o calendário ao clicar no campo de data
+        dataRelatorioInput.addEventListener("click", function () {
+            calendario.open();
         });
     </script>
 </body>
