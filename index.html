@@ -8,9 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
+
     <style>
         .logo {
-            width: 60px; 
+            width: 60px;
             height: auto;
         }
     </style>
@@ -183,29 +184,16 @@
     <script>
         // Chama a função de verificação de autenticação
         checkAuthentication();
+    </script>
 
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Carregar tema salvo
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
             } else {
                 document.body.classList.remove('dark-mode');
             }
-
-            // Lógica do botão de alternar tema
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    // Se já está em dark-mode, vamos voltar para claro
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    // Caso contrário, vamos ativar o dark-mode
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
         });
     </script>
 </body>
