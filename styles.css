@@ -29,7 +29,7 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Agora a logo fica no canto esquerdo */
 }
 
 .header-container .logo {
@@ -37,12 +37,11 @@ header {
 }
 
 .header-container h1 {
-    flex-grow: 1;
-    text-align: center;
     color: white;
     font-size: 1.5em;
     font-weight: bold;
     margin: 0;
+    /* Removido flex-grow e text-align para manter tudo alinhado à esquerda */
 }
 
 /* Container para os botões do header */
