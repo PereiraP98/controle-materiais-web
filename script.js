@@ -957,14 +957,17 @@ function abrirJanelaRecebimento(index) {
         return;
     }
 
+    // Converte a quantidade para número para evitar problemas de tipo
+    var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
+
     var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
     var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
     var recebimentoIndexInput = document.getElementById("recebimentoIndex");
 
     if (recebimentoQuantidadeInput) {
-        recebimentoQuantidadeInput.value = detalhe.quantidade.toString();
-        // Desabilita ou habilita o campo de quantidade com base na quantidade solicitada
-        recebimentoQuantidadeInput.disabled = (detalhe.quantidade === 1);
+        recebimentoQuantidadeInput.value = quantidadeSolicitada.toString();
+        // Desabilita o campo de quantidade somente se quantidadeSolicitada === 1
+        recebimentoQuantidadeInput.disabled = (quantidadeSolicitada === 1);
     }
 
     if (recebimentoHorarioInput) {
@@ -1049,7 +1052,7 @@ if (recebimentoForm) {
         var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
         var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
 
-        var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1);
+        var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1, 10);
         var quantidadeRecebidaStr = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
         var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
 
@@ -1077,7 +1080,9 @@ if (recebimentoForm) {
             return;
         }
 
-        if (quantidadeRecebida > detalhe.quantidade) {
+        var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
+
+        if (quantidadeRecebida > quantidadeSolicitada) {
             alert("A quantidade recebida não pode ser maior que a quantidade solicitada.");
             return;
         }
@@ -1090,8 +1095,8 @@ if (recebimentoForm) {
 
         var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
 
-        if (quantidadeRecebida === detalhe.quantidade) {
-            // Recebimento total do material
+        if (quantidadeRecebida === quantidadeSolicitada) {
+            // Recebimento total
             recebidos.push({
                 local: detalhe.local,
                 item: detalhe.item,
@@ -1104,11 +1109,11 @@ if (recebimentoForm) {
             });
             localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-            // Remove o item de detalhes, pois não há mais quantidade pendente
+            // Remove o item de detalhes, pois não há mais pendência
             detalhes.splice(index, 1);
             localStorage.setItem("detalhes", JSON.stringify(detalhes));
 
-            // Remove o item correspondente de 'solicitados'
+            // Remove o item de solicitados também
             var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
             var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
                 return itemSolicitado.local === detalhe.local &&
@@ -1122,8 +1127,7 @@ if (recebimentoForm) {
             }
 
         } else {
-            // Recebimento parcial do material
-            // Registra apenas a quantidade recebida em 'recebidos'
+            // Recebimento parcial
             recebidos.push({
                 local: detalhe.local,
                 item: detalhe.item,
@@ -1136,13 +1140,11 @@ if (recebimentoForm) {
             });
             localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-            // Atualiza a quantidade pendente no detalhe
-            // Aqui, como quantidadeRecebida < detalhe.quantidade, detalhe.quantidade após a subtração será sempre > 0
-            detalhe.quantidade = detalhe.quantidade - quantidadeRecebida;
+            // Atualiza a quantidade pendente
+            detalhe.quantidade = quantidadeSolicitada - quantidadeRecebida;
+            // Garante que detalhe.quantidade > 0 sempre nesse cenário
             detalhes[index] = detalhe;
             localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-            // Neste caso, não removemos o item de 'solicitados' pois ainda há quantidade pendente
         }
 
         atualizarTabelaDetalhes();
