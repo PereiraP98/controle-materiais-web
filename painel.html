@@ -13,6 +13,43 @@
             width: 60px;
             height: auto;
         }
+
+        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
+        body.dark-mode #themeToggleButton img {
+            filter: invert(1) brightness(1.2);
+        }
+
+        /* Transição para animação de troca de tema */
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode .tool-card {
+            transition: background-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+        }
+
+        /* Card no tema escuro */
+        body.dark-mode .tool-card {
+            background-color: #2e2e2e;
+            color: #eaeaea;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        body.dark-mode .tool-card:hover {
+            background-color: #3a3a3a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Header e Footer no tema escuro */
+        body.dark-mode header {
+            background-color: #2a2a2a;
+            color: #ffffff;
+        }
+
+        body.dark-mode footer {
+            background-color: #2a2a2a;
+            color: #eaeaea;
+        }
     </style>
 </head>
 <body class="painel-page">
@@ -27,7 +64,7 @@
                 <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
-                <!-- Botão de Alternar Tema (Inicialmente tema escuro) -->
+                <!-- Botão de Alternar Tema -->
                 <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
                 </button>
@@ -58,20 +95,26 @@
     <!-- Scripts -->
     <script src="script.js"></script>
     <script>
-        // Chama a função de verificação de autenticação
-        checkAuthentication();
-    </script>
-    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Verificar o tema salvo no localStorage
+            // Verifica o tema salvo no localStorage
             const savedTheme = localStorage.getItem('theme');
-
-            // Aplicar o tema escuro, se configurado
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
             } else {
                 document.body.classList.remove('dark-mode');
             }
+
+            // Lógica do botão de alternar tema
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
         });
     </script>
 </body>
