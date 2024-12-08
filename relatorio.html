@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Relatório</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <header>
@@ -20,14 +21,27 @@
             <h2>Consultar Relatório de Materiais</h2>
             <form>
                 <label for="data-relatorio">Selecione a Data:</label>
-                <input type="date" id="data-relatorio" name="data-relatorio" required>
+                <input type="text" id="data-relatorio" name="data-relatorio" placeholder="Selecione uma data" readonly>
                 <div class="button-container">
                     <button type="button" onclick="location.href='painel.html'" class="secondary-button">Voltar</button>
-                    <button type="button" id="selecionarDataButton" class="primary-button">Selecionar Data</button>
+                    <button type="button" id="consultarButton" class="primary-button" disabled>Consultar Relatório</button>
                 </div>
             </form>
         </div>
     </main>
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Inicializa o Flatpickr com design personalizado
+        flatpickr("#data-relatorio", {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            disableMobile: true,
+            onChange: function(selectedDates, dateStr) {
+                // Habilita o botão de consultar após seleção
+                const consultarButton = document.getElementById("consultarButton");
+                consultarButton.disabled = !dateStr;
+            }
+        });
+    </script>
 </body>
 </html>
