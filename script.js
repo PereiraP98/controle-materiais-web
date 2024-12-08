@@ -1532,7 +1532,7 @@ function atualizarTabelaRecebidos() {
         const calendarModal = document.getElementById("calendarModal");
         const openCalendarButton = document.getElementById("openCalendarButton");
         const closeCalendarButton = document.getElementById("closeCalendarButton");
-        const confirmSelectionButton = document.getElementById("confirmSelectionButton");
+        const dataRelatorioInput = document.getElementById("dataRelatorio");
         const calendarGrid = document.getElementById("calendarGrid");
     
         const months = [
@@ -1571,6 +1571,7 @@ function atualizarTabelaRecebidos() {
                     dayElement.addEventListener("click", () => {
                         document.querySelectorAll(".day").forEach((d) => d.classList.remove("selected"));
                         dayElement.classList.add("selected");
+                        dataRelatorioInput.value = `${day} ${month} ${year}`;
                     });
     
                     daysGrid.appendChild(dayElement);
@@ -1588,19 +1589,6 @@ function atualizarTabelaRecebidos() {
     
         closeCalendarButton.addEventListener("click", () => {
             calendarModal.classList.add("hidden");
-        });
-    
-        confirmSelectionButton.addEventListener("click", () => {
-            const selectedDay = document.querySelector(".day.selected");
-            if (selectedDay) {
-                alert(`Relatório selecionado para o dia ${selectedDay.textContent}`);
-            } else {
-                alert("Por favor, selecione uma data.");
-            }
-        });
-    
-        calendarGrid.addEventListener("click", () => {
-            confirmSelectionButton.classList.remove("hidden");
         });
     });
     
