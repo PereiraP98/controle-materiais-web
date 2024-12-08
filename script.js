@@ -1493,6 +1493,12 @@ function atualizarTabelaRecebidos() {
             return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
         }
     }
+document.getElementById("selecionarDataButton").addEventListener("click", function () {
+    const dateInput = document.getElementById("data-relatorio");
+    if (dateInput) {
+        dateInput.showPicker();
+    }
+});
 
     
     
