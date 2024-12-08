@@ -1494,103 +1494,59 @@ function atualizarTabelaRecebidos() {
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Verifica e aplica o tema salvo
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-    
-        // Seleciona o botão de alternar tema (se existir)
-        const themeToggleButton = document.getElementById('themeToggleButton');
-        if (themeToggleButton) {
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
-        }
-    
-        // Se houver necessidade, checarAutenticacao e outras funções
-        checkAuthentication();
-        atualizarTabelaReservados();
-        atualizarTabelaSolicitados();
-    
-        if (window.location.pathname.includes("detalhes.html")) {
-            atualizarTabelaDetalhes();
-            atualizarTabelaRecebidos();
-        }
+    const currentYear = new Date().getFullYear();
+
+    openCalendarButton.addEventListener("click", () => {
+        calendarModal.classList.remove("hidden");
+        generateCalendar(); // Gera o calendário para o ano atual
     });
     
-    document.addEventListener("DOMContentLoaded", function () {
-        const calendarModal = document.getElementById("calendarModal");
-        const openCalendarButton = document.getElementById("openCalendarButton");
-        const closeCalendarButton = document.getElementById("closeCalendarButton");
-        const dataRelatorioInput = document.getElementById("dataRelatorio");
-        const calendarGrid = document.getElementById("calendarGrid");
-    
-        const months = [
-            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-        ];
-        const weekdays = ["Se", "Te", "Qu", "Qu", "Se", "Sa", "Do"];
-    
-        function generateCalendar(year) {
-            calendarGrid.innerHTML = "";
-    
-            months.forEach((month, index) => {
-                const monthContainer = document.createElement("div");
-                monthContainer.className = "month";
-    
-                const monthTitle = document.createElement("h3");
-                monthTitle.textContent = month;
-                monthContainer.appendChild(monthTitle);
-    
-                const daysGrid = document.createElement("div");
-                daysGrid.className = "days-grid";
-    
-                weekdays.forEach((weekday) => {
-                    const weekdayElement = document.createElement("div");
-                    weekdayElement.className = "weekday";
-                    weekdayElement.textContent = weekday;
-                    daysGrid.appendChild(weekdayElement);
-                });
-    
-                const daysInMonth = new Date(year, index + 1, 0).getDate();
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dayElement = document.createElement("div");
-                    dayElement.className = "day";
-                    dayElement.textContent = day;
-    
-                    dayElement.addEventListener("click", () => {
-                        document.querySelectorAll(".day").forEach((d) => d.classList.remove("selected"));
-                        dayElement.classList.add("selected");
-                        dataRelatorioInput.value = `${day} ${month} ${year}`;
-                    });
-    
-                    daysGrid.appendChild(dayElement);
-                }
-    
-                monthContainer.appendChild(daysGrid);
-                calendarGrid.appendChild(monthContainer);
-            });
-        }
-    
-        openCalendarButton.addEventListener("click", () => {
-            calendarModal.classList.remove("hidden");
-            generateCalendar(2024);
-        });
-    
-        closeCalendarButton.addEventListener("click", () => {
-            calendarModal.classList.add("hidden");
-        });
+    closeCalendarButton.addEventListener("click", () => {
+        calendarModal.classList.add("hidden");
     });
+    
+
+function generateCalendar(year = currentYear) {
+    calendarGrid.innerHTML = "";
+
+    months.forEach((month, index) => {
+        const monthContainer = document.createElement("div");
+        monthContainer.className = "month";
+
+        const monthTitle = document.createElement("h3");
+        monthTitle.textContent = month;
+        monthContainer.appendChild(monthTitle);
+
+        const daysGrid = document.createElement("div");
+        daysGrid.className = "days-grid";
+
+        weekdays.forEach((weekday) => {
+            const weekdayElement = document.createElement("div");
+            weekdayElement.className = "weekday";
+            weekdayElement.textContent = weekday;
+            daysGrid.appendChild(weekdayElement);
+        });
+
+        const daysInMonth = new Date(year, index + 1, 0).getDate();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement("div");
+            dayElement.className = "day";
+            dayElement.textContent = day;
+
+            dayElement.addEventListener("click", () => {
+                document.querySelectorAll(".day").forEach((d) => d.classList.remove("selected"));
+                dayElement.classList.add("selected");
+                dataRelatorioInput.value = `${String(day).padStart(2, '0')}/${String(index + 1).padStart(2, '0')}/${year}`;
+            });
+
+            daysGrid.appendChild(dayElement);
+        }
+
+        monthContainer.appendChild(daysGrid);
+        calendarGrid.appendChild(monthContainer);
+    });
+}
+
     
     
 });
