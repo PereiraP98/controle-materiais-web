@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6fddqStXN2N6Edqw5zH9fE3d54aAO9ckZVXIVFZs3ea6syn9Za4tlkJPo" crossorigin="anonymous">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,20 +16,25 @@
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Ajuste no header-container -->
         <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/raw/main/assets/logo.webp" alt="DevCore Logo" class="logo">
-            <h1>Controle de Materiais</h1>
-            <!-- Container dos botões do canto superior direito -->
+            <div class="logo-container">
+                <!-- Ajuste a logo conforme necessário -->
+                <img src="https://raw.githubusercontent.com/PereiraP98/controle-materiais-web/main/assets/logo.webp" alt="DevCore Logo" class="logo">
+                <h1>Controle de Materiais</h1>
+            </div>
             <div class="header-buttons">
                 <!-- Botão de Voltar ao Painel -->
-                <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <i class="fas fa-th-large" style="font-size: 1.4rem;"></i>
                 </button>
                 <!-- Botão de Logout -->
-                <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout (imagem fornecida) -->
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <i class="fas fa-sign-out-alt" style="font-size: 1.4rem;"></i>
+                </button>
+                <!-- Botão de Alternar Tema -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <!-- Inicialmente exibe o ícone de lua (modo claro atual) -->
+                    <i class="fas fa-moon" style="font-size: 1.4rem;"></i>
                 </button>
             </div>
         </div>
@@ -60,18 +68,17 @@
                     </select>
 
                     <div class="button-container">
-                        <button type="button" id="abrirSolicitacaoButton">Solicitar</button>
-                        <button type="button" id="reservarButton">Reservar</button>
+                        <button type="button" id="abrirSolicitacaoButton" class="primary-button">Solicitar</button>
+                        <button type="button" id="reservarButton" class="secondary-button">Reservar</button>
                     </div>
                 </form>
             </section>
 
             <!-- Materiais Reservados -->
             <section class="materiais-reservados">
-                <!-- Ajuste aqui para posicionar o botão ao lado do título -->
-                <div class="header-with-button" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="header-with-button">
                     <h2>Materiais Reservados</h2>
-                    <button id="excluirReservadosButton" class="excluir-itens-button">Excluir Itens</button>
+                    <button id="excluirReservadosButton" class="excluir-itens-button secondary-button">Excluir Itens</button>
                 </div>
                 <table id="reservadosTable">
                     <thead>
@@ -80,7 +87,7 @@
                             <th>LOCAL</th>
                             <th>ITEM</th>
                             <th>DESTINO</th>
-                            <th>QTD</th> <!-- Nova coluna para a quantidade -->
+                            <th>QTD</th>
                             <th>SOLICITAR</th>
                         </tr>
                     </thead>
@@ -93,11 +100,9 @@
 
         <!-- Coluna Central -->
         <div class="column">
-            <!-- Gráficos -->
             <section class="graficos-container">
                 <h2>Gráficos</h2>
                 <div id="graficoPlaceholder">
-                    <!-- Placeholder para futuros gráficos -->
                     <p>Gráficos serão exibidos aqui.</p>
                 </div>
             </section>
@@ -105,7 +110,6 @@
 
         <!-- Coluna Direita -->
         <div class="column">
-            <!-- Materiais Solicitados -->
             <section class="materiais-solicitados">
                 <h2>Materiais Solicitados</h2>
                 <table id="solicitadosTable">
@@ -120,16 +124,14 @@
                         <!-- Registros de materiais solicitados -->
                     </tbody>
                 </table>
-                <button type="button" id="detalhesButton" onclick="location.href='detalhes.html'">Detalhes</button>
+                <button type="button" id="detalhesButton" class="primary-button" onclick="location.href='detalhes.html'">Detalhes</button>
             </section>
         </div>
     </main>
 
-    <!-- Janela Flutuante de Solicitação -->
     <div id="janelaSolicitacao" class="janela-flutuante hidden">
         <h2>Solicitação de Material</h2>
         <form id="janelaForm">
-            <!-- Campos ocultos para armazenar informações sobre o item reservado -->
             <input type="hidden" id="fromReservados" name="fromReservados" value="false">
             <input type="hidden" id="itemIndex" name="itemIndex" value="-1">
 
@@ -140,13 +142,12 @@
             <input type="time" id="horario" name="horario">
 
             <div class="button-container">
-                <button type="button" id="cancelarSolicitacaoButton">Cancelar</button>
-                <button type="submit" id="confirmarSolicitacaoButton">Solicitar</button>
+                <button type="button" id="cancelarSolicitacaoButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="confirmarSolicitacaoButton" class="primary-button">Solicitar</button>
             </div>
         </form>
     </div>
 
-    <!-- Janela Flutuante de Reserva -->
     <div id="janelaReserva" class="janela-flutuante hidden">
         <h2>Reservar Material</h2>
         <form id="janelaReservaForm">
@@ -154,19 +155,18 @@
             <input type="number" id="reservaQuantidade" name="reservaQuantidade" value="1" min="1" required>
 
             <div class="button-container">
-                <button type="button" id="cancelarReservaButton">Cancelar</button>
-                <button type="submit" id="confirmarReservaButton">Reservar</button>
+                <button type="button" id="cancelarReservaButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="confirmarReservaButton" class="primary-button">Reservar</button>
             </div>
         </form>
     </div>
 
-    <!-- Janela Flutuante de Atenção -->
     <div id="janelaAtencao" class="janela-flutuante hidden">
         <h2>Atenção</h2>
         <p id="atencaoMensagem">Mensagem de atenção.</p>
         <div class="button-container">
-            <button type="button" id="confirmarAtencao">Confirmar</button>
-            <button type="button" id="cancelarAtencao">Cancelar</button>
+            <button type="button" id="confirmarAtencao" class="primary-button">Confirmar</button>
+            <button type="button" id="cancelarAtencao" class="secondary-button">Cancelar</button>
         </div>
     </div>
 
@@ -174,7 +174,6 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts -->
     <script src="script.js"></script>
     <script>
         // Chama a função de verificação de autenticação
@@ -183,17 +182,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Verificar o tema salvo no localStorage
             const savedTheme = localStorage.getItem('theme');
-
-            // Aplicar o tema escuro, se configurado
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
             } else {
                 document.body.classList.remove('dark-mode');
             }
+
+            // Futuramente, aqui adicionaremos a lógica para alternar o tema
+            // e trocar o ícone do botão entre lua (fa-moon) e sol (fa-sun).
         });
     </script>
-
 </body>
 </html>
