@@ -188,7 +188,7 @@ if (janelaForm) {
             }
         }
 
-        // Registro da solicitação nos dados locais (mantém o mesmo)
+        // Registro da solicitação nos dados locais
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
@@ -233,14 +233,21 @@ if (janelaForm) {
 
         alert("Material solicitado com sucesso!");
 
+        // Após a solicitação ser finalizada com sucesso, redefinimos LOCAL e DESTINO para "SELECIONE..."
+        var localSelect = document.getElementById("local");
+        var destinoSelectField = document.getElementById("destino");
+        if (localSelect) localSelect.value = "";
+        if (destinoSelectField) destinoSelectField.value = "";
+
         atualizarTabelaSolicitados();
-        atualizarTabelaReservados ();
+        atualizarTabelaReservados();
 
         if (window.location.pathname.includes("detalhes.html")) {
             atualizarTabelaDetalhes();
         }
     });
 }
+
 
 
 function abrirJanelaSolicitacao(dados, index) {
