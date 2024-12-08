@@ -60,16 +60,23 @@
         </div>
     </main>
 
-    <!-- Modal de calendário -->
-    <div id="calendarModal" class="hidden">
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <h2 id="selectedYear">2024</h2>
-                <button id="closeCalendarButton" class="close-button">Fechar</button>
-            </div>
-            <div id="calendarGrid" class="calendar-grid"></div>
+   <!-- Botão para abrir o calendário -->
+<button id="openCalendarButton" class="calendar-button">Consultar Relatório</button>
+
+<!-- Modal do calendário -->
+<div id="calendarModal" class="hidden">
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <h2>Selecione uma Data</h2>
+            <button id="closeCalendarButton" class="close-button">Fechar</button>
         </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
     </div>
+</div>
+
+<!-- Campo para exibir a data selecionada -->
+<input type="text" id="dataRelatorio" placeholder="Data do Relatório" readonly>
+
 
     <footer>
         <p>© 2024 COLLAB - Todos os direitos reservados.</p>
