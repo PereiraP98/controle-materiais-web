@@ -1495,7 +1495,10 @@ function atualizarTabelaRecebidos() {
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Aplicar tema salvo
+        // Unifica toda a inicialização aqui
+        checkAuthentication();
+    
+        // Aplica tema salvo
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
@@ -1503,21 +1506,32 @@ function atualizarTabelaRecebidos() {
             document.body.classList.remove('dark-mode');
         }
     
-        // Selecionar o botão de alternar tema (caso exista na página)
+        // Lógica do botão de alternar tema
         const themeToggleButton = document.getElementById('themeToggleButton');
         if (themeToggleButton) {
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
-                    // Se já está em dark-mode, vamos voltar para claro
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
                 } else {
-                    // Caso contrário, vamos ativar o dark-mode
                     document.body.classList.add('dark-mode');
                     localStorage.setItem('theme', 'dark');
                 }
+    
+                // Opcional: Atualizar o ícone do botão com base no tema atual.
+                // Por exemplo, se estiver no modo escuro, mostrar um ícone de sol,
+                // caso contrário, mostrar um ícone de lua.
             });
         }
+    
+        // Demais inicializações, como atualizar tabelas, etc.
+        atualizarTabelaReservados();
+        atualizarTabelaSolicitados();
+        if (window.location.pathname.includes("detalhes.html")) {
+            atualizarTabelaDetalhes();
+            atualizarTabelaRecebidos();
+        }
     });
+    
     
 });
