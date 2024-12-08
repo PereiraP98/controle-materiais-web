@@ -254,13 +254,13 @@ function abrirJanelaSolicitacao(dados, index) {
     var itemIndexInput = document.getElementById("itemIndex");
     var quantidadeInput = document.getElementById("quantidade");
 
-    if (localInput) localInput.value = dados.local || "";
-    if (itemInput) itemInput.value = dados.item || "";
-    if (destinoSelect) destinoSelect.value = dados.destino || "";
+    // Ajuste aqui: se não tiver dados, defina como ""
+    if (localInput) localInput.value = (dados && dados.local) ? dados.local : "";
+    if (itemInput) itemInput.value = (dados && dados.item) ? dados.item : "";
+    if (destinoSelect) destinoSelect.value = (dados && dados.destino) ? dados.destino : "";
     if (horarioInput) horarioInput.value = horarioAtual;
-    if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1";
+    if (quantidadeInput) quantidadeInput.value = (dados && dados.quantidade) ? dados.quantidade : "1";
 
-    // Define os campos ocultos somente se o index for passado
     if (typeof index !== 'undefined') {
         if (fromReservadosInput) fromReservadosInput.value = "true";
         if (itemIndexInput) itemIndexInput.value = index;
@@ -272,21 +272,18 @@ function abrirJanelaSolicitacao(dados, index) {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
     var overlay = document.getElementById("overlay");
     if (janelaSolicitacao && overlay) {
-        // Resetar propriedades
-        janelaSolicitacao.style.display = ''; // Remove qualquer display:none inline
+        janelaSolicitacao.style.display = '';
         janelaSolicitacao.style.animation = 'none';
         janelaSolicitacao.style.transform = '';
         janelaSolicitacao.style.opacity = '';
-        janelaSolicitacao.offsetHeight; // Força um reflow
-        // Exibe o overlay
+        janelaSolicitacao.offsetHeight; 
         overlay.classList.add("active");
-        // Remove a classe 'hidden' e aplica a animação
         janelaSolicitacao.classList.remove("hidden");
         janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
-        // Bloqueia a rolagem da página
         document.body.classList.add('modal-open');
     }
 }
+
 
 
 
@@ -456,32 +453,33 @@ if (reservarButton) {
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
     var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
+    var localSelect = document.getElementById("local"); 
+    var destinoSelect = document.getElementById("destino");
 
-    // Limpar o campo de quantidade e definir valor padrão
     if (reservaQuantidadeInput) reservaQuantidadeInput.value = "1";
 
-    // Armazenar os dados do item a ser reservado
+    // Se a janela de reserva também usa os mesmos campos de local e destino:
+    if (localSelect) localSelect.value = (dados && dados.local) ? dados.local : "";
+    if (destinoSelect) destinoSelect.value = (dados && dados.destino) ? dados.destino : "";
+
     janelaReserva.dataset.local = dados.local;
     janelaReserva.dataset.item = dados.item;
     janelaReserva.dataset.destino = dados.destino;
 
     var overlay = document.getElementById("overlay");
     if (janelaReserva && overlay) {
-        // Resetar propriedades
-        janelaReserva.style.display = ''; // Remove qualquer display:none inline
+        janelaReserva.style.display = '';
         janelaReserva.style.animation = 'none';
         janelaReserva.style.transform = '';
         janelaReserva.style.opacity = '';
-        janelaReserva.offsetHeight; // Força um reflow
-        // Exibe o overlay
+        janelaReserva.offsetHeight;
         overlay.classList.add("active");
-        // Remove a classe 'hidden' e aplica a animação
         janelaReserva.classList.remove("hidden");
         janelaReserva.style.animation = 'slideDown 0.3s forwards';
-        // Bloqueia a rolagem da página
         document.body.classList.add('modal-open');
     }
 }
+
 
 
 
