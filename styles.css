@@ -29,7 +29,7 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center; /* Mantemos o centramento como no código antigo */
+    justify-content: center;
 }
 
 .header-container .logo {
@@ -37,8 +37,8 @@ header {
 }
 
 .header-container h1 {
-    flex-grow: 1; /* Permite que o h1 ocupe o espaço central */
-    text-align: center; /* Garante o título centralizado */
+    flex-grow: 1;
+    text-align: center;
     color: white;
     font-size: 1.5em;
     font-weight: bold;
@@ -54,21 +54,18 @@ header {
     gap: 10px; /* Espaçamento entre os botões */
 }
 
-.header-button {
+.header-buttons button {
     background: none;
     border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.header-button i {
-    color: white;
-    font-size: 1.4rem;
+.header-buttons button img {
+    width: 30px;
+    height: 30px;
 }
 
-.header-button:hover {
+.header-buttons button:hover {
     opacity: 0.8;
 }
 
@@ -117,13 +114,13 @@ h2 {
     color: #215C98;
 }
 
-/* Botões (estilo base) */
+/* Botões */
 button,
 .solicitacao-container .excluir-button,
 .detalhes-container .excluir-button,
 .confirmar-button,
 .cancelar-button {
-    background-color: #215C98;
+    background-color: #215C98; /* Cor padrão dos botões */
     color: white;
     border: none;
     border-radius: 5px;
@@ -138,27 +135,8 @@ button:hover,
 .detalhes-container .excluir-button:hover,
 .confirmar-button:hover,
 .cancelar-button:hover {
-    background-color: #17406d;
-    transform: scale(1.03);
-}
-
-/* Botões primários e secundários */
-.primary-button {
-    background-color: #215C98;
-    color: #fff;
-}
-
-.primary-button:hover {
-    background-color: #17406d;
-}
-
-.secondary-button {
-    background-color: #6c757d;
-    color: #fff;
-}
-
-.secondary-button:hover {
-    background-color: #5a6268;
+    background-color: #17406d; /* Cor de hover */
+    transform: scale(1.03); /* Leve crescimento ao passar o mouse */
 }
 
 /* Botões de exclusão */
@@ -168,28 +146,22 @@ button:hover,
     color: white;
 }
 
-.solicitacao-container .excluir-button:hover,
-.detalhes-container .excluir-button:hover {
-    background-color: #d32f2f;
-}
-
 /* Estilo para o botão de excluir itens */
 .excluir-itens-button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    background-color: #ff4d4d; /* Vermelho claro */
+    color: white; /* Texto branco */
+    border: none; /* Sem borda */
+    padding: 8px 16px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte */
+    cursor: pointer; /* Cursor de mãozinha */
+    border-radius: 4px; /* Bordas arredondadas */
+    transition: background-color 0.3s; /* Transição suave */
 }
 
 .excluir-itens-button:hover {
-    background-color: #e60000;
+    background-color: #e60000; /* Vermelho mais escuro ao passar o mouse */
 }
 
-/* Botão de reportar */
 .reportar-button {
     background-color: #fbc02d;
     color: white;
@@ -203,6 +175,27 @@ button:hover,
 
 .reportar-button:hover {
     background-color: #f9a825;
+}
+
+.solicitacao-container .excluir-button:hover,
+.detalhes-container .excluir-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Botão de exclusão nas janelas de detalhes */
+.detalhes-container .excluir-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.detalhes-container .excluir-button:hover {
+    background-color: #d32f2f;
 }
 
 /* Containers de botões */
@@ -255,7 +248,7 @@ th {
 }
 
 .checkbox-column.hidden {
-    display: none;
+    display: none; /* Mantém o comportamento correto de ocultar */
 }
 
 /* Linhas da tabela */
@@ -284,6 +277,7 @@ tbody tr:hover {
     animation: slideDown 0.3s forwards;
 }
 
+/* Animação de entrada da janela */
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -295,6 +289,7 @@ tbody tr:hover {
     }
 }
 
+/* Animação de saída da janela */
 @keyframes slideUp {
     from {
         opacity: 1;
@@ -306,16 +301,19 @@ tbody tr:hover {
     }
 }
 
+/* Estilo para o botão container dentro da janela */
 .janela-flutuante .button-container {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
+/* Classe para ocultar a janela */
 .janela-flutuante.hidden {
     display: none;
 }
 
+/* Estilo para impedir rolagem quando o modal estiver aberto */
 body.modal-open {
     overflow: hidden;
 }
@@ -329,28 +327,37 @@ body.modal-open {
     margin: 10px;
 }
 
-/* Overlay */
+/* Estilo para o overlay */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
     display: none; /* Oculto por padrão */
-    z-index: 999;
+    z-index: 999; /* Nível acima do conteúdo da página */
 }
 
+/* Exibir o overlay */
 .overlay.active {
     display: block;
     animation: fadeIn 0.3s forwards;
 }
 
+/* Animação de fade-in */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
+/* Animação de fade-out */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Título e botão de exclusão */
 .title-container {
     display: flex;
     justify-content: space-between;
@@ -370,7 +377,7 @@ footer {
     font-size: 0.9em;
 }
 
-/* Página de login */
+/* Estilos para a página de login */
 .login-page {
     display: flex;
     justify-content: center;
@@ -438,14 +445,14 @@ footer {
     background-color: #17406d;
 }
 
-/* Rodapé na página de login */
+/* Estilo do rodapé na página de login */
 .login-page footer {
     position: absolute;
     bottom: 0;
     width: 100%;
 }
 
-/* Página do painel */
+/* Estilos para a página do painel */
 .painel-page .main-container {
     display: flex;
     justify-content: center;
@@ -489,9 +496,9 @@ footer {
     font-size: 0.95em;
 }
 
-/* Hover no card */
+/* Efeito de hover para escurecer o fundo levemente */
 .tool-card:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05); /* Fundo levemente escurecido */
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
@@ -505,7 +512,7 @@ footer {
     font-size: 2em;
 }
 
-/* Centraliza texto na coluna TEMPO */
+/* Centraliza o texto na coluna TEMPO */
 .tempo-cell {
     text-align: center;
 }
@@ -520,18 +527,18 @@ footer {
 
 @keyframes smoothPulse {
     0% {
-        background-color: rgb(255, 0, 0);
+        background-color: rgb(255, 0, 0); /* Vermelho */
     }
     50% {
-        background-color: rgb(255, 80, 80);
+        background-color: rgb(255, 80, 80); /* Vermelho mais claro */
     }
     100% {
-        background-color: rgb(255, 0, 0);
+        background-color: rgb(255, 0, 0); /* Retorna ao vermelho */
     }
 }
 
 .oscillation {
-    animation: smoothPulse 1s infinite ease-in-out;
+    animation: smoothPulse 1s infinite ease-in-out; /* Oscilação suave */
 }
 
 /* Janela de Atenção */
@@ -547,12 +554,18 @@ footer {
     padding: 20px;
     width: 300px;
     z-index: 1000;
-    opacity: 0;
+    opacity: 0; /* Começa invisível */
     animation: slideDown 0.3s forwards;
 }
 
+/* Classe para ocultar a janela de atenção */
 #janelaAtencao.hidden {
     display: none;
+}
+
+/* Classe para ocultar elementos */
+.hidden {
+    display: none !important;
 }
 
 .atencao-header {
@@ -575,9 +588,29 @@ footer {
     color: #333;
 }
 
-/* Ocultar elementos */
-.hidden {
-    display: none !important;
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.confirmar-button,
+.cancelar-button {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.confirmar-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cancelar-button {
+    background-color: #f44336;
+    color: white;
 }
 
 /* Tema Escuro */
