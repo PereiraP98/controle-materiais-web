@@ -6,6 +6,8 @@
     <title>Consultar Relatório</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script> <!-- Tradução para PT -->
 </head>
 <body>
     <header>
@@ -29,12 +31,11 @@
             </form>
         </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Inicializa o Flatpickr com design personalizado
+        // Inicializa o Flatpickr com a localização em português
         flatpickr("#data-relatorio", {
             dateFormat: "d/m/Y",
-            locale: "pt",
+            locale: "pt", // Define a localidade para português
             disableMobile: true,
             onChange: function(selectedDates, dateStr) {
                 // Habilita o botão de consultar após seleção
