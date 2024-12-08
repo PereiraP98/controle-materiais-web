@@ -15,6 +15,11 @@
             width: 60px;
             height: auto;
         }
+
+        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
+        body.dark-mode #themeToggleButton img {
+            filter: invert(1) brightness(1.2);
+        }
     </style>
 </head>
 <body class="detalhes-page">
@@ -22,7 +27,7 @@
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Header atualizado com as mesmas lógicas do index -->
+        <!-- Header com mesma lógica do index -->
         <div class="header-container">
             <div class="logo-container">
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
@@ -37,7 +42,7 @@
                 <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
                 </button>
-                <!-- Botão de Alternar Tema (Inicialmente tema escuro) -->
+                <!-- Botão de Alternar Tema -->
                 <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
                 </button>
@@ -116,7 +121,6 @@
             <label for="recebimentoHorario">Horário Recebido:</label>
             <input type="time" id="recebimentoHorario" name="recebimentoHorario" required>
 
-            <!-- Input oculto para armazenar o índice do item -->
             <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
 
             <div class="button-container">
@@ -135,34 +139,25 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Verifica o tema salvo
+            // Carregar tema salvo
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
-            }
-        });
-
-        function abrirJanelaRecebimento(index) {
-            var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-            var detalhe = detalhes[index];
-            if (!detalhe) {
-                alert("Erro: Item não encontrado.");
-                return;
+            } else {
+                document.body.classList.remove('dark-mode');
             }
 
-            document.getElementById("recebimentoQuantidade").value = detalhe.quantidade;
-            document.getElementById("recebimentoHorario").value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById("recebimentoIndex").value = index;
-
-            document.getElementById("overlay").classList.add("active");
-            var janelaRecebimento = document.getElementById("janelaRecebimento");
-            janelaRecebimento.classList.remove("hidden");
-            janelaRecebimento.style.animation = "slideDown 0.3s forwards";
-        }
-
-        document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
-            document.getElementById("overlay").classList.remove("active");
-            document.getElementById("janelaRecebimento").classList.add("hidden");
+            // Lógica do botão de alternar tema
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
         });
     </script>
 </body>
