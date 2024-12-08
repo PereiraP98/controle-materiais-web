@@ -146,6 +146,11 @@ button:hover,
     color: white;
 }
 
+.solicitacao-container .excluir-button:hover,
+.detalhes-container .excluir-button:hover {
+    background-color: #d32f2f;
+}
+
 /* Estilo para o botão de excluir itens */
 .excluir-itens-button {
     background-color: #ff4d4d; /* Vermelho claro */
@@ -175,27 +180,6 @@ button:hover,
 
 .reportar-button:hover {
     background-color: #f9a825;
-}
-
-.solicitacao-container .excluir-button:hover,
-.detalhes-container .excluir-button:hover {
-    background-color: #d32f2f;
-}
-
-/* Botão de exclusão nas janelas de detalhes */
-.detalhes-container .excluir-button {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.detalhes-container .excluir-button:hover {
-    background-color: #d32f2f;
 }
 
 /* Containers de botões */
@@ -558,14 +542,8 @@ footer {
     animation: slideDown 0.3s forwards;
 }
 
-/* Classe para ocultar a janela de atenção */
 #janelaAtencao.hidden {
     display: none;
-}
-
-/* Classe para ocultar elementos */
-.hidden {
-    display: none !important;
 }
 
 .atencao-header {
@@ -588,29 +566,9 @@ footer {
     color: #333;
 }
 
-.button-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.confirmar-button,
-.cancelar-button {
-    padding: 10px 15px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.confirmar-button {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.cancelar-button {
-    background-color: #f44336;
-    color: white;
+/* Ocultar elementos */
+.hidden {
+    display: none !important;
 }
 
 /* Tema Escuro */
@@ -662,21 +620,12 @@ body.dark-mode textarea:focus {
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
 }
 
-/* Botões no Tema Escuro */
-body.dark-mode button,
-body.dark-mode .solicitacao-container .excluir-button,
-body.dark-mode .detalhes-container .excluir-button {
-    background-color: #3a3a3a;
-    color: #eaeaea;
-    border: 1px solid #4a4a4a;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
+/* MANTER OS BOTÕES INTACTOS NO MODO ESCURO */
+/* Removemos qualquer alteração de cor nos botões em modo escuro, mantendo as cores originais */
 
-body.dark-mode button:hover,
-body.dark-mode .solicitacao-container .excluir-button:hover,
-body.dark-mode .detalhes-container .excluir-button:hover {
-    background-color: #4a4a4a;
-    color: #ffffff;
+/* Apenas o ícone do tema ficará branco no modo escuro */
+body.dark-mode #themeToggleButton img {
+    filter: invert(1) brightness(1.2);
 }
 
 /* Janela Flutuante no Tema Escuro */
