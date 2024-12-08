@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho permanece o mesmo -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes de Materiais</title>
@@ -10,30 +10,41 @@
 
     <!-- Inclusão do SDK do EmailJS atualizado -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+    </style>
 </head>
 <body class="detalhes-page">
     <!-- Overlay -->
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Header atualizado -->
+        <!-- Header atualizado com as mesmas lógicas do index -->
         <div class="header-container">
-            <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+            </div>
             <h1>Detalhes de Materiais</h1>
-            <!-- Container dos botões do canto superior direito -->
             <div class="header-buttons">
                 <!-- Botão de Voltar ao Painel -->
-                <button id="backToPanelButton" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
                 </button>
                 <!-- Botão de Logout -->
-                <button id="logoutButton" aria-label="Logout" title="Sair">
-                    <!-- Ícone de logout (imagem fornecida) -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema (Inicialmente tema escuro) -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
                 </button>
             </div>
         </div>
     </header>
+
     <main class="main-container">
         <!-- Seção de detalhes de materiais solicitados -->
         <section class="detalhes-container">
@@ -109,8 +120,8 @@
             <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
 
             <div class="button-container">
-                <button type="button" id="cancelarRecebimentoButton">Cancelar</button>
-                <button type="submit" id="confirmarRecebimentoButton">Receber</button>
+                <button type="button" id="cancelarRecebimentoButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="confirmarRecebimentoButton" class="primary-button">Receber</button>
             </div>
         </form>
     </div>
