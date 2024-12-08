@@ -11,21 +11,11 @@
 
     <style>
         .logo {
-            width: 60px;
+            width: 60px; 
             height: auto;
         }
 
-        /* Garantir que os botões mantenham a mesma cor, mesmo no modo escuro */
-        body.dark-mode .primary-button,
-        body.dark-mode .secondary-button,
-        body.dark-mode .excluir-itens-button,
-        body.dark-mode .reportar-button {
-            background-color: initial !important;
-            color: initial !important;
-            border: initial !important;
-        }
-
-        /* Ajuste do ícone do tema no modo escuro para ficar branco */
+        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
         body.dark-mode #themeToggleButton img {
             filter: invert(1) brightness(1.2);
         }
