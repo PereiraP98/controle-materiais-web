@@ -176,23 +176,17 @@ if (janelaForm) {
             return;
         }
 
-        if (fromReservados === "true" && itemIndex >= 0) {
-            // Obtemos o array de itens reservados do localStorage
-            var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
-        
-            if (itemIndex < reservados.length) {
-                // Remover o item do array com base no índice fornecido
-                reservados.splice(itemIndex, 1);
-        
-                // Atualizar o localStorage com o array atualizado
-                localStorage.setItem("reservados", JSON.stringify(reservados));
-        
-                // Atualizar visualmente a tabela de materiais reservados
-                atualizarTabelaReservados();
-            } else {
-                console.error("Índice inválido para remoção de materiais reservados.");
-            }
+    // Se a solicitação veio de um item reservado, remove o item agora, após a confirmação
+    if (fromReservados === "true" && itemIndex >= 0) {
+        var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
+        if (itemIndex < reservados.length) {
+            reservados.splice(itemIndex, 1);
+            localStorage.setItem("reservados", JSON.stringify(reservados));
+            atualizarTabelaReservados();
+        } else {
+            console.error("Índice inválido para remoção de materiais reservados.");
         }
+    }
         
 
         // Registro da solicitação nos dados locais
@@ -262,7 +256,6 @@ if (janelaForm) {
     });
 }
 
-// Função para abrir a janela de solicitação com dados preenchidos
 function abrirJanelaSolicitacao(dados, index) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -280,9 +273,8 @@ function abrirJanelaSolicitacao(dados, index) {
     if (horarioInput) horarioInput.value = horarioAtual;
     if (quantidadeInput) quantidadeInput.value = dados.quantidade || "1";
 
-    // Define os campos ocultos somente se o index for válido
+    // Define os campos ocultos somente se o index for passado
     if (typeof index !== 'undefined') {
-        itemIndexInput.value = index;
         if (fromReservadosInput) fromReservadosInput.value = "true";
         if (itemIndexInput) itemIndexInput.value = index;
     } else {
@@ -308,6 +300,7 @@ function abrirJanelaSolicitacao(dados, index) {
         document.body.classList.add('modal-open');
     }
 }
+
 
 
 
@@ -673,7 +666,6 @@ function atualizarTabelaReservados() {
         reservadosTableBody.innerHTML = ""; // Limpa a tabela antes de recarregar
 
         reservados.forEach(function (item, index) {
-            // Usamos 'let' para garantir o escopo correto
             let currentItem = item;
             let currentIndex = index;
 
@@ -689,15 +681,16 @@ function atualizarTabelaReservados() {
 
             reservadosTableBody.appendChild(newRow);
 
-            // Adiciona evento ao botão de "Solicitar"
+            // Adiciona evento ao botão de "Solicitar" SEM remover o item imediatamente
             var solicitarButton = newRow.querySelector(".solicitar-button");
             if (solicitarButton) {
                 solicitarButton.addEventListener("click", function () {
-                    abrirJanelaSolicitacao(item);
-                    // Remove o item da lista de reservados
-                    var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
-                    localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
-                    atualizarTabelaReservados();
+                    // Agora apenas abrimos a janela e passamos o índice do item
+                    abrirJanelaSolicitacao(item, currentIndex);
+                    // Remova as linhas abaixo (que antes removiam o item imediatamente):
+                    // var reservadosAtualizados = reservados.filter((reservado) => reservado.item !== item.item);
+                    // localStorage.setItem("reservados", JSON.stringify(reservadosAtualizados));
+                    // atualizarTabelaReservados();
                 });
             }
         });
@@ -714,6 +707,7 @@ function atualizarTabelaReservados() {
         console.error("Tabela de itens reservados não encontrada.");
     }
 }
+
 
 
 
