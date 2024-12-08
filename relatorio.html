@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Relatório</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
     <style>
-        /* Centraliza a janela de consulta apenas na página relatorio.html */
+        .logo {
+            width: 60px; 
+            height: auto;
+        }
+
+        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
+        body.dark-mode #themeToggleButton img {
+            filter: invert(1) brightness(1.2);
+        }
+
+        /* Centraliza a janela de consulta */
         body.relatorio-page .detalhes-container {
             position: fixed;
             top: 50%;
@@ -24,31 +35,48 @@
             z-index: 1000;
         }
 
-        /* Fundo escurecido para foco na janela apenas na página relatorio.html */
+        /* Fundo escurecido para foco */
         body.relatorio-page.modal-open {
             background: rgba(0, 0, 0, 0.5);
-            overflow: hidden; /* Evita rolagem da página */
+            overflow: hidden;
         }
 
-        /* Estilo personalizado para centralizar o calendário */
+        /* Centraliza o calendário */
         body.relatorio-page .flatpickr-calendar {
             position: fixed !important;
             top: 50% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
-            z-index: 1001; /* Garante que o calendário fique acima de outros elementos */
+            z-index: 1001;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
     </style>
 </head>
 <body class="relatorio-page">
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
     <header>
         <div class="header-container">
             <div class="logo-container">
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
             </div>
-            <h1>Consultar Relatório de Materiais</h1>
+            <h1>Controle de Materiais</h1>
+            <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                </button>
+                <!-- Botão de Logout -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
         </div>
     </header>
     <main class="main-container">
@@ -73,38 +101,57 @@
         </div>
     </main>
     <script>
-        const dataRelatorioInput = document.getElementById("data-relatorio");
-        const selecionarDataButton = document.getElementById("selecionarDataButton");
-
-        // Inicializa o calendário Flatpickr
-        const calendario = flatpickr(dataRelatorioInput, {
-            dateFormat: "d/m/Y",
-            locale: "pt",
-            allowInput: false, // Impede entrada manual no campo
-            clickOpens: true, // Abre o calendário ao clicar no campo
-            onClose: function (selectedDates, dateStr) {
-                if (dateStr) {
-                    // Atualiza o botão para "Consultar Relatório" após selecionar a data
-                    selecionarDataButton.textContent = "Consultar Relatório";
-                    selecionarDataButton.setAttribute("data-selected", "true");
-                }
-            }
-        });
-
-        // Configura o comportamento do botão "Selecionar Data"
-        selecionarDataButton.addEventListener("click", function () {
-            if (selecionarDataButton.getAttribute("data-selected") === "true") {
-                alert("Relatório para a data: " + dataRelatorioInput.value);
-                // Adicione aqui a lógica para consultar o relatório
+        document.addEventListener('DOMContentLoaded', function () {
+            // Carregar tema salvo
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
             } else {
-                // Abre o calendário ao clicar no botão
-                calendario.open();
+                document.body.classList.remove('dark-mode');
             }
-        });
 
-        // Também abre o calendário ao clicar no campo de data
-        dataRelatorioInput.addEventListener("click", function () {
-            calendario.open();
+            // Lógica do botão de alternar tema
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // Inicializa o calendário Flatpickr
+            const dataRelatorioInput = document.getElementById("data-relatorio");
+            const selecionarDataButton = document.getElementById("selecionarDataButton");
+
+            const calendario = flatpickr(dataRelatorioInput, {
+                dateFormat: "d/m/Y",
+                locale: "pt",
+                allowInput: false,
+                clickOpens: true,
+                onClose: function (selectedDates, dateStr) {
+                    if (dateStr) {
+                        selecionarDataButton.textContent = "Consultar Relatório";
+                        selecionarDataButton.setAttribute("data-selected", "true");
+                    }
+                }
+            });
+
+            // Comportamento do botão Selecionar Data
+            selecionarDataButton.addEventListener("click", function () {
+                if (selecionarDataButton.getAttribute("data-selected") === "true") {
+                    alert("Relatório para a data: " + dataRelatorioInput.value);
+                } else {
+                    calendario.open();
+                }
+            });
+
+            // Também abre o calendário ao clicar no campo de data
+            dataRelatorioInput.addEventListener("click", function () {
+                calendario.open();
+            });
         });
     </script>
 </body>
