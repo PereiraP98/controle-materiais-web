@@ -4,114 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Turno</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link para o CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Adicione um CSS para estilizar a página -->
 </head>
 <body>
     <header>
-        <h1>Relatório de Turno</h1>
-        <h2>Turno: TARDE | Data: 09/08/2024</h2>
+        <h1>Resumo Geral do Turno Final</h1>
+        <div>
+            <span><strong>Turno:</strong> TARDE</span>
+            <span><strong>Data:</strong> 09/08/2024</span>
+        </div>
     </header>
 
     <main>
-        <!-- Seção de Resumo de Progresso -->
+        <!-- Seção de Detalhes Gerais -->
         <section>
-            <h3>Resumo de Progresso</h3>
-            <p>Com base nos últimos dados consultados, o tempo geral teve um progresso de:</p>
-            <p><strong>1 7 0</strong></p>
-            <p class="nota">Os dados não são precisos, são calculados de acordo com atualizações manuais.</p>
-        </section>
+            <h2>Detalhes Gerais</h2>
+            <div style="display: flex; justify-content: space-around;">
+                <div>
+                    <h3>Materiais Solicitados</h3>
+                    <p>1</p>
+                </div>
+                <div>
+                    <h3>Materiais Recebidos</h3>
+                    <p>7</p>
+                </div>
+            </div>
 
-        <!-- Seção de Detalhes de Materiais Solicitados -->
-        <section>
-            <h3>Detalhes de Materiais Solicitados</h3>
+            <!-- Tabela de materiais solicitados e recebidos -->
             <table>
                 <thead>
                     <tr>
                         <th>Local</th>
-                        <th>Item</th>
-                        <th>Quantidade</th>
-                        <th>Origem</th>
-                        <th>Data</th>
-                        <th>Hora</th>
-                        <th>Report</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>CA</td>
-                        <td>20292</td>
-                        <td>1</td>
-                        <td>PICKING</td>
-                        <td>09/08</td>
-                        <td>13:32</td>
-                        <td>NÃO</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- Seção de Detalhes de Materiais Recebidos -->
-        <section>
-            <h3>Detalhes de Materiais Recebidos</h3>
-            <table>
-                <thead>
-                    <tr>
+                        <th>Item Solicitado</th>
                         <th>Local</th>
-                        <th>Item</th>
-                        <th>Quantidade</th>
-                        <th>Origem</th>
-                        <th>Data</th>
+                        <th>Item Recebido</th>
                         <th>Hora Recebido</th>
-                        <th>Tempo Guardado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>CA</td>
                         <td>20292</td>
-                        <td>1</td>
-                        <td>PICKING</td>
-                        <td>09/08</td>
+                        <td>CA</td>
+                        <td>20292</td>
                         <td>10:55</td>
-                        <td>00:00</td>
                     </tr>
                     <tr>
                         <td>CA</td>
                         <td>11744</td>
-                        <td>1</td>
-                        <td>PICKING</td>
-                        <td>09/08</td>
+                        <td>CA</td>
+                        <td>11744</td>
                         <td>10:55</td>
-                        <td>00:55</td>
                     </tr>
-                    <!-- Outros itens aqui -->
+                    <tr>
+                        <td>VF</td>
+                        <td>92666</td>
+                        <td>VF</td>
+                        <td>92666</td>
+                        <td>12:11</td>
+                    </tr>
+                    <tr>
+                        <td>VF</td>
+                        <td>90600</td>
+                        <td>VF</td>
+                        <td>90600</td>
+                        <td>12:15</td>
+                    </tr>
+                    <tr>
+                        <td>R01</td>
+                        <td>14210</td>
+                        <td>R01</td>
+                        <td>14210</td>
+                        <td>12:54</td>
+                    </tr>
+                    <tr>
+                        <td>VF</td>
+                        <td>11723</td>
+                        <td>VF</td>
+                        <td>11723</td>
+                        <td>12:58</td>
+                    </tr>
+                    <tr>
+                        <td>VD</td>
+                        <td>11723</td>
+                        <td>VD</td>
+                        <td>11723</td>
+                        <td>13:02</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
 
-        <!-- Seção de Detalhes de Materiais Guardados -->
+        <!-- Dados gerais de tempo -->
         <section>
-            <h3>Detalhes de Materiais Guardados</h3>
+            <h2>Dados Gerais de Tempo</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Endereço UZ</th>
-                        <th>Quantia (Cx)</th>
+                        <th>Materiais recebidos do CA</th>
+                        <th>Materiais recebidos do VF</th>
+                        <th>Materiais de outros endereços</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>CA</td>
-                        <td>10</td>
+                        <td>Itens: 2</td>
+                        <td>Itens: 3</td>
+                        <td>Itens: 2</td>
                     </tr>
-                    <!-- Outros itens aqui -->
+                    <tr>
+                        <td>Média: 00:27</td>
+                        <td>Média: 00:21</td>
+                        <td>Média: 00:13</td>
+                    </tr>
                 </tbody>
             </table>
+        </section>
+
+        <!-- Resumo de Progresso -->
+        <section>
+            <h2>Resumo de Progresso</h2>
+            <p>Os dados não são precisos, são calculados de acordo com atualizações manuais.</p>
         </section>
     </main>
 
     <footer>
-        <p>Relatório gerado automaticamente. Todos os dados são baseados nas atualizações manuais.</p>
+        <p>Relatório gerado automaticamente pelo sistema.</p>
     </footer>
 </body>
 </html>
