@@ -44,16 +44,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .detalhes-info {
-            display: flex;
-            flex-direction: column;
-            text-align: right;
-        }
-
-        .detalhes-info span {
-            font-size: 0.9rem;
-        }
-
         .section-container {
             display: flex;
             justify-content: space-around;
@@ -104,6 +94,28 @@
             background-color: #007bff;
             color: white;
         }
+
+        .summary-box {
+            background-color: #61CBF3;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .summary-box h3 {
+            margin-bottom: 1rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -115,10 +127,6 @@
         <!-- Subtítulo Detalhes Gerais -->
         <div class="subtitulo-container">
             <div>DETALHES GERAIS</div>
-            <div class="detalhes-info">
-                <span><strong>Turno:</strong> TARDE</span>
-                <span><strong>Data:</strong> 09/08/2024</span>
-            </div>
         </div>
 
         <!-- Seções de Materiais Solicitados e Recebidos -->
@@ -157,6 +165,26 @@
                         <!-- Dados serão preenchidos dinamicamente -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Novo Campo - Dados Gerais de Tempo -->
+        <div class="summary-box">
+            <h3>DADOS GERAIS DE TEMPO</h3>
+            <div class="summary-row">
+                <div>Materiais recebidos do CA</div>
+                <div>Itens: 2</div>
+                <div>Média: 00:27</div>
+            </div>
+            <div class="summary-row">
+                <div>Materiais recebidos do VF</div>
+                <div>Itens: 3</div>
+                <div>Média: 00:21</div>
+            </div>
+            <div class="summary-row">
+                <div>Materiais de outros endereços</div>
+                <div>Itens: 2</div>
+                <div>Média: 00:13</div>
             </div>
         </div>
     </main>
