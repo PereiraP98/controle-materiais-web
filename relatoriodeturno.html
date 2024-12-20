@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="overlay" class="overlay"></div>
+    <div id="overlay" class="overlay active"></div>
 
     <header>
         <div class="header-container">
@@ -16,23 +16,12 @@
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
             </div>
             <h1>Relatório de Turno</h1>
-            <div class="header-buttons">
-                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
-                </button>
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
-                </button>
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
-                </button>
-            </div>
         </div>
     </header>
 
     <main class="main-container">
         <!-- Janela Flutuante para Materiais Solicitados -->
-        <div id="materiaisSolicitados" class="janela-flutuante hidden">
+        <div id="materiaisSolicitados" class="janela-flutuante">
             <h2>Materiais Solicitados</h2>
             <table id="solicitadosTable">
                 <thead>
@@ -50,13 +39,10 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="button-container">
-                <button type="button" id="fecharSolicitadosButton" class="secondary-button">Fechar</button>
-            </div>
         </div>
 
         <!-- Janela Flutuante para Materiais Recebidos -->
-        <div id="materiaisRecebidos" class="janela-flutuante hidden">
+        <div id="materiaisRecebidos" class="janela-flutuante">
             <h2>Materiais Recebidos</h2>
             <table id="recebidosTable">
                 <thead>
@@ -74,52 +60,47 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="button-container">
-                <button type="button" id="fecharRecebidosButton" class="secondary-button">Fechar</button>
-            </div>
         </div>
 
-        <!-- Seção Principal -->
-        <div class="column">
-            <section class="graficos-container">
-                <h2>Resumo Geral do Turno</h2>
-                <div style="display: flex; justify-content: space-around;">
-                    <div>
-                        <h3>Materiais Solicitados</h3>
-                        <button id="abrirSolicitadosButton" class="primary-button">Visualizar</button>
-                    </div>
-                    <div>
-                        <h3>Materiais Recebidos</h3>
-                        <button id="abrirRecebidosButton" class="primary-button">Visualizar</button>
-                    </div>
+        <!-- Resumo Geral -->
+        <section class="resumo-container">
+            <h2>Resumo Geral do Turno</h2>
+            <div style="display: flex; justify-content: space-around;">
+                <div>
+                    <h3>Materiais Solicitados</h3>
+                    <p>1</p>
                 </div>
-            </section>
+                <div>
+                    <h3>Materiais Recebidos</h3>
+                    <p>7</p>
+                </div>
+            </div>
+        </section>
 
-            <section>
-                <h2>Dados Gerais de Tempo</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Materiais recebidos do CA</th>
-                            <th>Materiais recebidos do VF</th>
-                            <th>Materiais de outros endereços</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Itens: 2</td>
-                            <td>Itens: 3</td>
-                            <td>Itens: 2</td>
-                        </tr>
-                        <tr>
-                            <td>Média: 00:27</td>
-                            <td>Média: 00:21</td>
-                            <td>Média: 00:13</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-        </div>
+        <section>
+            <h2>Dados Gerais de Tempo</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Materiais recebidos do CA</th>
+                        <th>Materiais recebidos do VF</th>
+                        <th>Materiais de outros endereços</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Itens: 2</td>
+                        <td>Itens: 3</td>
+                        <td>Itens: 2</td>
+                    </tr>
+                    <tr>
+                        <td>Média: 00:27</td>
+                        <td>Média: 00:21</td>
+                        <td>Média: 00:13</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </main>
 
     <footer>
@@ -127,26 +108,5 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        document.getElementById('abrirSolicitadosButton').addEventListener('click', function () {
-            document.getElementById('materiaisSolicitados').classList.remove('hidden');
-            document.getElementById('overlay').classList.add('active');
-        });
-
-        document.getElementById('fecharSolicitadosButton').addEventListener('click', function () {
-            document.getElementById('materiaisSolicitados').classList.add('hidden');
-            document.getElementById('overlay').classList.remove('active');
-        });
-
-        document.getElementById('abrirRecebidosButton').addEventListener('click', function () {
-            document.getElementById('materiaisRecebidos').classList.remove('hidden');
-            document.getElementById('overlay').classList.add('active');
-        });
-
-        document.getElementById('fecharRecebidosButton').addEventListener('click', function () {
-            document.getElementById('materiaisRecebidos').classList.add('hidden');
-            document.getElementById('overlay').classList.remove('active');
-        });
-    </script>
 </body>
 </html>
