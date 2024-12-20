@@ -104,6 +104,37 @@
             background-color: #007bff;
             color: white;
         }
+
+        .tempo-section-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 2rem;
+        }
+
+        .tempo-section-box {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tempo-section-box h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tempo-section-box p {
+            margin: 0.5rem 0;
+        }
+
+        .tempo-section-box p span {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -159,6 +190,25 @@
                 </table>
             </div>
         </div>
+
+        <!-- Dados Gerais de Tempo -->
+        <div class="tempo-section-container">
+            <div class="tempo-section-box">
+                <h3>Materiais recebidos do CA</h3>
+                <p>Itens: <span id="caItens">2</span></p>
+                <p>Média: <span id="caMedia">00:27</span></p>
+            </div>
+            <div class="tempo-section-box">
+                <h3>Materiais recebidos do VF</h3>
+                <p>Itens: <span id="vfItens">3</span></p>
+                <p>Média: <span id="vfMedia">00:21</span></p>
+            </div>
+            <div class="tempo-section-box">
+                <h3>Materiais recebidos de outros endereços</h3>
+                <p>Itens: <span id="outrosItens">2</span></p>
+                <p>Média: <span id="outrosMedia">00:13</span></p>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -195,6 +245,14 @@
             </tr>`;
             recebidosTable.innerHTML += row;
         });
+
+        // Atualiza os campos de tempo
+        document.getElementById('caItens').textContent = 2;
+        document.getElementById('caMedia').textContent = '00:27';
+        document.getElementById('vfItens').textContent = 3;
+        document.getElementById('vfMedia').textContent = '00:21';
+        document.getElementById('outrosItens').textContent = 2;
+        document.getElementById('outrosMedia').textContent = '00:13';
     </script>
 </body>
 </html>
