@@ -4,132 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Turno</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Adicione um CSS para estilizar a página -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="overlay" class="overlay"></div>
+
     <header>
-        <h1>Resumo Geral do Turno Final</h1>
-        <div>
-            <span><strong>Turno:</strong> TARDE</span>
-            <span><strong>Data:</strong> 09/08/2024</span>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+            </div>
+            <h1>Relatório de Turno</h1>
+            <div class="header-buttons">
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                </button>
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                </button>
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
         </div>
     </header>
 
-    <main>
-        <!-- Seção de Detalhes Gerais -->
-        <section>
-            <h2>Detalhes Gerais</h2>
-            <div style="display: flex; justify-content: space-around;">
-                <div>
-                    <h3>Materiais Solicitados</h3>
-                    <p>1</p>
-                </div>
-                <div>
-                    <h3>Materiais Recebidos</h3>
-                    <p>7</p>
-                </div>
+    <main class="main-container">
+        <!-- Janela Flutuante para Materiais Solicitados -->
+        <div id="materiaisSolicitados" class="janela-flutuante hidden">
+            <h2>Materiais Solicitados</h2>
+            <table id="solicitadosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>DESTINO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CA</td>
+                        <td>20292</td>
+                        <td>PICKING</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button type="button" id="fecharSolicitadosButton" class="secondary-button">Fechar</button>
             </div>
+        </div>
 
-            <!-- Tabela de materiais solicitados e recebidos -->
-            <table>
+        <!-- Janela Flutuante para Materiais Recebidos -->
+        <div id="materiaisRecebidos" class="janela-flutuante hidden">
+            <h2>Materiais Recebidos</h2>
+            <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <th>Local</th>
-                        <th>Item Solicitado</th>
-                        <th>Local</th>
-                        <th>Item Recebido</th>
-                        <th>Hora Recebido</th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>HORA RECEBIDO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>CA</td>
                         <td>20292</td>
-                        <td>CA</td>
-                        <td>20292</td>
                         <td>10:55</td>
-                    </tr>
-                    <tr>
-                        <td>CA</td>
-                        <td>11744</td>
-                        <td>CA</td>
-                        <td>11744</td>
-                        <td>10:55</td>
-                    </tr>
-                    <tr>
-                        <td>VF</td>
-                        <td>92666</td>
-                        <td>VF</td>
-                        <td>92666</td>
-                        <td>12:11</td>
-                    </tr>
-                    <tr>
-                        <td>VF</td>
-                        <td>90600</td>
-                        <td>VF</td>
-                        <td>90600</td>
-                        <td>12:15</td>
-                    </tr>
-                    <tr>
-                        <td>R01</td>
-                        <td>14210</td>
-                        <td>R01</td>
-                        <td>14210</td>
-                        <td>12:54</td>
-                    </tr>
-                    <tr>
-                        <td>VF</td>
-                        <td>11723</td>
-                        <td>VF</td>
-                        <td>11723</td>
-                        <td>12:58</td>
-                    </tr>
-                    <tr>
-                        <td>VD</td>
-                        <td>11723</td>
-                        <td>VD</td>
-                        <td>11723</td>
-                        <td>13:02</td>
                     </tr>
                 </tbody>
             </table>
-        </section>
+            <div class="button-container">
+                <button type="button" id="fecharRecebidosButton" class="secondary-button">Fechar</button>
+            </div>
+        </div>
 
-        <!-- Dados gerais de tempo -->
-        <section>
-            <h2>Dados Gerais de Tempo</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Materiais recebidos do CA</th>
-                        <th>Materiais recebidos do VF</th>
-                        <th>Materiais de outros endereços</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Itens: 2</td>
-                        <td>Itens: 3</td>
-                        <td>Itens: 2</td>
-                    </tr>
-                    <tr>
-                        <td>Média: 00:27</td>
-                        <td>Média: 00:21</td>
-                        <td>Média: 00:13</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <!-- Seção Principal -->
+        <div class="column">
+            <section class="graficos-container">
+                <h2>Resumo Geral do Turno</h2>
+                <div style="display: flex; justify-content: space-around;">
+                    <div>
+                        <h3>Materiais Solicitados</h3>
+                        <button id="abrirSolicitadosButton" class="primary-button">Visualizar</button>
+                    </div>
+                    <div>
+                        <h3>Materiais Recebidos</h3>
+                        <button id="abrirRecebidosButton" class="primary-button">Visualizar</button>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Resumo de Progresso -->
-        <section>
-            <h2>Resumo de Progresso</h2>
-            <p>Os dados não são precisos, são calculados de acordo com atualizações manuais.</p>
-        </section>
+            <section>
+                <h2>Dados Gerais de Tempo</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Materiais recebidos do CA</th>
+                            <th>Materiais recebidos do VF</th>
+                            <th>Materiais de outros endereços</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Itens: 2</td>
+                            <td>Itens: 3</td>
+                            <td>Itens: 2</td>
+                        </tr>
+                        <tr>
+                            <td>Média: 00:27</td>
+                            <td>Média: 00:21</td>
+                            <td>Média: 00:13</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
     </main>
 
     <footer>
-        <p>Relatório gerado automaticamente pelo sistema.</p>
+        <p>Relatório gerado automaticamente pelo sistema. © 2024 COLLAB - Todos os direitos reservados.</p>
     </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('abrirSolicitadosButton').addEventListener('click', function () {
+            document.getElementById('materiaisSolicitados').classList.remove('hidden');
+            document.getElementById('overlay').classList.add('active');
+        });
+
+        document.getElementById('fecharSolicitadosButton').addEventListener('click', function () {
+            document.getElementById('materiaisSolicitados').classList.add('hidden');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        document.getElementById('abrirRecebidosButton').addEventListener('click', function () {
+            document.getElementById('materiaisRecebidos').classList.remove('hidden');
+            document.getElementById('overlay').classList.add('active');
+        });
+
+        document.getElementById('fecharRecebidosButton').addEventListener('click', function () {
+            document.getElementById('materiaisRecebidos').classList.add('hidden');
+            document.getElementById('overlay').classList.remove('active');
+        });
+    </script>
 </body>
 </html>
