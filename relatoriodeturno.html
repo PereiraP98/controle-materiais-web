@@ -116,8 +116,8 @@
         <div class="subtitulo-container">
             <div>DETALHES GERAIS</div>
             <div class="detalhes-info">
-                <span><strong>Turno:</strong></span>
-                <span><strong>Data:</strong></span>
+                <span><strong>Turno:</strong> TARDE</span>
+                <span><strong>Data:</strong> 09/08/2024</span>
             </div>
         </div>
 
@@ -136,7 +136,7 @@
                         </tr>
                     </thead>
                     <tbody id="solicitadosTable">
-                        <!-- Dados preenchidos dinamicamente -->
+                        <!-- Dados serão preenchidos dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -154,7 +154,7 @@
                         </tr>
                     </thead>
                     <tbody id="recebidosTable">
-                        <!-- Dados preenchidos dinamicamente -->
+                        <!-- Dados serão preenchidos dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -167,31 +167,89 @@
 
         <!-- Seções de Dados Gerais de Tempo -->
         <div class="section-container">
-            <!-- Materiais Recebidos do CA -->
             <div class="section-box">
                 <h2>Materiais Recebidos do CA</h2>
-                <p><strong>Itens:</strong> 0</p>
-                <p><strong>Média:</strong> 00:00</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Itens</th>
+                            <th>Média</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="itensCA">0</td>
+                            <td id="mediaCA">00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Materiais Recebidos do VF -->
             <div class="section-box">
                 <h2>Materiais Recebidos do VF</h2>
-                <p><strong>Itens:</strong> 0</p>
-                <p><strong>Média:</strong> 00:00</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Itens</th>
+                            <th>Média</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="itensVF">0</td>
+                            <td id="mediaVF">00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Materiais de Outros Endereços -->
             <div class="section-box">
-                <h2>Materiais de Outros Endereços</h2>
-                <p><strong>Itens:</strong> 0</p>
-                <p><strong>Média:</strong> 00:00</p>
+                <h2>Materiais Recebidos de Outros Endereços</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Itens</th>
+                            <th>Média</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="itensOutros">0</td>
+                            <td id="mediaOutros">00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
+
+        <!-- Subtítulo Detalhes de Materiais Solicitados -->
+        <div class="subtitulo-container">
+            <div>DETALHES DE MATERIAIS SOLICITADOS</div>
+        </div>
+
+        <!-- Detalhes de Materiais Solicitados -->
+        <div class="section-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>ORIGEM</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>REPORT</th>
+                    </tr>
+                </thead>
+                <tbody id="detalhesTable">
+                    <!-- Dados serão preenchidos dinamicamente -->
+                </tbody>
+            </table>
         </div>
     </main>
 
     <script>
-        // Dados dinamicamente preenchidos serão gerados em outra página
+        // Placeholder para preencher as tabelas com dados futuramente
     </script>
 </body>
 </html>
