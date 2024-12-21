@@ -1,30 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho parecido com o de detalhes.html -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios Armazenados</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
-    <!-- (Opcional) Inclusão do SDK do EmailJS, se for necessário -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
     <style>
-        .logo {
-            width: 60px;
-            height: auto;
-        }
-
-        .relatorio-container {
-            margin-top: 10px;
-        }
-
-        .relatorio-mes {
-            margin-bottom: 20px;
-        }
-
+        .logo { width: 60px; height: auto; }
+        .relatorio-container { margin-top: 10px; }
+        .relatorio-mes { margin-bottom: 20px; }
         .relatorio-data {
             margin-left: 20px;
             cursor: pointer;
@@ -33,40 +17,20 @@
             display: inline-block;
             margin: 8px 0;
         }
-
-        .relatorio-data:hover {
-            color: darkblue;
-        }
-
-        /* Botão para excluir todos os relatórios */
+        .relatorio-data:hover { color: darkblue; }
         .excluir-todos-button {
             background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 15px;
+            color: white; border: none; padding: 8px 16px;
+            border-radius: 4px; cursor: pointer; margin-left: 15px;
         }
-        .excluir-todos-button:hover {
-            background-color: #d32f2f;
-        }
+        .excluir-todos-button:hover { background-color: #d32f2f; }
 
-        /* Subtítulo */
-        h3 {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            color: #215C98; /* cor que combine com o seu tema */
-            font-size: 1.2em;
-        }
+        h3 { margin: 12px 0 8px; color: #215C98; }
+        table { margin-bottom: 20px; }
     </style>
 </head>
-<body class="detalhes-page"> <!-- mesma classe para herdar estilos de detalhes -->
-    <!-- Overlay (se usar para janelas flutuantes) -->
-    <div id="overlay" class="overlay"></div>
-
+<body class="detalhes-page">
     <header>
-        <!-- Mesmo Header do detalhes.html -->
         <div class="header-container">
             <div class="logo-container">
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
@@ -74,19 +38,15 @@
             </div>
             <h1>Relatórios Armazenados</h1>
             <div class="header-buttons">
-                <!-- Botão de Voltar ao Painel -->
-                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel"
-                        onclick="window.location.href='detalhes.html'">
+                <button onclick="window.location.href='detalhes.html'">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
                          alt="Painel" width="30" height="30">
                 </button>
-                <!-- Botão de Logout (opcional) -->
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                <button id="logoutButton" class="header-button">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
                          alt="Logout" width="30" height="30">
                 </button>
-                <!-- Botão de Alternar Tema -->
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                <button id="themeToggleButton" class="header-button">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
                          alt="Tema Escuro" width="30" height="30">
                 </button>
@@ -96,141 +56,163 @@
 
     <main class="main-container">
         <section class="detalhes-container">
-            <!-- Título e botão de excluir todos -->
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <h2>Relatórios Gerados</h2>
                 <button id="excluirTodosButton" class="excluir-todos-button">
                     Excluir Todos
                 </button>
             </div>
-
-            <div id="listaRelatorios" class="relatorio-container">
-                <!-- Aqui vamos injetar o conteúdo dos relatórios (meses e datas) via JS -->
-            </div>
+            <div id="listaRelatorios" class="relatorio-container"></div>
         </section>
     </main>
 
-    <footer>
-        © 2024 COLLAB - Todos os direitos reservados.
-    </footer>
-
-    <!-- (Opcional) Se você usar script.js para alguma lógica geral, carregue-o aqui -->
-    <script src="script.js"></script>
+    <footer>© 2024 COLLAB - Todos os direitos reservados.</footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Lógica de tema escuro
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tema escuro
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+      const themeToggleButton = document.getElementById('themeToggleButton');
+      themeToggleButton.addEventListener('click', () => {
+        if (document.body.classList.contains('dark-mode')) {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
 
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
-                }
+      // Carrega e exibe relatoriosMes
+      const stored = localStorage.getItem('relatoriosMes');
+      if (!stored) {
+        document.getElementById('listaRelatorios').innerHTML =
+          '<p>Nenhum relatório encontrado. Gere um novo relatório em <strong>Detalhes</strong>.</p>';
+        return;
+      }
+      const relatoriosMes = JSON.parse(stored);
+
+      // Monta a lista de meses e datas
+      let html = '';
+      for (let mes in relatoriosMes) {
+        html += `<div class="relatorio-mes">
+                  <h3>📁 ${mes}</h3>`;
+        const datasObj = relatoriosMes[mes];
+        for (let dataCurta in datasObj) {
+          html += `
+            <div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
+              📄 ${dataCurta}
+            </div>
+            <div id="container-${mes}-${dataCurta}" style="display:none;"></div>
+          `;
+        }
+        html += `</div>`;
+      }
+      document.getElementById('listaRelatorios').innerHTML = html;
+
+      // Expansão ao clicar na data
+      const dataElements = document.querySelectorAll('.relatorio-data');
+      dataElements.forEach(el => {
+        el.addEventListener('click', () => {
+          const mes = el.getAttribute('data-mes');
+          const dataC = el.getAttribute('data-data');
+          const containerDiv = document.getElementById(`container-${mes}-${dataC}`);
+          if (!containerDiv) return;
+
+          if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
+            // Pegar 'solicitados' e 'recebidos'
+            const { solicitados, recebidos } = relatoriosMes[mes][dataC];
+
+            // 1) Materiais Solicitados
+            let tableHtml = `<h3>Materiais solicitados</h3>`;
+            tableHtml += `
+              <table>
+                <thead>
+                  <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>TEMPO</th>
+                    <th>REPORTADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            (solicitados || []).forEach(item => {
+              tableHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.qtd}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.hora}</td>
+                  <td>${item.tempo}</td>
+                  <td>${item.reportado}</td>
+                </tr>
+              `;
             });
+            tableHtml += `</tbody></table>`;
 
-            // Exibir relatórios armazenados
-            const stored = localStorage.getItem('relatoriosMes');
-            if (!stored) {
-                document.getElementById('listaRelatorios').innerHTML =
-                  '<p>Nenhum relatório encontrado. Gere um novo relatório em <strong>Detalhes</strong>.</p>';
-                return;
-            }
-
-            const relatoriosMes = JSON.parse(stored);
-
-            let html = '';
-            for (let mes in relatoriosMes) {
-                html += `
-                  <div class="relatorio-mes">
-                    <h3>📁 ${mes}</h3>
-                `;
-                const datasNoMes = relatoriosMes[mes];
-                for (let dataCurta in datasNoMes) {
-                    html += `
-                      <div class="relatorio-data"
-                           data-mes="${mes}"
-                           data-data="${dataCurta}">
-                        📄 ${dataCurta}
-                      </div>
-                      <div id="container-${mes}-${dataCurta}" style="display:none;"></div>
-                    `;
-                }
-                html += `</div>`;
-            }
-            document.getElementById('listaRelatorios').innerHTML = html;
-
-            // Clique para expandir/ocultar cada relatório
-            const dataElements = document.querySelectorAll('.relatorio-data');
-            dataElements.forEach(elem => {
-                elem.addEventListener('click', () => {
-                    const mes = elem.getAttribute('data-mes');
-                    const data = elem.getAttribute('data-data');
-                    const containerId = `container-${mes}-${data}`;
-                    const containerDiv = document.getElementById(containerId);
-
-                    if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
-                        const items = relatoriosMes[mes][data].items;
-
-                        // Aqui inserimos o subtítulo "Materiais solicitados" antes da <table>
-                        let tableHtml = `
-                          <h3>Materiais solicitados</h3>
-                          <table>
-                            <thead>
-                              <tr>
-                                <th>LOCAL</th>
-                                <th>ITEM</th>
-                                <th>QTD</th>
-                                <th>DESTINO</th>
-                                <th>DATA</th>
-                                <th>HORA</th>
-                                <th>TEMPO</th>
-                                <th>REPORTADO</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                        `;
-                        items.forEach(item => {
-                            tableHtml += `
-                              <tr>
-                                <td>${item.local}</td>
-                                <td>${item.item}</td>
-                                <td>${item.qtd}</td>
-                                <td>${item.destino}</td>
-                                <td>${item.data}</td>
-                                <td>${item.hora}</td>
-                                <td>${item.tempo}</td>
-                                <td>${item.reportado}</td>
-                              </tr>
-                            `;
-                        });
-                        tableHtml += `</tbody></table>`;
-                        containerDiv.innerHTML = tableHtml;
-                        containerDiv.style.display = 'block';
-                    } else {
-                        containerDiv.style.display = 'none';
-                    }
-                });
+            // 2) Materiais Recebidos
+            tableHtml += `<h3>Materiais recebidos</h3>`;
+            tableHtml += `
+              <table>
+                <thead>
+                  <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>TEMPO</th>
+                    <th>RECEBIDO</th>
+                    <th>GUARDADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            (recebidos || []).forEach(item => {
+              tableHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.qtd}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.hora}</td>
+                  <td>${item.tempo}</td>   <!-- Se tempo estiver vazio, aparecerá vazio -->
+                  <td>${item.recebido}</td>
+                  <td>${item.guardado}</td>
+                </tr>
+              `;
             });
+            tableHtml += `</tbody></table>`;
 
-            // Botão para excluir TODOS
-            const excluirTodosButton = document.getElementById('excluirTodosButton');
-            excluirTodosButton.addEventListener('click', () => {
-                if (confirm('Tem certeza de que deseja excluir TODOS os relatórios?')) {
-                    localStorage.removeItem('relatoriosMes');
-                    window.location.reload();
-                }
-            });
+            containerDiv.innerHTML = tableHtml;
+            containerDiv.style.display = 'block';
+          } else {
+            containerDiv.style.display = 'none';
+          }
         });
+      });
+
+      // Excluir todos
+      const excluirTodosButton = document.getElementById('excluirTodosButton');
+      excluirTodosButton.addEventListener('click', () => {
+        if (confirm('Deseja realmente excluir TODOS os relatórios?')) {
+          localStorage.removeItem('relatoriosMes');
+          window.location.reload();
+        }
+      });
+    });
     </script>
 </body>
 </html>
