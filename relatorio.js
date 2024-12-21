@@ -10,8 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Array para armazenar cada item
     const listaMateriais = [];
 
-    rows.forEach(row => {
+    rows.forEach((row, rowIndex) => {
       const cols = row.querySelectorAll('td');
+
+      // Logs para depuração: mostra quantas colunas foram encontradas
+      console.log(`Linha ${rowIndex}: quantidade de colunas = ${cols.length}`);
+      cols.forEach((col, colIndex) => {
+        console.log(`  Coluna ${colIndex}:`, col.innerText);
+      });
+
       // A tabela possui 9 colunas no <thead>:
       // 0 -> (checkbox hidden)
       // 1 -> LOCAL
@@ -20,8 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // 4 -> DESTINO
       // 5 -> DATA
       // 6 -> HORA
-      // 7 -> RECEBER (não usado para o relatório)
-      // 8 -> TEMPO (agora vamos capturar também)
+      // 7 -> RECEBER (não usado no relatório)
+      // 8 -> TEMPO
+
+      // Se o cols.length < 9, possivelmente "TEMPO" está faltando no HTML dessa linha
+      if (cols.length < 9) {
+        console.warn(`A linha ${rowIndex} não possui 9 colunas. Verifique se a coluna TEMPO está presente.`);
+        return; // Pula essa linha, pois não tem a estrutura esperada
+      }
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -44,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         destino,
         data,
         hora,
-        tempo,       // agora incluímos no objeto
+        tempo,
         reportado
       });
     });
@@ -81,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Atualiza no localStorage
     localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
 
-    // Em vez de redirecionar, exibimos apenas uma mensagem de sucesso
+    // Exibe apenas uma mensagem de sucesso
     alert('Relatório registrado com sucesso!');
   });
 });
