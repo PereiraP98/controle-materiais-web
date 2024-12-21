@@ -20,6 +20,20 @@
         body.dark-mode #themeToggleButton img {
             filter: invert(1) brightness(1.2);
         }
+
+        /* Exemplo de classe para o botão de gerar relatório (caso queira estilizar) */
+        .gerar-relatorio-button {
+            background-color: #007bff; /* cor de fundo (ex: azul) */
+            color: #fff;              /* cor do texto */
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;       /* espaçamento em relação a outros botões */
+        }
+        .gerar-relatorio-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body class="detalhes-page">
@@ -53,10 +67,17 @@
     <main class="main-container">
         <!-- Seção de detalhes de materiais solicitados -->
         <section class="detalhes-container">
-            <div class="header-with-button">
+            <!-- Ajuste no estilo inline para que os botões fiquem alinhados à direita (exemplo) -->
+            <div class="header-with-button" style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Detalhes de Materiais Solicitados</h2>
-                <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
-                <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
+                <div>
+                    <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
+                    <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
+                    <!-- NOVO BOTÃO: GERAR RELATÓRIO -->
+                    <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button">
+                        Gerar relatório
+                    </button>
+                </div>
             </div>
             <table id="detalhesTable">
                 <thead>
@@ -137,7 +158,17 @@
     <!-- Scripts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js"></script>
+
     <script>
+        // Exemplo simples de função para gerar relatório
+        function gerarRelatorio() {
+            // Aqui você pode inserir a lógica para gerar ou baixar o relatório
+            // Por exemplo, chamar uma rota de API, gerar PDF, etc.
+            console.log("Relatório gerado com sucesso!");
+            // Exemplo fictício de redirecionamento:
+            // window.location.href = '/api/relatorios/gerar';
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // Carregar tema salvo
             const savedTheme = localStorage.getItem('theme');
@@ -158,6 +189,12 @@
                     localStorage.setItem('theme', 'dark');
                 }
             });
+
+            // Botão de Gerar Relatório
+            const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
+            if (gerarRelatorioButton) {
+                gerarRelatorioButton.addEventListener('click', gerarRelatorio);
+            }
         });
     </script>
 </body>
