@@ -20,10 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // 4 -> DESTINO
       // 5 -> DATA
       // 6 -> HORA
-      // 7 -> RECEBER (não usado)
-      // 8 -> TEMPO (se quiser pegar, basta ajustar abaixo)
+      // 7 -> RECEBER (não usado para o relatório)
+      // 8 -> TEMPO (agora vamos capturar também)
 
-      // Atualmente, pegamos apenas col[1..6]:
       const local = cols[1].innerText;
       const item = cols[2].innerText;
       const qtd = cols[3].innerText;
@@ -31,11 +30,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
 
+      // Captura o TEMPO (coluna 8)
+      const tempo = cols[8].innerText;
+
       // Deixamos 'reportado' em branco (futuro uso)
       const reportado = '';
 
-      // Monta o objeto
-      listaMateriais.push({ local, item, qtd, destino, data, hora, reportado });
+      // Monta o objeto com o campo tempo incluso
+      listaMateriais.push({
+        local,
+        item,
+        qtd,
+        destino,
+        data,
+        hora,
+        tempo,       // agora incluímos no objeto
+        reportado
+      });
     });
 
     // Cria no localStorage a pasta do mês e o arquivo pela data
@@ -51,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nomeMes = MESES[mesIndex];
 
     // Exemplo de nome de arquivo: 21_12_24 (DD_MM_AA)
-    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${anoDoisDig}`;
+    const dataCurta = `${dia}_${String(mesIndex + 1).padStart(2, '0')}_${anoDoisDig}`;
 
     // Recupera (ou cria) o objeto de relatórios
     const stored = localStorage.getItem('relatoriosMes');
