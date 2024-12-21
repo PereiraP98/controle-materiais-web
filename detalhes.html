@@ -67,18 +67,23 @@
     <main class="main-container">
         <!-- Seção de detalhes de materiais solicitados -->
         <section class="detalhes-container">
-            <!-- Ajuste no estilo inline para que os botões fiquem alinhados à direita (exemplo) -->
-            <div class="header-with-button" style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Detalhes de Materiais Solicitados</h2>
+            <h2>Detalhes de Materiais Solicitados</h2>
+
+            <!-- Contêiner para os botões, dividindo-os em lados opostos -->
+            <div class="botoes-detalhes" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <!-- Botões à esquerda -->
                 <div>
                     <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
                     <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
-                    <!-- NOVO BOTÃO: GERAR RELATÓRIO -->
+                </div>
+                <!-- Botão à direita -->
+                <div>
                     <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button">
                         Gerar relatório
                     </button>
                 </div>
             </div>
+
             <table id="detalhesTable">
                 <thead>
                     <tr>
