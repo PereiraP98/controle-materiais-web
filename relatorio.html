@@ -1,158 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Relatório</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-    <style>
-        .logo {
-            width: 60px; 
-            height: auto;
-        }
-
-        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
-        body.dark-mode #themeToggleButton img {
-            filter: invert(1) brightness(1.2);
-        }
-
-        /* Centraliza a janela de consulta */
-        body.relatorio-page .detalhes-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        /* Fundo escurecido para foco */
-        body.relatorio-page.modal-open {
-            background: rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-
-        /* Centraliza o calendário */
-        body.relatorio-page .flatpickr-calendar {
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Relatórios Armazenados</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Pode usar o mesmo CSS de detalhes -->
+  <style>
+    /* Ajustes adicionais se precisar */
+    .relatorio-mes {
+      margin-bottom: 20px;
+    }
+    .relatorio-data {
+      margin-left: 20px;
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+    .detalhes-container {
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+    }
+  </style>
 </head>
-<body class="relatorio-page">
-    <!-- Overlay -->
-    <div id="overlay" class="overlay"></div>
+<body class="detalhes-page">
+  <header>
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+             alt="DevCore Logo" class="logo" />
+      </div>
+      <h1>Relatórios Armazenados</h1>
+      <div class="header-buttons">
+        <!-- Botão de Voltar -->
+        <button onclick="window.location.href='detalhes.html'">Voltar</button>
+        <!-- Se quiser, pode ter tema escuro, etc. -->
+      </div>
+    </div>
+  </header>
 
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
-            </div>
-            <h1>Controle de Materiais</h1>
-            <div class="header-buttons">
-                <!-- Botão de Voltar ao Painel -->
-                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
-                </button>
-                <!-- Botão de Logout -->
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
-                </button>
-                <!-- Botão de Alternar Tema -->
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
-                </button>
-            </div>
-        </div>
-    </header>
-    <main class="main-container">
-        <div class="detalhes-container">
-            <h2>Consultar Relatório de Materiais</h2>
-            <form>
-                <div class="field-container">
-                    <input 
-                        type="text" 
-                        id="data-relatorio" 
-                        name="data-relatorio" 
-                        placeholder="Selecione a data..." 
-                        readonly 
-                        class="date-input"
-                    >
-                </div>
-                <div class="button-container">
-                    <button type="button" onclick="location.href='painel.html'" class="secondary-button">Voltar</button>
-                    <button type="button" id="selecionarDataButton" class="primary-button">Selecionar Data</button>
-                </div>
-            </form>
-        </div>
-    </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Carregar tema salvo
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
+  <main class="main-container">
+    <section class="detalhes-container">
+      <h2>Pastas por Mês</h2>
+      <div id="listaRelatorios"></div>
+    </section>
+  </main>
 
-            // Lógica do botão de alternar tema
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
-                }
+  <footer>
+    © 2024 COLLAB - Todos os direitos reservados.
+  </footer>
+
+  <script>
+    // Ao carregar a página, ler localStorage e exibir os relatórios
+    document.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem('relatoriosMes');
+      if (!stored) {
+        document.getElementById('listaRelatorios').innerHTML = 
+          '<p>Nenhum relatório encontrado.</p>';
+        return;
+      }
+
+      const relatoriosMes = JSON.parse(stored);
+
+      // Exemplo: relatoriosMes = {
+      //   "DEZEMBRO": {
+      //     "21_12_24": { items: [...] },
+      //     "22_12_24": { items: [...] }
+      //   },
+      //   "JANEIRO": { ... }
+      // }
+
+      let html = '';
+
+      // Percorrer cada mês (pasta)
+      for (let mes in relatoriosMes) {
+        html += `<div class="relatorio-mes">
+                   <h3>📁 ${mes}</h3>`;
+
+        // Para cada data (arquivo)
+        const datasObjeto = relatoriosMes[mes]; 
+        // datasObjeto = {"21_12_24": { items: [...] }, ...}
+        
+        for (let dataCurta in datasObjeto) {
+          html += `<div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
+                     📄 ${dataCurta}
+                   </div>
+                   <!-- Aqui criaremos um container para exibir a tabela ao clicar -->
+                   <div id="container-${mes}-${dataCurta}" style="display:none;"></div>`;
+        }
+
+        html += `</div>`;
+      }
+
+      document.getElementById('listaRelatorios').innerHTML = html;
+
+      // Adiciona evento de clique em cada "relatorio-data"
+      const dataElements = document.querySelectorAll('.relatorio-data');
+      dataElements.forEach(elem => {
+        elem.addEventListener('click', () => {
+          const mes = elem.getAttribute('data-mes');
+          const dataCurta = elem.getAttribute('data-data');
+          const containerId = `container-${mes}-${dataCurta}`;
+
+          // Obter os itens:
+          const items = relatoriosMes[mes][dataCurta].items;
+
+          // Se estiver oculto, mostra a tabela; se já estiver visível, oculta
+          const containerDiv = document.getElementById(containerId);
+          if (containerDiv.style.display === 'none') {
+            // Monta a tabela
+            let tableHtml = `
+              <table>
+                <thead>
+                  <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>REPORTADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            items.forEach(item => {
+              tableHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.qtd}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.hora}</td>
+                  <td>${item.reportado}</td>
+                </tr>
+              `;
             });
+            tableHtml += `</tbody></table>`;
 
-            // Inicializa o calendário Flatpickr
-            const dataRelatorioInput = document.getElementById("data-relatorio");
-            const selecionarDataButton = document.getElementById("selecionarDataButton");
-
-            const calendario = flatpickr(dataRelatorioInput, {
-                dateFormat: "d/m/Y",
-                locale: "pt",
-                allowInput: false,
-                clickOpens: true,
-                onClose: function (selectedDates, dateStr) {
-                    if (dateStr) {
-                        selecionarDataButton.textContent = "Consultar Relatório";
-                        selecionarDataButton.setAttribute("data-selected", "true");
-                    }
-                }
-            });
-
-            // Comportamento do botão Selecionar Data
-            selecionarDataButton.addEventListener("click", function () {
-                if (selecionarDataButton.getAttribute("data-selected") === "true") {
-                    alert("Relatório para a data: " + dataRelatorioInput.value);
-                } else {
-                    calendario.open();
-                }
-            });
-
-            // Também abre o calendário ao clicar no campo de data
-            dataRelatorioInput.addEventListener("click", function () {
-                calendario.open();
-            });
+            containerDiv.innerHTML = tableHtml;
+            containerDiv.style.display = 'block';
+          } else {
+            containerDiv.style.display = 'none';
+          }
         });
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>
