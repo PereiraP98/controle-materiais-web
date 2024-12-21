@@ -51,6 +51,14 @@
         .excluir-todos-button:hover {
             background-color: #d32f2f;
         }
+
+        /* Subtítulo */
+        h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: #215C98; /* cor que combine com o seu tema */
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body class="detalhes-page"> <!-- mesma classe para herdar estilos de detalhes -->
@@ -110,7 +118,6 @@
     <script src="script.js"></script>
 
     <script>
-        // Ao carregar a página
         document.addEventListener('DOMContentLoaded', function () {
             // Lógica de tema escuro
             const savedTheme = localStorage.getItem('theme');
@@ -131,9 +138,7 @@
                 }
             });
 
-            // -----------------------------
             // Exibir relatórios armazenados
-            // -----------------------------
             const stored = localStorage.getItem('relatoriosMes');
             if (!stored) {
                 document.getElementById('listaRelatorios').innerHTML =
@@ -176,7 +181,9 @@
                     if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
                         const items = relatoriosMes[mes][data].items;
 
+                        // Aqui inserimos o subtítulo "Materiais solicitados" antes da <table>
                         let tableHtml = `
+                          <h3>Materiais solicitados</h3>
                           <table>
                             <thead>
                               <tr>
@@ -186,7 +193,7 @@
                                 <th>DESTINO</th>
                                 <th>DATA</th>
                                 <th>HORA</th>
-                                <th>TEMPO</th>      <!-- Agora exibimos o TEMPO -->
+                                <th>TEMPO</th>
                                 <th>REPORTADO</th>
                               </tr>
                             </thead>
@@ -201,7 +208,7 @@
                                 <td>${item.destino}</td>
                                 <td>${item.data}</td>
                                 <td>${item.hora}</td>
-                                <td>${item.tempo}</td>  <!-- Mostramos item.tempo -->
+                                <td>${item.tempo}</td>
                                 <td>${item.reportado}</td>
                               </tr>
                             `;
@@ -215,16 +222,11 @@
                 });
             });
 
-            // -------------------------
             // Botão para excluir TODOS
-            // -------------------------
             const excluirTodosButton = document.getElementById('excluirTodosButton');
             excluirTodosButton.addEventListener('click', () => {
-                // Solicitar confirmação
                 if (confirm('Tem certeza de que deseja excluir TODOS os relatórios?')) {
-                    // Remove a chave 'relatoriosMes' do localStorage
                     localStorage.removeItem('relatoriosMes');
-                    // Recarrega a página (ou limpa o conteúdo manualmente)
                     window.location.reload();
                 }
             });
