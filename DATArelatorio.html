@@ -1,150 +1,232 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Relatórios Armazenados</title>
-  <link rel="stylesheet" href="styles.css">
+    <!-- Cabeçalho parecido com o de detalhes.html -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Armazenados</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- (Opcional) Inclusão do SDK do EmailJS, se for necessário -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+
+        .relatorio-container {
+            margin-top: 10px;
+        }
+
+        .relatorio-mes {
+            margin-bottom: 20px;
+        }
+
+        .relatorio-data {
+            margin-left: 20px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+            display: inline-block;
+            margin: 8px 0;
+        }
+
+        .relatorio-data:hover {
+            color: darkblue;
+        }
+
+        /* Botão para excluir todos os relatórios */
+        .excluir-todos-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .excluir-todos-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
-<body class="detalhes-page">
-  <header>
-    <div class="header-container">
-      <div class="logo-container">
-        <img src="..." alt="DevCore Logo" class="logo" />
-      </div>
-      <h1>Relatórios Armazenados</h1>
-      <div class="header-buttons">
-        <button onclick="window.location.href='detalhes.html'">
-          <img src="..." alt="Voltar" width="30">
-        </button>
-        <button id="themeToggleButton">
-          <img src="..." alt="Tema Escuro" width="30">
-        </button>
-      </div>
-    </div>
-  </header>
+<body class="detalhes-page"> <!-- mesma classe para herdar estilos de detalhes -->
+    <!-- Overlay (se usar para janelas flutuantes) -->
+    <div id="overlay" class="overlay"></div>
 
-  <main class="main-container">
-    <section class="detalhes-container">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <h2>Relatórios Gerados</h2>
-        <button id="excluirTodosButton" class="excluir-todos-button">
-          Excluir Todos
-        </button>
-      </div>
-      <div id="listaRelatorios" class="relatorio-container"></div>
-    </section>
-  </main>
-
-  <footer>
-    © 2024 COLLAB - Todos os direitos reservados.
-  </footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Tema escuro
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-      }
-
-      const themeToggleButton = document.getElementById('themeToggleButton');
-      themeToggleButton.addEventListener('click', function () {
-        if (document.body.classList.contains('dark-mode')) {
-          document.body.classList.remove('dark-mode');
-          localStorage.setItem('theme', 'light');
-        } else {
-          document.body.classList.add('dark-mode');
-          localStorage.setItem('theme', 'dark');
-        }
-      });
-
-      // Carrega os relatórios
-      const stored = localStorage.getItem('relatoriosMes');
-      if (!stored) {
-        document.getElementById('listaRelatorios').innerHTML = 
-          '<p>Nenhum relatório encontrado.</p>';
-        return;
-      }
-
-      const relatoriosMes = JSON.parse(stored);
-      let html = '';
-
-      for (let mes in relatoriosMes) {
-        html += `<div class="relatorio-mes">
-                   <h3>📁 ${mes}</h3>`;
-
-        for (let dataCurta in relatoriosMes[mes]) {
-          html += `
-            <div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
-              📄 ${dataCurta}
+    <header>
+        <!-- Mesmo Header do detalhes.html -->
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+                     alt="DevCore Logo" class="logo">
             </div>
-            <div id="container-${mes}-${dataCurta}" style="display:none;"></div>
-          `;
-        }
+            <h1>Relatórios Armazenados</h1>
+            <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel"
+                        onclick="window.location.href='detalhes.html'">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
+                         alt="Painel" width="30" height="30">
+                </button>
+                <!-- Botão de Logout (opcional) -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
+                         alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
+                         alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
 
-        html += `</div>`;
-      }
-      document.getElementById('listaRelatorios').innerHTML = html;
+    <main class="main-container">
+        <section class="detalhes-container">
+            <!-- Título e botão de excluir todos -->
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h2>Relatórios Gerados</h2>
+                <button id="excluirTodosButton" class="excluir-todos-button">
+                    Excluir Todos
+                </button>
+            </div>
 
-      // Expande/colapsa
-      const dataElements = document.querySelectorAll('.relatorio-data');
-      dataElements.forEach(el => {
-        el.addEventListener('click', () => {
-          const mes = el.getAttribute('data-mes');
-          const dataC = el.getAttribute('data-data');
-          const containerDiv = document.getElementById(`container-${mes}-${dataC}`);
-          if (!containerDiv) return;
+            <div id="listaRelatorios" class="relatorio-container">
+                <!-- Aqui vamos injetar o conteúdo dos relatórios (meses e datas) via JS -->
+            </div>
+        </section>
+    </main>
 
-          if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
-            const items = relatoriosMes[mes][dataC].items;
-            let tableHtml = `
-              <table>
-                <thead>
-                  <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>REPORTADO</th>
-                  </tr>
-                </thead>
-                <tbody>
-            `;
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
 
-            items.forEach(obj => {
-              tableHtml += `
-                <tr>
-                  <td>${obj.local}</td>
-                  <td>${obj.item}</td>
-                  <td>${obj.qtd}</td>
-                  <td>${obj.destino}</td>
-                  <td>${obj.data}</td>
-                  <td>${obj.hora}</td>
-                  <td>${obj.reportado}</td>
-                </tr>
-              `;
+    <!-- (Opcional) Se você usar script.js para alguma lógica geral, carregue-o aqui -->
+    <script src="script.js"></script>
+
+    <script>
+        // Ao carregar a página
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lógica de tema escuro
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
             });
 
-            tableHtml += '</tbody></table>';
-            containerDiv.innerHTML = tableHtml;
-            containerDiv.style.display = 'block';
-          } else {
-            containerDiv.style.display = 'none';
-          }
-        });
-      });
+            // -----------------------------
+            // Exibir relatórios armazenados
+            // -----------------------------
+            const stored = localStorage.getItem('relatoriosMes');
+            if (!stored) {
+                document.getElementById('listaRelatorios').innerHTML =
+                  '<p>Nenhum relatório encontrado. Gere um novo relatório em <strong>Detalhes</strong>.</p>';
+                return;
+            }
 
-      // Excluir todos
-      const excluirTodosButton = document.getElementById('excluirTodosButton');
-      excluirTodosButton.addEventListener('click', () => {
-        if (confirm('Deseja excluir todos os relatórios?')) {
-          localStorage.removeItem('relatoriosMes');
-          window.location.reload();
-        }
-      });
-    });
-  </script>
+            const relatoriosMes = JSON.parse(stored);
+
+            let html = '';
+            for (let mes in relatoriosMes) {
+                html += `
+                  <div class="relatorio-mes">
+                    <h3>📁 ${mes}</h3>
+                `;
+                const datasNoMes = relatoriosMes[mes];
+                for (let dataCurta in datasNoMes) {
+                    html += `
+                      <div class="relatorio-data"
+                           data-mes="${mes}"
+                           data-data="${dataCurta}">
+                        📄 ${dataCurta}
+                      </div>
+                      <div id="container-${mes}-${dataCurta}" style="display:none;"></div>
+                    `;
+                }
+                html += `</div>`;
+            }
+            document.getElementById('listaRelatorios').innerHTML = html;
+
+            // Clique para expandir/ocultar cada relatório
+            const dataElements = document.querySelectorAll('.relatorio-data');
+            dataElements.forEach(elem => {
+                elem.addEventListener('click', () => {
+                    const mes = elem.getAttribute('data-mes');
+                    const data = elem.getAttribute('data-data');
+                    const containerId = `container-${mes}-${data}`;
+                    const containerDiv = document.getElementById(containerId);
+
+                    if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
+                        const items = relatoriosMes[mes][data].items;
+
+                        let tableHtml = `
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>LOCAL</th>
+                                <th>ITEM</th>
+                                <th>QTD</th>
+                                <th>DESTINO</th>
+                                <th>DATA</th>
+                                <th>HORA</th>
+                                <th>REPORTADO</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                        `;
+                        items.forEach(item => {
+                            tableHtml += `
+                              <tr>
+                                <td>${item.local}</td>
+                                <td>${item.item}</td>
+                                <td>${item.qtd}</td>
+                                <td>${item.destino}</td>
+                                <td>${item.data}</td>
+                                <td>${item.hora}</td>
+                                <td>${item.reportado}</td>
+                              </tr>
+                            `;
+                        });
+                        tableHtml += `</tbody></table>`;
+                        containerDiv.innerHTML = tableHtml;
+                        containerDiv.style.display = 'block';
+                    } else {
+                        containerDiv.style.display = 'none';
+                    }
+                });
+            });
+
+            // -------------------------
+            // Botão para excluir TODOS
+            // -------------------------
+            const excluirTodosButton = document.getElementById('excluirTodosButton');
+            excluirTodosButton.addEventListener('click', () => {
+                // Solicitar confirmação
+                if (confirm('Tem certeza de que deseja excluir TODOS os relatórios?')) {
+                    // Remove a chave 'relatoriosMes' do localStorage
+                    localStorage.removeItem('relatoriosMes');
+                    // Recarrega a página (ou limpa o conteúdo manualmente)
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
