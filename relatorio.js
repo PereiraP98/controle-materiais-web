@@ -3,23 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
 
   gerarRelatorioButton.addEventListener('click', () => {
-    // Seleciona a tabela "Detalhes de Materiais Solicitados"
+    // 1) Capturar "Materiais Solicitados" (tabela detalhesTable)
     const detalhesTable = document.getElementById('detalhesTable');
-    const rows = detalhesTable.querySelectorAll('tbody tr');
+    const rowsSolicitados = detalhesTable.querySelectorAll('tbody tr');
+    const listaMateriaisSolicitados = [];
 
-    // Array para armazenar cada item
-    const listaMateriais = [];
-
-    rows.forEach((row, rowIndex) => {
+    rowsSolicitados.forEach((row, rowIndex) => {
       const cols = row.querySelectorAll('td');
-
-      // Logs para depuração: mostra quantas colunas foram encontradas
-      console.log(`Linha ${rowIndex}: quantidade de colunas = ${cols.length}`);
-      cols.forEach((col, colIndex) => {
-        console.log(`  Coluna ${colIndex}:`, col.innerText);
-      });
-
-      // A tabela possui 9 colunas no <thead>:
+      // Esperamos 9 colunas:
       // 0 -> (checkbox hidden)
       // 1 -> LOCAL
       // 2 -> ITEM
@@ -27,14 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // 4 -> DESTINO
       // 5 -> DATA
       // 6 -> HORA
-      // 7 -> RECEBER (não usado no relatório)
+      // 7 -> RECEBER (ignorado no relatório)
       // 8 -> TEMPO
-
-      // Se o cols.length < 9, possivelmente "TEMPO" está faltando no HTML dessa linha
-      if (cols.length < 9) {
-        console.warn(`A linha ${rowIndex} não possui 9 colunas. Verifique se a coluna TEMPO está presente.`);
-        return; // Pula essa linha, pois não tem a estrutura esperada
-      }
+      if (cols.length < 9) return; // se faltar colunas, pula
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -42,15 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const destino = cols[4].innerText;
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
+      const tempo = cols[8].innerText; // coluna 8
+      const reportado = ''; // futuro uso
 
-      // Captura o TEMPO (coluna 8)
-      const tempo = cols[8].innerText;
-
-      // Deixamos 'reportado' em branco (futuro uso)
-      const reportado = '';
-
-      // Monta o objeto com o campo tempo incluso
-      listaMateriais.push({
+      listaMateriaisSolicitados.push({
         local,
         item,
         qtd,
@@ -62,39 +43,78 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Cria no localStorage a pasta do mês e o arquivo pela data
+    // 2) Capturar "Materiais Recebidos" (tabela recebidosTable)
+    const recebidosTable = document.getElementById('recebidosTable');
+    const rowsRecebidos = recebidosTable.querySelectorAll('tbody tr');
+    const listaMateriaisRecebidos = [];
+
+    rowsRecebidos.forEach((row, rowIndex) => {
+      const cols = row.querySelectorAll('td');
+      // Esperamos 9 colunas:
+      // 0 -> (checkbox hidden)
+      // 1 -> LOCAL
+      // 2 -> ITEM
+      // 3 -> QTD
+      // 4 -> DESTINO
+      // 5 -> DATA
+      // 6 -> HORA
+      // 7 -> RECEBIDO
+      // 8 -> GUARDADO
+      if (cols.length < 9) return; // se faltar colunas, pula
+
+      const local = cols[1].innerText;
+      const item = cols[2].innerText;
+      const qtd = cols[3].innerText;
+      const destino = cols[4].innerText;
+      const data = cols[5].innerText;
+      const hora = cols[6].innerText;
+      const tempo = ''; // Observação: não há "TEMPO" aqui por padrão, mas se quiser, ajuste
+      const recebido = cols[7].innerText;
+      const guardado = cols[8].innerText;
+
+      listaMateriaisRecebidos.push({
+        local,
+        item,
+        qtd,
+        destino,
+        data,
+        hora,
+        tempo,      // se desejar aplicar "TEMPO" também aqui, é só incluir a coluna
+        recebido,
+        guardado
+      });
+    });
+
+    // 3) Gerar a data do relatório
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mesIndex = hoje.getMonth(); // 0..11
-    const anoDoisDig = String(hoje.getFullYear()).slice(-2); // últimos 2 dígitos
+    const anoDoisDig = String(hoje.getFullYear()).slice(-2);
 
     const MESES = [
       'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
       'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
     ];
     const nomeMes = MESES[mesIndex];
-
-    // Exemplo de nome de arquivo: 21_12_24 (DD_MM_AA)
     const dataCurta = `${dia}_${String(mesIndex + 1).padStart(2, '0')}_${anoDoisDig}`;
 
-    // Recupera (ou cria) o objeto de relatórios
+    // 4) Salvar no localStorage
     const stored = localStorage.getItem('relatoriosMes');
     let relatoriosMes = stored ? JSON.parse(stored) : {};
 
-    // Se ainda não existe o "mês" no objeto, cria
     if (!relatoriosMes[nomeMes]) {
       relatoriosMes[nomeMes] = {};
     }
 
-    // Salva o array "listaMateriais" nesse "arquivo" dataCurta
+    // Guardamos dois conjuntos: solicitados e recebidos
     relatoriosMes[nomeMes][dataCurta] = {
-      items: listaMateriais
+      solicitados: listaMateriaisSolicitados,
+      recebidos: listaMateriaisRecebidos
     };
 
-    // Atualiza no localStorage
     localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
 
-    // Exibe apenas uma mensagem de sucesso
+    // 5) Mensagem de sucesso (sem redirecionar)
     alert('Relatório registrado com sucesso!');
   });
 });
