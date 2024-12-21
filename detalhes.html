@@ -160,20 +160,15 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts -->
+    <!-- Scripts básicos da aplicação -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Script de relatório (carregado por último) -->
+    <script src="relatorio.js"></script>
 
     <script>
-        // Exemplo simples de função para gerar relatório
-        function gerarRelatorio() {
-            // Aqui você pode inserir a lógica para gerar ou baixar o relatório
-            // Por exemplo, chamar uma rota de API, gerar PDF, etc.
-            console.log("Relatório gerado com sucesso!");
-            // Exemplo fictício de redirecionamento:
-            // window.location.href = '/api/relatorios/gerar';
-        }
-
+        // Lógica de tema escuro e outras inicializações
         document.addEventListener('DOMContentLoaded', function () {
             // Carregar tema salvo
             const savedTheme = localStorage.getItem('theme');
@@ -195,11 +190,7 @@
                 }
             });
 
-            // Botão de Gerar Relatório
-            const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
-            if (gerarRelatorioButton) {
-                gerarRelatorioButton.addEventListener('click', gerarRelatorio);
-            }
+            // (Removido o evento de clique do botão Gerar Relatório daqui, pois está em relatorio.js)
         });
     </script>
 </body>
