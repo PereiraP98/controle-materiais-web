@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // 4 -> DESTINO
       // 5 -> DATA
       // 6 -> HORA
-      // 7 -> RECEBER
-      // 8 -> TEMPO
+      // 7 -> RECEBER (não usado)
+      // 8 -> TEMPO (se quiser pegar, basta ajustar abaixo)
 
-      // Se queremos só as colunas 1..6:
+      // Atualmente, pegamos apenas col[1..6]:
       const local = cols[1].innerText;
       const item = cols[2].innerText;
       const qtd = cols[3].innerText;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const nomeMes = MESES[mesIndex];
 
-    // Exemplo de nome de arquivo: 21_12_24
+    // Exemplo de nome de arquivo: 21_12_24 (DD_MM_AA)
     const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${anoDoisDig}`;
 
     // Recupera (ou cria) o objeto de relatórios
