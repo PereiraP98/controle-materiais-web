@@ -1,0 +1,66 @@
+<!-- DATArelatorio.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dados do Relatório</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      margin-bottom: 16px;
+    }
+    .relatorio-item {
+      border: 1px solid #ccc;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .campo-label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Relatório de Materiais</h1>
+  <div id="relatorioContainer"></div>
+
+  <script>
+    // Quando a página carrega, buscamos os dados salvos no LocalStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const relatorioDataString = localStorage.getItem('relatorioData');
+
+      // Se não houver dados, apenas avisa o usuário
+      if (!relatorioDataString) {
+        document.getElementById('relatorioContainer').innerHTML = 
+          '<p>Nenhum relatório encontrado. Gere um novo relatório.</p>';
+        return;
+      }
+
+      // Converte a string JSON em array de objetos
+      const relatorioData = JSON.parse(relatorioDataString);
+
+      // Monta o HTML para exibir cada item em formato de lista
+      let htmlContent = `<p><strong>Total de itens solicitados:</strong> ${relatorioData.length}</p>`;
+
+      relatorioData.forEach((item, index) => {
+        htmlContent += `
+          <div class="relatorio-item">
+            <p><span class="campo-label">Item #${index + 1}</span></p>
+            <p><span class="campo-label">Local:</span> ${item.local}</p>
+            <p><span class="campo-label">Item:</span> ${item.item}</p>
+            <p><span class="campo-label">Quantidade:</span> ${item.qtd}</p>
+            <p><span class="campo-label">Destino:</span> ${item.destino}</p>
+            <p><span class="campo-label">Data:</span> ${item.data}</p>
+            <p><span class="campo-label">Hora:</span> ${item.hora}</p>
+            <p><span class="campo-label">Reportado:</span> ${item.reportado}</p>
+          </div>
+        `;
+      });
+
+      document.getElementById('relatorioContainer').innerHTML = htmlContent;
+    });
+  </script>
+</body>
+</html>
