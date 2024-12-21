@@ -1,62 +1,62 @@
 // relatorio.js
 document.addEventListener('DOMContentLoaded', () => {
-  // Seleciona o botão de "Gerar Relatório"
   const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
 
   gerarRelatorioButton.addEventListener('click', () => {
-    // Seleciona a tabela de "Detalhes de Materiais Solicitados"
+    // 1) Obter linhas da tabela
     const detalhesTable = document.getElementById('detalhesTable');
-    // Pega todas as linhas do tbody
     const rows = detalhesTable.querySelectorAll('tbody tr');
 
-    // Array para armazenar cada item
-    const listaMateriais = [];
+    // 2) Montar array de materiais
+    const materiais = [];
+    rows.forEach(row => {
+      const cols = row.querySelectorAll('td');
+      // Ajuste índices caso sua tabela tenha outras colunas.
+      // Exemplo (7 colunas):
+      const local    = cols[0].innerText;
+      const item     = cols[1].innerText;
+      const qtd      = cols[2].innerText;
+      const destino  = cols[3].innerText;
+      const data     = cols[4].innerText;
+      const hora     = cols[5].innerText;
+      const reportado= cols[6].innerText;
 
-    rows.forEach((row) => {
-      const columns = row.querySelectorAll('td');
-
-      // Ajuste os índices de acordo com a sequência das suas colunas.
-      // Em "detalhes.html", as colunas eram:
-      // 0 - checkbox (hidden ou não)
-      // 1 - LOCAL
-      // 2 - ITEM
-      // 3 - QTD
-      // 4 - DESTINO
-      // 5 - DATA
-      // 6 - HORA
-      // 7 - RECEBER
-      // 8 - TEMPO
-      // Supondo que a 0 seja oculta e a 7 e 8 não sejam necessários:
-      // Precisamos pegar: local = columns[1], item = columns[2], ...
-      const local = columns[1].innerText;
-      const item = columns[2].innerText;
-      const qtd = columns[3].innerText;
-      const destino = columns[4].innerText;
-      const data = columns[5].innerText;
-      const hora = columns[6].innerText;
-
-      // "Reportado" é um valor que pode vir de outra lógica
-      // Ajuste conforme seu caso. Vou deixar 'Não' como exemplo.
-      const reportado = 'Não';
-
-      // Monta um objeto
-      const materialObj = {
-        local,
-        item,
-        qtd,
-        destino,
-        data,
-        hora,
-        reportado
-      };
-
-      listaMateriais.push(materialObj);
+      materiais.push({ local, item, qtd, destino, data, hora, reportado });
     });
 
-    // Salva no localStorage como JSON
-    localStorage.setItem('relatorioData', JSON.stringify(listaMateriais));
+    // 3) Gerar mês e dataCurta
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mesIndex = hoje.getMonth(); // 0-11
+    const ano = String(hoje.getFullYear()).slice(-2); // últimos dois dígitos
 
-    // Redireciona para a nova página DATArelatorio.html
+    // Meses em maiúsculo:
+    const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO",
+                   "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    const mesNome = MESES[mesIndex];
+
+    // Data curta ex.: 21_12_24
+    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${ano}`;
+
+    // 4) Salvar no localStorage (chave: "relatoriosMes")
+    //    Estrutura: { DEZEMBRO: { "21_12_24": { items: [] }, ... }, ... }
+    const stored = localStorage.getItem('relatoriosMes');
+    let relatoriosMes = stored ? JSON.parse(stored) : {};
+
+    // Se não existir a “pasta” do mês, cria
+    if (!relatoriosMes[mesNome]) {
+      relatoriosMes[mesNome] = {};
+    }
+
+    // Cria o “arquivo” com a dataCurta
+    relatoriosMes[mesNome][dataCurta] = {
+      items: materiais
+    };
+
+    // Regravar no localStorage
+    localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
+
+    // 5) Redirecionar para a nova página
     window.location.href = 'DATArelatorio.html';
   });
 });
