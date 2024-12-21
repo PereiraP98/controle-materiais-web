@@ -104,6 +104,22 @@
             background-color: #007bff;
             color: white;
         }
+
+        .print-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .print-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -112,6 +128,11 @@
     </header>
 
     <main class="main-container">
+        <!-- Botão de Imprimir -->
+        <div style="width: 100%; max-width: 900px; display: flex; justify-content: flex-start;">
+            <button class="print-button" onclick="window.print()">Imprimir</button>
+        </div>
+
         <!-- Subtítulo Detalhes Gerais -->
         <div class="subtitulo-container">
             <div>DETALHES GERAIS</div>
@@ -204,7 +225,7 @@
             </div>
 
             <div class="section-box">
-                <h2>Materiais de Outros Endereços</h2>
+                <h2>Materiais Recebidos de Outros Endereços</h2>
                 <table>
                     <thead>
                         <tr>
