@@ -116,8 +116,8 @@
         <div class="subtitulo-container">
             <div>DETALHES GERAIS</div>
             <div class="detalhes-info">
-                <span><strong>Turno:</strong> TARDE</span>
-                <span><strong>Data:</strong> 09/08/2024</span>
+                <span><strong>Turno:</strong></span>
+                <span><strong>Data:</strong></span>
             </div>
         </div>
 
@@ -136,7 +136,7 @@
                         </tr>
                     </thead>
                     <tbody id="solicitadosTable">
-                        <!-- Dados serão preenchidos dinamicamente -->
+                        <!-- Dados preenchidos dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -154,7 +154,7 @@
                         </tr>
                     </thead>
                     <tbody id="recebidosTable">
-                        <!-- Dados serão preenchidos dinamicamente -->
+                        <!-- Dados preenchidos dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -170,68 +170,28 @@
             <!-- Materiais Recebidos do CA -->
             <div class="section-box">
                 <h2>Materiais Recebidos do CA</h2>
-                <p><strong>Itens:</strong> <span id="caItens">0</span></p>
-                <p><strong>Média:</strong> <span id="caMedia">00:00</span></p>
+                <p><strong>Itens:</strong> 0</p>
+                <p><strong>Média:</strong> 00:00</p>
             </div>
 
             <!-- Materiais Recebidos do VF -->
             <div class="section-box">
                 <h2>Materiais Recebidos do VF</h2>
-                <p><strong>Itens:</strong> <span id="vfItens">0</span></p>
-                <p><strong>Média:</strong> <span id="vfMedia">00:00</span></p>
+                <p><strong>Itens:</strong> 0</p>
+                <p><strong>Média:</strong> 00:00</p>
             </div>
 
-            <!-- Materiais Recebidos de Outros Endereços -->
+            <!-- Materiais de Outros Endereços -->
             <div class="section-box">
                 <h2>Materiais de Outros Endereços</h2>
-                <p><strong>Itens:</strong> <span id="outrosItens">0</span></p>
-                <p><strong>Média:</strong> <span id="outrosMedia">00:00</span></p>
+                <p><strong>Itens:</strong> 0</p>
+                <p><strong>Média:</strong> 00:00</p>
             </div>
         </div>
     </main>
 
     <script>
-        // Exemplo de como os dados podem ser preenchidos dinamicamente
-        document.getElementById('totalSolicitados').textContent = 5; // Exemplo
-        document.getElementById('totalRecebidos').textContent = 7; // Exemplo
-
-        const solicitadosData = [
-            { local: 'CA', item: '20292', solicitado: '10:00' },
-            { local: 'VF', item: '11723', solicitado: '11:00' }
-        ];
-
-        const recebidosData = [
-            { local: 'CA', item: '20292', recebido: '10:55' },
-            { local: 'VF', item: '11723', recebido: '11:50' }
-        ];
-
-        const solicitadosTable = document.getElementById('solicitadosTable');
-        solicitadosData.forEach(data => {
-            const row = `<tr>
-                <td>${data.local}</td>
-                <td>${data.item}</td>
-                <td>${data.solicitado}</td>
-            </tr>`;
-            solicitadosTable.innerHTML += row;
-        });
-
-        const recebidosTable = document.getElementById('recebidosTable');
-        recebidosData.forEach(data => {
-            const row = `<tr>
-                <td>${data.local}</td>
-                <td>${data.item}</td>
-                <td>${data.recebido}</td>
-            </tr>`;
-            recebidosTable.innerHTML += row;
-        });
-
-        // Exemplo de dados gerais de tempo
-        document.getElementById('caItens').textContent = 2;
-        document.getElementById('caMedia').textContent = '00:27';
-        document.getElementById('vfItens').textContent = 3;
-        document.getElementById('vfMedia').textContent = '00:21';
-        document.getElementById('outrosItens').textContent = 2;
-        document.getElementById('outrosMedia').textContent = '00:13';
+        // Dados dinamicamente preenchidos serão gerados em outra página
     </script>
 </body>
 </html>
