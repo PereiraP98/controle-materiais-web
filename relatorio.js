@@ -3,55 +3,74 @@ document.addEventListener('DOMContentLoaded', () => {
   const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
 
   gerarRelatorioButton.addEventListener('click', () => {
+    // Seleciona a tabela "Detalhes de Materiais Solicitados"
     const detalhesTable = document.getElementById('detalhesTable');
     const rows = detalhesTable.querySelectorAll('tbody tr');
+
+    // Array para armazenar cada item
     const listaMateriais = [];
 
     rows.forEach(row => {
       const cols = row.querySelectorAll('td');
-
-      // Índices: 
-      // 0 -> hidden checkbox (não visível)
+      // A tabela possui 9 colunas no <thead>:
+      // 0 -> (checkbox hidden)
       // 1 -> LOCAL
       // 2 -> ITEM
       // 3 -> QTD
       // 4 -> DESTINO
       // 5 -> DATA
       // 6 -> HORA
-      const local    = cols[1].innerText;
-      const item     = cols[2].innerText;
-      const qtd      = cols[3].innerText;
-      const destino  = cols[4].innerText;
-      const data     = cols[5].innerText;
-      const hora     = cols[6].innerText;
+      // 7 -> RECEBER
+      // 8 -> TEMPO
 
-      // Deixar REPORTADO em branco
+      // Se queremos só as colunas 1..6:
+      const local = cols[1].innerText;
+      const item = cols[2].innerText;
+      const qtd = cols[3].innerText;
+      const destino = cols[4].innerText;
+      const data = cols[5].innerText;
+      const hora = cols[6].innerText;
+
+      // Deixamos 'reportado' em branco (futuro uso)
       const reportado = '';
 
+      // Monta o objeto
       listaMateriais.push({ local, item, qtd, destino, data, hora, reportado });
     });
 
-    // Lógica de salvar no localStorage por mês e dataCurta ...
+    // Cria no localStorage a pasta do mês e o arquivo pela data
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
-    const mesIndex = hoje.getMonth(); 
-    const ano = String(hoje.getFullYear()).slice(-2);
+    const mesIndex = hoje.getMonth(); // 0..11
+    const anoDoisDig = String(hoje.getFullYear()).slice(-2); // últimos 2 dígitos
 
-    const MESES = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO",
-                   "JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
-    const mesNome = MESES[mesIndex];
-    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${ano}`;
+    const MESES = [
+      'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+      'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+    ];
+    const nomeMes = MESES[mesIndex];
 
+    // Exemplo de nome de arquivo: 21_12_24
+    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${anoDoisDig}`;
+
+    // Recupera (ou cria) o objeto de relatórios
     const stored = localStorage.getItem('relatoriosMes');
     let relatoriosMes = stored ? JSON.parse(stored) : {};
 
-    if (!relatoriosMes[mesNome]) {
-      relatoriosMes[mesNome] = {};
+    // Se ainda não existe o "mês" no objeto, cria
+    if (!relatoriosMes[nomeMes]) {
+      relatoriosMes[nomeMes] = {};
     }
 
-    relatoriosMes[mesNome][dataCurta] = { items: listaMateriais };
+    // Salva o array "listaMateriais" nesse "arquivo" dataCurta
+    relatoriosMes[nomeMes][dataCurta] = {
+      items: listaMateriais
+    };
+
+    // Atualiza no localStorage
     localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
 
-    window.location.href = 'DATArelatorio.html';
+    // Em vez de redirecionar, exibimos apenas uma mensagem de sucesso
+    alert('Relatório registrado com sucesso!');
   });
 });
