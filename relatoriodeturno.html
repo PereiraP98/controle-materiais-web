@@ -160,74 +160,11 @@
             </div>
         </div>
 
-        <!-- Subtítulo Dados Gerais de Tempo -->
-        <div class="subtitulo-container">
-            <div>DADOS GERAIS DE TEMPO</div>
-        </div>
-
-        <!-- Seções de Dados Gerais de Tempo -->
-        <div class="section-container">
-            <div class="section-box">
-                <h2>Materiais Recebidos do CA</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Itens</th>
-                            <th>Média</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="itensCA">0</td>
-                            <td id="mediaCA">00:00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section-box">
-                <h2>Materiais Recebidos do VF</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Itens</th>
-                            <th>Média</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="itensVF">0</td>
-                            <td id="mediaVF">00:00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section-box">
-                <h2>Materiais Recebidos de Outros Endereços</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Itens</th>
-                            <th>Média</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="itensOutros">0</td>
-                            <td id="mediaOutros">00:00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- Subtítulo Detalhes de Materiais Solicitados -->
         <div class="subtitulo-container">
             <div>DETALHES DE MATERIAIS SOLICITADOS</div>
         </div>
 
-        <!-- Detalhes de Materiais Solicitados -->
         <div class="section-box">
             <table>
                 <thead>
@@ -238,10 +175,36 @@
                         <th>ORIGEM</th>
                         <th>DATA</th>
                         <th>HORA</th>
-                        <th>REPORTADO</th>
+                        <th>REPORT</th>
                     </tr>
                 </thead>
-                <tbody id="detalhesTable">
+                <tbody id="detalhesSolicitadosTable">
+                    <!-- Dados serão preenchidos dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Subtítulo Detalhes de Materiais Recebidos -->
+        <div class="subtitulo-container">
+            <div>DETALHES DE MATERIAIS RECEBIDOS</div>
+        </div>
+
+        <div class="section-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>ORIGEM</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>TEMPO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody id="detalhesRecebidosTable">
                     <!-- Dados serão preenchidos dinamicamente -->
                 </tbody>
             </table>
@@ -249,7 +212,9 @@
     </main>
 
     <script>
-        // Placeholder para preencher as tabelas com dados futuramente
+        // Exemplo de inicialização vazia, dados serão preenchidos posteriormente
+        document.getElementById('totalSolicitados').textContent = 0;
+        document.getElementById('totalRecebidos').textContent = 0;
     </script>
 </body>
 </html>
