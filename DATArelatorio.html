@@ -6,9 +6,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .logo { width: 60px; height: auto; }
-        .relatorio-container { margin-top: 10px; }
-        .relatorio-mes { margin-bottom: 20px; }
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+        .relatorio-container {
+            margin-top: 10px;
+        }
+        .relatorio-mes {
+            margin-bottom: 20px;
+        }
         .relatorio-data {
             margin-left: 20px;
             cursor: pointer;
@@ -17,37 +24,60 @@
             display: inline-block;
             margin: 8px 0;
         }
-        .relatorio-data:hover { color: darkblue; }
+        .relatorio-data:hover {
+            color: darkblue;
+        }
         .excluir-todos-button {
             background-color: #f44336;
-            color: white; border: none; padding: 8px 16px;
-            border-radius: 4px; cursor: pointer; margin-left: 15px;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 15px;
         }
-        .excluir-todos-button:hover { background-color: #d32f2f; }
-
-        h3 { margin: 12px 0 8px; color: #215C98; }
-        table { margin-bottom: 20px; }
+        .excluir-todos-button:hover {
+            background-color: #d32f2f;
+        }
+        h3 {
+            margin: 12px 0 8px;
+            color: #215C98;
+        }
+        table {
+            margin-bottom: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table thead tr th,
+        table tbody tr td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="detalhes-page">
     <header>
         <div class="header-container">
             <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true"
                      alt="DevCore Logo" class="logo">
             </div>
             <h1>Relatórios Armazenados</h1>
             <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel (detalhes.html) -->
                 <button onclick="window.location.href='detalhes.html'">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true"
                          alt="Painel" width="30" height="30">
                 </button>
+                <!-- Botão de Logout (se desejar) -->
                 <button id="logoutButton" class="header-button">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true"
                          alt="Logout" width="30" height="30">
                 </button>
+                <!-- Botão de Alternar Tema -->
                 <button id="themeToggleButton" class="header-button">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true"
                          alt="Tema Escuro" width="30" height="30">
                 </button>
             </div>
@@ -66,7 +96,9 @@
         </section>
     </main>
 
-    <footer>© 2024 COLLAB - Todos os direitos reservados.</footer>
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -86,7 +118,7 @@
         }
       });
 
-      // Carrega e exibe relatoriosMes
+      // Carrega relatoriosMes do localStorage
       const stored = localStorage.getItem('relatoriosMes');
       if (!stored) {
         document.getElementById('listaRelatorios').innerHTML =
@@ -98,8 +130,10 @@
       // Monta a lista de meses e datas
       let html = '';
       for (let mes in relatoriosMes) {
-        html += `<div class="relatorio-mes">
-                  <h3>📁 ${mes}</h3>`;
+        html += `
+          <div class="relatorio-mes">
+            <h3>📁 ${mes}</h3>
+        `;
         const datasObj = relatoriosMes[mes];
         for (let dataCurta in datasObj) {
           html += `
@@ -122,11 +156,11 @@
           const containerDiv = document.getElementById(`container-${mes}-${dataC}`);
           if (!containerDiv) return;
 
+          // Se estava oculto, mostrar
           if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
-            // Pegar 'solicitados' e 'recebidos'
             const { solicitados, recebidos } = relatoriosMes[mes][dataC];
 
-            // 1) Materiais Solicitados
+            // MATERIAIS SOLICITADOS
             let tableHtml = `<h3>Materiais solicitados</h3>`;
             tableHtml += `
               <table>
@@ -160,7 +194,7 @@
             });
             tableHtml += `</tbody></table>`;
 
-            // 2) Materiais Recebidos
+            // MATERIAIS RECEBIDOS
             tableHtml += `<h3>Materiais recebidos</h3>`;
             tableHtml += `
               <table>
@@ -188,8 +222,8 @@
                   <td>${item.destino}</td>
                   <td>${item.data}</td>
                   <td>${item.hora}</td>
-                  <td>${item.tempo}</td>   <!-- Se tempo estiver vazio, aparecerá vazio -->
                   <td>${item.recebido}</td>
+                  <td>${item.tempo}</td>
                   <td>${item.guardado}</td>
                 </tr>
               `;
