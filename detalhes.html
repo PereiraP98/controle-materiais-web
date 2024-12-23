@@ -34,6 +34,11 @@
         .gerar-relatorio-button:hover {
             background-color: #0056b3;
         }
+
+        /* Oculta elementos com esta classe */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="detalhes-page">
@@ -44,21 +49,25 @@
         <!-- Header com mesma lógica do index -->
         <div class="header-container">
             <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" alt="DevCore Logo" class="logo">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+                     alt="DevCore Logo" class="logo">
             </div>
             <h1>Detalhes de Materiais</h1>
             <div class="header-buttons">
                 <!-- Botão de Voltar ao Painel -->
                 <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" alt="Painel" width="30" height="30">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
+                         alt="Painel" width="30" height="30">
                 </button>
                 <!-- Botão de Logout -->
                 <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" alt="Logout" width="30" height="30">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
+                         alt="Logout" width="30" height="30">
                 </button>
                 <!-- Botão de Alternar Tema -->
                 <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" alt="Tema Escuro" width="30" height="30">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
+                         alt="Tema Escuro" width="30" height="30">
                 </button>
             </div>
         </div>
@@ -87,14 +96,26 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos"></th>
+                        <!-- 9 colunas -->
+                        <!-- (0) hidden checkbox -->
+                        <th class="checkbox-column hidden">
+                            <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
+                        </th>
+                        <!-- (1) LOCAL -->
                         <th>LOCAL</th>
+                        <!-- (2) ITEM -->
                         <th>ITEM</th>
+                        <!-- (3) QTD -->
                         <th>QTD</th>
+                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
+                        <!-- (5) DATA -->
                         <th>DATA</th>
+                        <!-- (6) HORA -->
                         <th>HORA</th>
+                        <!-- (7) RECEBER -->
                         <th>RECEBER</th>
+                        <!-- (8) TEMPO -->
                         <th>TEMPO</th>
                     </tr>
                 </thead>
@@ -116,19 +137,33 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
+                        <!-- 10 colunas -->
+                        <!-- (0) hidden checkbox -->
+                        <th class="checkbox-column hidden">
+                            <input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos">
+                        </th>
+                        <!-- (1) LOCAL -->
                         <th>LOCAL</th>
+                        <!-- (2) ITEM -->
                         <th>ITEM</th>
+                        <!-- (3) QTD -->
                         <th>QTD</th>
+                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
+                        <!-- (5) DATA -->
                         <th>DATA</th>
+                        <!-- (6) HORA -->
                         <th>HORA</th>
+                        <!-- (7) RECEBIDO -->
                         <th>RECEBIDO</th>
+                        <!-- (8) TEMPO (oculto) -->
+                        <th class="hidden">TEMPO</th>
+                        <!-- (9) GUARDADO -->
                         <th>GUARDADO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dados dinâmicos -->
+                    <!-- Dados dinâmicos (10 <td> por linha, col[8] = TEMPO, hidden) -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -178,7 +213,7 @@
                 document.body.classList.remove('dark-mode');
             }
 
-            // Lógica do botão de alternar tema
+            // Botão de alternar tema
             const themeToggleButton = document.getElementById('themeToggleButton');
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
@@ -190,7 +225,7 @@
                 }
             });
 
-            // (Removido o evento de clique do botão Gerar Relatório daqui, pois está em relatorio.js)
+            // Removido o clique de "Gerar Relatório" daqui, pois está em relatorio.js
         });
     </script>
 </body>
