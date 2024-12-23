@@ -6,15 +6,23 @@
   <link href="styles.css" rel="stylesheet">
   <style>
     .logo { width: 60px; height: auto; }
+    .relatorio-mes { margin-bottom: 20px; }
     .relatorio-data {
       margin-left: 20px;
       cursor: pointer;
       color: blue;
       text-decoration: underline;
       display: inline-block;
-      margin: 4px 0;
+      margin: 8px 0;
     }
     .relatorio-data:hover { color: darkblue; }
+    .excluir-todos-button {
+      background-color: #f44336; 
+      color: white;
+      border: none; padding: 8px 16px;
+      border-radius: 4px; cursor: pointer;
+    }
+    .excluir-todos-button:hover { background-color: #d32f2f; }
     table { border-collapse: collapse; width: 100%; margin-top: 10px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   </style>
@@ -22,6 +30,9 @@
 <body class="detalhes-page">
   <header>
     <div class="header-container">
+      <div class="logo-container">
+        <img src="..." alt="Logo" class="logo">
+      </div>
       <h1>Relatórios Armazenados</h1>
       <div class="header-buttons">
         <button onclick="window.location.href='detalhes.html'">Voltar</button>
@@ -33,31 +44,40 @@
   <main style="padding: 20px;">
     <section>
       <h2>Relatórios Gerados</h2>
-      <button id="excluirTodosButton">Excluir Todos</button>
+      <button id="excluirTodosButton" class="excluir-todos-button">Excluir Todos</button>
       <div id="listaRelatorios"></div>
     </section>
-
-    <section style="margin-top: 30px;">
+    <section>
       <h2>Materiais Solicitados</h2>
       <table>
         <thead>
           <tr>
-            <th>LOCAL</th><th>ITEM</th><th>QTD</th><th>DESTINO</th>
-            <th>DATA</th><th>HORA</th><th>TEMPO</th><th>REPORTADO</th>
+            <th>LOCAL</th>
+            <th>ITEM</th>
+            <th>QTD</th>
+            <th>DESTINO</th>
+            <th>DATA</th>
+            <th>HORA</th>
+            <th>TEMPO</th>
+            <th>REPORTADO</th>
           </tr>
         </thead>
         <tbody id="solicitadosBody"></tbody>
       </table>
     </section>
-
-    <section style="margin-top: 30px;">
+    <section>
       <h2>Materiais Recebidos</h2>
       <table>
         <thead>
           <tr>
-            <th>LOCAL</th><th>ITEM</th><th>QTD</th><th>DESTINO</th>
-            <th>DATA</th><th>HORA</th><th>RECEBIDO</th>
-            <th>TEMPO</th><th>GUARDADO</th> <!-- Exibe tempo -->
+            <th>LOCAL</th>
+            <th>ITEM</th>
+            <th>QTD</th>
+            <th>DESTINO</th>
+            <th>DATA</th>
+            <th>HORA</th>
+            <th>RECEBIDO</th>
+            <th>GUARDADO</th>
           </tr>
         </thead>
         <tbody id="recebidosBody"></tbody>
@@ -65,9 +85,13 @@
     </section>
   </main>
 
+  <footer style="text-align: center;">
+    © 2024 COLLAB
+  </footer>
+
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Tema
+    // Lógica de tema
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
@@ -83,18 +107,21 @@
       }
     });
 
-    // Carrega relatorios
+    // Carrega localStorage
     const stored = localStorage.getItem('relatoriosMes');
     if (!stored) {
-      document.getElementById('listaRelatorios').innerHTML = "<p>Nenhum relatório encontrado.</p>";
+      document.getElementById('listaRelatorios').innerHTML = 
+        "<p>Nenhum relatório encontrado.</p>";
       return;
     }
     const relatoriosMes = JSON.parse(stored);
     console.log('[DATArelatorio] relatoriosMes:', relatoriosMes);
 
+    // Lista meses e datas
     let html = '';
     for (let mes in relatoriosMes) {
-      html += `<h3>📁 ${mes}</h3>`;
+      html += `<div class="relatorio-mes">
+                 <h3>📁 ${mes}</h3>`;
       const datasObj = relatoriosMes[mes];
       for (let dataCurta in datasObj) {
         html += `
@@ -103,27 +130,27 @@
           </div>
         `;
       }
+      html += `</div>`;
     }
     document.getElementById('listaRelatorios').innerHTML = html;
 
-    // Expansão
-    const dataEls = document.querySelectorAll('.relatorio-data');
-    dataEls.forEach(el => {
+    // Ao clicar em cada data
+    const dataElements = document.querySelectorAll('.relatorio-data');
+    dataElements.forEach(el => {
       el.addEventListener('click', () => {
         const mes = el.getAttribute('data-mes');
         const dataC = el.getAttribute('data-data');
         const entry = relatoriosMes[mes][dataC];
-        if (!entry) return;
+        console.log('[DATArelatorio] clique em', mes, dataC, entry);
 
         const { solicitados, recebidos } = entry;
-        console.log(`[DATArelatorio] clique: mes=${mes}, data=${dataC}`, entry);
 
-        // Solicited
+        // Preenche solicitados
         const solBody = document.getElementById('solicitadosBody');
         solBody.innerHTML = '';
         if (solicitados && solicitados.length > 0) {
-          solicitados.forEach((item, i) => {
-            console.log(`[DATArelatorio] solicitados[${i}]:`, item);
+          solicitados.forEach((item, idx) => {
+            console.log(`[DATArelatorio] solicitados #${idx}`, item);
             solBody.insertAdjacentHTML('beforeend', `
               <tr>
                 <td>${item.local}</td>
@@ -139,12 +166,12 @@
           });
         }
 
-        // Received
+        // Preenche recebidos
         const recBody = document.getElementById('recebidosBody');
         recBody.innerHTML = '';
         if (recebidos && recebidos.length > 0) {
-          recebidos.forEach((item, i) => {
-            console.log(`[DATArelatorio] recebidos[${i}]:`, item);
+          recebidos.forEach((item, idx) => {
+            console.log(`[DATArelatorio] recebidos #${idx}`, item);
             recBody.insertAdjacentHTML('beforeend', `
               <tr>
                 <td>${item.local}</td>
@@ -154,7 +181,6 @@
                 <td>${item.data}</td>
                 <td>${item.hora}</td>
                 <td>${item.recebido}</td>
-                <td>${item.tempo}</td>   <!-- Exibe tempo -->
                 <td>${item.guardado}</td>
               </tr>
             `);
@@ -163,12 +189,12 @@
       });
     });
 
-    // Excluir todos
+    // Botão excluir todos
     const excluirBtn = document.getElementById('excluirTodosButton');
     excluirBtn.addEventListener('click', () => {
-      if (confirm('Deseja realmente excluir TODOS os relatórios?')) {
+      if (confirm('Deseja excluir TODOS os relatórios?')) {
         localStorage.removeItem('relatoriosMes');
-        location.reload();
+        window.location.reload();
       }
     });
   });
