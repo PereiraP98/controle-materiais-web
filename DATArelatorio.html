@@ -5,7 +5,6 @@
     <title>Relatórios Armazenados</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
     <style>
         .logo {
             width: 60px;
@@ -66,7 +65,7 @@
             </div>
             <h1>Relatórios Armazenados</h1>
             <div class="header-buttons">
-                <!-- Botão de voltar para detalhes.html -->
+                <!-- Voltar para a página detalhes.html -->
                 <button onclick="window.location.href='detalhes.html'">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true"
                          alt="Painel" width="30" height="30">
@@ -103,7 +102,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Lógica de tema escuro
+      // Tema escuro
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -128,7 +127,7 @@
       }
       const relatoriosMes = JSON.parse(stored);
 
-      // Monta a lista de pastas (mês) e arquivos (data)
+      // Monta a lista de (meses) e (datas)
       let html = '';
       for (let mes in relatoriosMes) {
         html += `
@@ -148,7 +147,7 @@
       }
       document.getElementById('listaRelatorios').innerHTML = html;
 
-      // Clique para expandir/ocultar cada data
+      // Expansão ao clicar na data
       const dataElements = document.querySelectorAll('.relatorio-data');
       dataElements.forEach(el => {
         el.addEventListener('click', () => {
@@ -157,11 +156,11 @@
           const containerDiv = document.getElementById(`container-${mes}-${dataC}`);
           if (!containerDiv) return;
 
+          // Se estava oculto, mostrar
           if (containerDiv.style.display === 'none' || containerDiv.style.display === '') {
-            // Pegar do localStorage: solicitados, recebidos
             const { solicitados, recebidos } = relatoriosMes[mes][dataC];
 
-            // Materiais solicitados
+            // ========== Materiais Solicitados ==========
             let tableHtml = `<h3>Materiais solicitados</h3>`;
             tableHtml += `
               <table>
@@ -195,7 +194,7 @@
             });
             tableHtml += `</tbody></table>`;
 
-            // Materiais recebidos
+            // ========== Materiais Recebidos ==========
             tableHtml += `<h3>Materiais recebidos</h3>`;
             tableHtml += `
               <table>
@@ -239,7 +238,7 @@
         });
       });
 
-      // Excluir todos os relatórios
+      // Excluir todos
       const excluirTodosButton = document.getElementById('excluirTodosButton');
       excluirTodosButton.addEventListener('click', () => {
         if (confirm('Deseja realmente excluir TODOS os relatórios?')) {
