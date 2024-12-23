@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // (5) DATA
       // (6) HORA
       // (7) RECEBER (ignorado)
-      // (8) TEMPO (decorrido para ser solicitado)
-      if (cols.length < 9) return; // Se não tiver 9 colunas, pula a linha
+      // (8) TEMPO
+      if (cols.length < 9) return; // Se tiver menos de 9, pula a linha
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const destino = cols[4].innerText;
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
-      const tempo = cols[8].innerText; // tempo decorrido para solicitar
+      const tempo = cols[8].innerText; // tempo para ser solicitado
 
-      // Deixamos 'reportado' em branco (futuro uso)
+      // 'reportado' em branco (futuro uso)
       const reportado = '';
 
       listaMateriaisSolicitados.push({
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rowsRecebidos.forEach((row) => {
       const cols = row.querySelectorAll('td');
       // Esperamos 10 colunas no "recebidosTable":
-      // (0) checkbox hidden
+      // (0) hidden
       // (1) LOCAL
       // (2) ITEM
       // (3) QTD
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // (7) RECEBIDO
       // (8) TEMPO (decorrido para receber)
       // (9) GUARDADO
-      if (cols.length < 10) return; // Se não tiver 10 colunas, pula a linha
+      if (cols.length < 10) return; // Se tiver menos de 10, pula a linha
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
       const recebido = cols[7].innerText;
-      const tempo = cols[8].innerText; // tempo decorrido para receber
+      const tempo = cols[8].innerText; // tempo de recebimento
       const guardado = cols[9].innerText;
 
       listaMateriaisRecebidos.push({
@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // ========== SALVAR NO LOCALSTORAGE ==========
-    // Gera a data (dia, mês, ano)
+    // ========== GERA DATA E MÊS PARA O RELATÓRIO ==========
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mesIndex = hoje.getMonth(); // 0..11
@@ -100,9 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
       'JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'
     ];
     const nomeMes = MESES[mesIndex];
+    // Ex: 24_12_24
     const dataCurta = `${dia}_${String(mesIndex+1).padStart(2,'0')}_${anoDoisDig}`;
 
-    // Pega ou cria o objeto 'relatoriosMes'
+    // Carrega (ou cria) o objeto 'relatoriosMes'
     const stored = localStorage.getItem('relatoriosMes');
     let relatoriosMes = stored ? JSON.parse(stored) : {};
 
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       relatoriosMes[nomeMes] = {};
     }
 
-    // Salva em relatoriosMes[nomeMes][dataCurta] = { solicitados, recebidos }
+    // Salva: solicitados e recebidos
     relatoriosMes[nomeMes][dataCurta] = {
       solicitados: listaMateriaisSolicitados,
       recebidos: listaMateriaisRecebidos
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
 
-    // Exibe mensagem de sucesso
+    // Mensagem de sucesso
     alert('Relatório registrado com sucesso!');
   });
 });
