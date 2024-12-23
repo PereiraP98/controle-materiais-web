@@ -35,7 +35,7 @@
             background-color: #0056b3;
         }
 
-        /* Oculta elementos com esta classe */
+        /* (Opcional) Oculta elementos com esta classe, se quiser ainda ocultar outra coisa */
         .hidden {
             display: none !important;
         }
@@ -96,7 +96,7 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <!-- 9 colunas (0..8) para Solicitados -->
+                        <!-- Tabela de Solicitados: 9 colunas (0..8) -->
                         <th class="checkbox-column hidden">
                             <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
                         </th>
@@ -111,7 +111,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dados dinâmicos -->
+                    <!-- 9 <td> por linha -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -128,8 +128,10 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <!-- 10 colunas (0..9) para Recebidos -->
-                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
+                        <!-- Tabela de Recebidos: 10 colunas (0..9) -->
+                        <th class="checkbox-column hidden">
+                            <input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos">
+                        </th>
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
@@ -137,14 +139,14 @@
                         <th>DATA</th>
                         <th>HORA</th>
                         <th>RECEBIDO</th>
-                        <!-- (8) TEMPO (oculto) -->
-                        <th class="hidden">TEMPO</th>
+                        <!-- (8) TEMPO (agora visível) -->
+                        <th>TEMPO</th>
                         <!-- (9) GUARDADO -->
                         <th>GUARDADO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 10 <td> por linha, com col[8] TEMPO (oculto) -->
+                    <!-- 10 <td> por linha, col[8] = TEMPO, col[9] = GUARDADO -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -206,7 +208,7 @@
                 }
             });
 
-            // O clique do botão "Gerar Relatório" está em relatorio.js
+            // O evento de clique em "Gerar Relatório" está em relatorio.js
         });
     </script>
 </body>
