@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rowsSolicitados.forEach((row) => {
       const cols = row.querySelectorAll('td');
-      // A tabela "Materiais Solicitados" tem 9 colunas:
+      // A tabela de Solicitados tem 9 colunas:
       // (0) hidden (checkbox)
       // (1) LOCAL
       // (2) ITEM
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // (6) HORA
       // (7) RECEBER (ignorado no relatório)
       // (8) TEMPO
-      if (cols.length < 9) return; // se não tiver 9 colunas, pula
+      if (cols.length < 9) return; // se não tiver 9 colunas, pula a linha
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const destino = cols[4].innerText;
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
-      const tempo = cols[8].innerText; // a coluna 8 é "TEMPO"
+      const tempo = cols[8].innerText; // última coluna
 
-      // Campo "reportado" ficará vazio (futuro uso)
+      // “reportado” deixamos vazio, mas mantemos no objeto
       const reportado = '';
 
       listaMateriaisSolicitados.push({
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rowsRecebidos.forEach((row) => {
       const cols = row.querySelectorAll('td');
-      // A tabela "Materiais Recebidos" também tem 9 colunas:
+      // A tabela de Recebidos também tem 9 colunas:
       // (0) hidden (checkbox)
       // (1) LOCAL
       // (2) ITEM
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // (6) HORA
       // (7) RECEBIDO
       // (8) GUARDADO
-      if (cols.length < 9) return; // se não tiver 9 colunas, pula
+      if (cols.length < 9) return;
 
       const local = cols[1].innerText;
       const item = cols[2].innerText;
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
       const recebido = cols[7].innerText;
-      const guardado = cols[8].innerText; // não existe tempo aqui
+      const guardado = cols[8].innerText; // não há "tempo" aqui
 
       listaMateriaisRecebidos.push({
         local,
@@ -86,30 +86,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // =========== SALVANDO NO LOCALSTORAGE ===========
+    // =========== SALVAR NO LOCALSTORAGE ===========
+    // Data e mês
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mesIndex = hoje.getMonth(); // 0..11
     const anoDoisDig = String(hoje.getFullYear()).slice(-2);
 
     const MESES = [
-      'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
-      'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+      'JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO',
+      'JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'
     ];
-    const mesNome = MESES[mesIndex];
-    // Exemplo de nome de arquivo: 23_12_24
+    const nomeMes = MESES[mesIndex];
     const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${anoDoisDig}`;
 
-    // Obter (ou criar) o objeto relatoriosMes do localStorage
+    // Obter ou criar relatoriosMes
     const stored = localStorage.getItem('relatoriosMes');
     let relatoriosMes = stored ? JSON.parse(stored) : {};
 
-    if (!relatoriosMes[mesNome]) {
-      relatoriosMes[mesNome] = {};
+    if (!relatoriosMes[nomeMes]) {
+      relatoriosMes[nomeMes] = {};
     }
 
-    // Salva nesse "arquivo" dataCurta
-    relatoriosMes[mesNome][dataCurta] = {
+    // Salvar nesse “arquivo” dataCurta
+    relatoriosMes[nomeMes][dataCurta] = {
       solicitados: listaMateriaisSolicitados,
       recebidos: listaMateriaisRecebidos
     };
