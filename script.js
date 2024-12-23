@@ -1043,6 +1043,7 @@ if (cancelarRecebimentoButton) {
 }
 
 // Confirma o recebimento
+// Confirma o recebimento
 var recebimentoForm = document.getElementById("recebimentoForm");
 if (recebimentoForm) {
     recebimentoForm.addEventListener("submit", function (event) {
@@ -1087,6 +1088,24 @@ if (recebimentoForm) {
             return;
         }
 
+        // Calcula o tempo decorrido
+        function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
+            const [horaS, minS] = horarioSolicitado.split(":").map(Number);
+            const [horaR, minR] = horarioRecebido.split(":").map(Number);
+
+            const minutosSolicitados = horaS * 60 + minS;
+            const minutosRecebidos = horaR * 60 + minR;
+
+            const minutosDecorridos = minutosRecebidos - minutosSolicitados;
+
+            const horas = Math.floor(minutosDecorridos / 60);
+            const minutos = minutosDecorridos % 60;
+
+            return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+        }
+
+        const tempoDecorrido = calcularTempoDecorrido(detalhe.horario, horarioRecebido);
+
         // Limpa os intervals do cronômetro, se houver
         if (intervalMap.has(index)) {
             clearInterval(intervalMap.get(index));
@@ -1105,6 +1124,7 @@ if (recebimentoForm) {
                 dataAtual: detalhe.dataAtual,
                 horario: detalhe.horario,
                 recebido: horarioRecebido,
+                tempo: tempoDecorrido,
                 guardado: ''
             });
             localStorage.setItem("recebidos", JSON.stringify(recebidos));
@@ -1136,13 +1156,13 @@ if (recebimentoForm) {
                 dataAtual: detalhe.dataAtual,
                 horario: detalhe.horario,
                 recebido: horarioRecebido,
+                tempo: tempoDecorrido,
                 guardado: ''
             });
             localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
             // Atualiza a quantidade pendente
             detalhe.quantidade = quantidadeSolicitada - quantidadeRecebida;
-            // Garante que detalhe.quantidade > 0 sempre nesse cenário
             detalhes[index] = detalhe;
             localStorage.setItem("detalhes", JSON.stringify(detalhes));
         }
@@ -1157,6 +1177,7 @@ if (recebimentoForm) {
         alert("Material recebido com sucesso!");
     });
 }
+
 
 
 // Função para atualizar a tabela de materiais recebidos
