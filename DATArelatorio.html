@@ -1,242 +1,203 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Relatórios Armazenados</title>
-    <link href="styles.css" rel="stylesheet">
-    <style>
-        .logo {
-            width: 60px; 
-            height: auto;
-        }
-        .relatorio-mes {
-            margin-bottom: 20px;
-        }
-        .relatorio-data {
-            margin-left: 20px;
-            cursor: pointer;
-            color: blue;
-            text-decoration: underline;
-            display: inline-block;
-            margin: 8px 0;
-        }
-        .relatorio-data:hover {
-            color: darkblue;
-        }
-        .excluir-todos-button {
-            background-color: #f44336; 
-            color: white;
-            border: none; 
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer; 
-            margin-left: 10px;
-        }
-        .excluir-todos-button:hover {
-            background-color: #d32f2f;
-        }
-        h3 {
-            margin: 12px 0 8px;
-            color: #215C98;
-        }
-        table {
-            margin-bottom: 20px; 
-            width: 100%; 
-            border-collapse: collapse;
-        }
-        table thead tr th, table tbody tr td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
-
-        /* Tema escuro para debug (opcional) */
-        body.dark-mode {
-          background-color: #2b2b2b;
-          color: #eee;
-        }
-        body.dark-mode table thead tr th,
-        body.dark-mode table tbody tr td {
-          border-color: #555;
-        }
-        body.dark-mode .relatorio-data { color: #4ca3ff; }
-        body.dark-mode .relatorio-data:hover { color: #84c4ff; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Relatórios Armazenados</title>
+  <link href="styles.css" rel="stylesheet">
+  <style>
+    .logo { width: 60px; height: auto; }
+    .relatorio-mes { margin-bottom: 20px; }
+    .relatorio-data {
+      margin-left: 20px;
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+      display: inline-block;
+      margin: 8px 0;
+    }
+    .relatorio-data:hover { color: darkblue; }
+    .excluir-todos-button {
+      background-color: #f44336; 
+      color: white;
+      border: none; padding: 8px 16px;
+      border-radius: 4px; cursor: pointer;
+    }
+    .excluir-todos-button:hover { background-color: #d32f2f; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  </style>
 </head>
 <body class="detalhes-page">
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <img src="..." alt="Logo" class="logo">
-            </div>
-            <h1>Relatórios Armazenados</h1>
-            <div class="header-buttons">
-                <button onclick="window.location.href='detalhes.html'">
-                    <img src="..." alt="Voltar" width="30" height="30">
-                </button>
-                <button id="themeToggleButton" class="header-button">
-                    <img src="..." alt="Tema Escuro" width="30" height="30">
-                </button>
-            </div>
-        </div>
-    </header>
+  <header>
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="..." alt="Logo" class="logo">
+      </div>
+      <h1>Relatórios Armazenados</h1>
+      <div class="header-buttons">
+        <button onclick="window.location.href='detalhes.html'">Voltar</button>
+        <button id="themeToggleButton">Tema</button>
+      </div>
+    </div>
+  </header>
 
-    <main style="padding: 20px;">
-        <section style="margin-bottom: 20px;">
-            <h2>Relatórios Gerados</h2>
-            <button id="excluirTodosButton" class="excluir-todos-button">Excluir Todos</button>
-            <div id="listaRelatorios"></div>
-        </section>
+  <main style="padding: 20px;">
+    <section>
+      <h2>Relatórios Gerados</h2>
+      <button id="excluirTodosButton" class="excluir-todos-button">Excluir Todos</button>
+      <div id="listaRelatorios"></div>
+    </section>
+    <section>
+      <h2>Materiais Solicitados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>LOCAL</th>
+            <th>ITEM</th>
+            <th>QTD</th>
+            <th>DESTINO</th>
+            <th>DATA</th>
+            <th>HORA</th>
+            <th>TEMPO</th>
+            <th>REPORTADO</th>
+          </tr>
+        </thead>
+        <tbody id="solicitadosBody"></tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Materiais Recebidos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>LOCAL</th>
+            <th>ITEM</th>
+            <th>QTD</th>
+            <th>DESTINO</th>
+            <th>DATA</th>
+            <th>HORA</th>
+            <th>RECEBIDO</th>
+            <th>GUARDADO</th>
+          </tr>
+        </thead>
+        <tbody id="recebidosBody"></tbody>
+      </table>
+    </section>
+  </main>
 
-        <section style="margin-bottom: 20px;">
-            <h2>Materiais Solicitados</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>TEMPO</th>
-                        <th>REPORTADO</th>
-                    </tr>
-                </thead>
-                <tbody id="solicitadosBody">
-                    <!-- Preenchido dinamicamente -->
-                </tbody>
-            </table>
-        </section>
+  <footer style="text-align: center;">
+    © 2024 COLLAB
+  </footer>
 
-        <section>
-            <h2>Materiais Recebidos</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBIDO</th>
-                        <th>GUARDADO</th>
-                    </tr>
-                </thead>
-                <tbody id="recebidosBody">
-                    <!-- Preenchido dinamicamente -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-
-    <footer style="text-align: center; padding: 10px;">
-        © 2024 COLLAB - Todos os direitos reservados.
-    </footer>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Tema escuro
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Lógica de tema
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    const themeBtn = document.getElementById('themeToggleButton');
+    themeBtn.addEventListener('click', () => {
+      if (document.body.classList.contains('dark-mode')) {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      } else {
         document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
       }
-      const themeToggleButton = document.getElementById('themeToggleButton');
-      themeToggleButton.addEventListener('click', () => {
-        if (document.body.classList.contains('dark-mode')) {
-          document.body.classList.remove('dark-mode');
-          localStorage.setItem('theme', 'light');
-        } else {
-          document.body.classList.add('dark-mode');
-          localStorage.setItem('theme', 'dark');
+    });
+
+    // Carrega localStorage
+    const stored = localStorage.getItem('relatoriosMes');
+    if (!stored) {
+      document.getElementById('listaRelatorios').innerHTML = 
+        "<p>Nenhum relatório encontrado.</p>";
+      return;
+    }
+    const relatoriosMes = JSON.parse(stored);
+    console.log('[DATArelatorio] relatoriosMes:', relatoriosMes);
+
+    // Lista meses e datas
+    let html = '';
+    for (let mes in relatoriosMes) {
+      html += `<div class="relatorio-mes">
+                 <h3>📁 ${mes}</h3>`;
+      const datasObj = relatoriosMes[mes];
+      for (let dataCurta in datasObj) {
+        html += `
+          <div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
+            📄 ${dataCurta}
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+    document.getElementById('listaRelatorios').innerHTML = html;
+
+    // Ao clicar em cada data
+    const dataElements = document.querySelectorAll('.relatorio-data');
+    dataElements.forEach(el => {
+      el.addEventListener('click', () => {
+        const mes = el.getAttribute('data-mes');
+        const dataC = el.getAttribute('data-data');
+        const entry = relatoriosMes[mes][dataC];
+        console.log('[DATArelatorio] clique em', mes, dataC, entry);
+
+        const { solicitados, recebidos } = entry;
+
+        // Preenche solicitados
+        const solBody = document.getElementById('solicitadosBody');
+        solBody.innerHTML = '';
+        if (solicitados && solicitados.length > 0) {
+          solicitados.forEach((item, idx) => {
+            console.log(`[DATArelatorio] solicitados #${idx}`, item);
+            solBody.insertAdjacentHTML('beforeend', `
+              <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.qtd}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.hora}</td>
+                <td>${item.tempo}</td>
+                <td>${item.reportado}</td>
+              </tr>
+            `);
+          });
         }
-      });
 
-      // Carrega relatoriosMes
-      const stored = localStorage.getItem('relatoriosMes');
-      if (!stored) {
-        document.getElementById('listaRelatorios').innerHTML = "<p>Nenhum relatório encontrado.</p>";
-        return;
-      }
-      const relatoriosMes = JSON.parse(stored);
-
-      // Monta a listagem de Meses e Datas
-      let html = '';
-      for (let mes in relatoriosMes) {
-        html += `<h3>📁 ${mes}</h3>`;
-        const datas = relatoriosMes[mes];
-        for (let dataCurta in datas) {
-          html += `
-            <div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
-              📄 ${dataCurta}
-            </div>
-          `;
-        }
-      }
-      document.getElementById('listaRelatorios').innerHTML = html;
-
-      // Clique em cada data
-      const dataElements = document.querySelectorAll('.relatorio-data');
-      dataElements.forEach(el => {
-        el.addEventListener('click', () => {
-          const mes = el.getAttribute('data-mes');
-          const dataC = el.getAttribute('data-data');
-          const { solicitados, recebidos } = relatoriosMes[mes][dataC];
-
-          // Preenche solicitados
-          const solBody = document.getElementById('solicitadosBody');
-          solBody.innerHTML = '';
-          if (solicitados && solicitados.length > 0) {
-            solicitados.forEach(item => {
-              const row = `
-                <tr>
-                  <td>${item.local}</td>
-                  <td>${item.item}</td>
-                  <td>${item.qtd}</td>
-                  <td>${item.destino}</td>
-                  <td>${item.data}</td>
-                  <td>${item.hora}</td>
-                  <td>${item.tempo}</td>
-                  <td>${item.reportado}</td>
-                </tr>
-              `;
-              solBody.insertAdjacentHTML('beforeend', row);
-            });
-          }
-
-          // Preenche recebidos
-          const recBody = document.getElementById('recebidosBody');
-          recBody.innerHTML = '';
-          if (recebidos && recebidos.length > 0) {
-            recebidos.forEach(item => {
-              const row = `
-                <tr>
-                  <td>${item.local}</td>
-                  <td>${item.item}</td>
-                  <td>${item.qtd}</td>
-                  <td>${item.destino}</td>
-                  <td>${item.data}</td>
-                  <td>${item.hora}</td>
-                  <td>${item.recebido}</td>
-                  <td>${item.guardado}</td>
-                </tr>
-              `;
-              recBody.insertAdjacentHTML('beforeend', row);
-            });
-          }
-        });
-      });
-
-      // Excluir todos
-      const excluirTodosButton = document.getElementById('excluirTodosButton');
-      excluirTodosButton.addEventListener('click', () => {
-        if (confirm('Deseja realmente excluir TODOS os relatórios?')) {
-          localStorage.removeItem('relatoriosMes');
-          window.location.reload();
+        // Preenche recebidos
+        const recBody = document.getElementById('recebidosBody');
+        recBody.innerHTML = '';
+        if (recebidos && recebidos.length > 0) {
+          recebidos.forEach((item, idx) => {
+            console.log(`[DATArelatorio] recebidos #${idx}`, item);
+            recBody.insertAdjacentHTML('beforeend', `
+              <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.qtd}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.hora}</td>
+                <td>${item.recebido}</td>
+                <td>${item.guardado}</td>
+              </tr>
+            `);
+          });
         }
       });
     });
-    </script>
+
+    // Botão excluir todos
+    const excluirBtn = document.getElementById('excluirTodosButton');
+    excluirBtn.addEventListener('click', () => {
+      if (confirm('Deseja excluir TODOS os relatórios?')) {
+        localStorage.removeItem('relatoriosMes');
+        window.location.reload();
+      }
+    });
+  });
+  </script>
 </body>
 </html>
