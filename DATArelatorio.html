@@ -58,7 +58,6 @@
             <th>DESTINO</th>
             <th>DATA</th>
             <th>HORA</th>
-            <th>TEMPO</th>
             <th>REPORTADO</th>
           </tr>
         </thead>
@@ -77,7 +76,7 @@
             <th>DATA</th>
             <th>HORA</th>
             <th>RECEBIDO</th>
-            <th>TEMPO</th>  <!-- Importante -->
+            <th>TEMPO</th>
             <th>GUARDADO</th>
           </tr>
         </thead>
@@ -92,11 +91,11 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Lógica de tema
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
     }
+
     const themeBtn = document.getElementById('themeToggleButton');
     themeBtn.addEventListener('click', () => {
       if (document.body.classList.contains('dark-mode')) {
@@ -108,82 +107,67 @@
       }
     });
 
-    // Carrega localStorage
     const stored = localStorage.getItem('relatoriosMes');
     if (!stored) {
       document.getElementById('listaRelatorios').innerHTML = 
         "<p>Nenhum relatório encontrado.</p>";
       return;
     }
-    const relatoriosMes = JSON.parse(stored);
-    console.log('[DATArelatorio] relatoriosMes:', relatoriosMes);
 
-    // Lista meses e datas
+    const relatoriosMes = JSON.parse(stored);
     let html = '';
     for (let mes in relatoriosMes) {
-      html += `<div class="relatorio-mes">
-                 <h3>📁 ${mes}</h3>`;
+      html += `<div class="relatorio-mes"><h3>📁 ${mes}</h3>`;
       const datasObj = relatoriosMes[mes];
       for (let dataCurta in datasObj) {
-        html += `
-          <div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
-            📄 ${dataCurta}
-          </div>
-        `;
+        html += `<div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">📄 ${dataCurta}</div>`;
       }
       html += `</div>`;
     }
     document.getElementById('listaRelatorios').innerHTML = html;
 
-    // Ao clicar em cada data
     const dataElements = document.querySelectorAll('.relatorio-data');
     dataElements.forEach(el => {
       el.addEventListener('click', () => {
         const mes = el.getAttribute('data-mes');
         const dataC = el.getAttribute('data-data');
         const entry = relatoriosMes[mes][dataC];
-        console.log('[DATArelatorio] clique em', mes, dataC, entry);
-
         const { solicitados, recebidos } = entry;
 
-        // Preenche solicitados
         const solBody = document.getElementById('solicitadosBody');
         solBody.innerHTML = '';
         if (solicitados && solicitados.length > 0) {
-          solicitados.forEach((item, idx) => {
-            console.log(`[DATArelatorio] solicitados #${idx}`, item);
+          solicitados.forEach(item => {
             solBody.insertAdjacentHTML('beforeend', `
               <tr>
-                <td>${item.local || ""}</td>
-                <td>${item.item || ""}</td>
-                <td>${item.qtd || ""}</td>
-                <td>${item.destino || ""}</td>
-                <td>${item.data || item.dataAtual || ""}</td>
-                <td>${item.hora || ""}</td>
-                <td>${item.tempo || ""}</td>
-                <td>${item.reportado || ""}</td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.qtd}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.hora}</td>
+                <td>${item.reportado}</td>
               </tr>
             `);
           });
         }
 
-        // Preenche recebidos (exibir col[8] = tempo)
         const recBody = document.getElementById('recebidosBody');
         recBody.innerHTML = '';
         if (recebidos && recebidos.length > 0) {
-          recebidos.forEach((item, idx) => {
-            console.log(`[DATArelatorio] recebidos #${idx}`, item);
+          recebidos.forEach(item => {
+            const tempoDecorrido = calcularTempoDecorrido(item.horario, item.recebido);
             recBody.insertAdjacentHTML('beforeend', `
               <tr>
-                <td>${item.local || ""}</td>
-                <td>${item.item || ""}</td>
-                <td>${item.quantidade || ""}</td>
-                <td>${item.destino || ""}</td>
-                <td>${item.data || item.dataAtual || ""}</td>
-                <td>${item.hora || ""}</td>
-                <td>${item.recebido || ""}</td>
-                <td>${item.tempo || ""}</td>  <!-- Tempo -->
-                <td>${item.guardado || ""}</td>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${tempoDecorrido}</td>
+                <td>${item.guardado}</td>
               </tr>
             `);
           });
@@ -191,7 +175,6 @@
       });
     });
 
-    // Botão excluir todos
     const excluirBtn = document.getElementById('excluirTodosButton');
     excluirBtn.addEventListener('click', () => {
       if (confirm('Deseja excluir TODOS os relatórios?')) {
@@ -199,6 +182,21 @@
         window.location.reload();
       }
     });
+
+    function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
+      const [horaS, minS] = horarioSolicitado.split(':').map(Number);
+      const [horaR, minR] = horarioRecebido.split(':').map(Number);
+
+      const timeSolicitado = horaS * 60 + minS;
+      const timeRecebido = horaR * 60 + minR;
+
+      const minutosDecorridos = timeRecebido - timeSolicitado;
+
+      const horas = Math.floor(minutosDecorridos / 60);
+      const minutos = minutosDecorridos % 60;
+
+      return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+    }
   });
   </script>
 </body>
