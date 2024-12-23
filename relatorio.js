@@ -3,14 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const gerarRelatorioButton = document.getElementById('gerarRelatorioButton');
 
   gerarRelatorioButton.addEventListener('click', () => {
-    // ========= MATERIAIS SOLICITADOS =========
+    // ========== MATERIAIS SOLICITADOS ==========
     const detalhesTable = document.getElementById('detalhesTable');
     const rowsSolicitados = detalhesTable.querySelectorAll('tbody tr');
     const listaMateriaisSolicitados = [];
 
     rowsSolicitados.forEach((row) => {
       const cols = row.querySelectorAll('td');
-      // Esperamos 9 colunas no "detalhesTable":
+      // Esperamos 9 colunas (0..8) para materiais solicitados
+      if (cols.length < 9) return;
+
       // 0 -> (checkbox hidden)
       // 1 -> LOCAL
       // 2 -> ITEM
@@ -19,18 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
       // 5 -> DATA
       // 6 -> HORA
       // 7 -> RECEBER (ignorado)
-      // 8 -> TEMPO
-      if (cols.length < 9) return; // Se houver menos colunas que o esperado, pula
-
+      // 8 -> TEMPO (decorrido p/ ser solicitado)
       const local = cols[1].innerText;
       const item = cols[2].innerText;
       const qtd = cols[3].innerText;
       const destino = cols[4].innerText;
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
-      const tempo = cols[8].innerText;  // capturando TEMPO
+      const tempo = cols[8].innerText;  // Tempo decorrido
 
-      const reportado = ''; // Futuro uso
+      // Campo "reportado" (futuro uso)
+      const reportado = '';
+
       listaMateriaisSolicitados.push({
         local,
         item,
@@ -43,14 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // ========= MATERIAIS RECEBIDOS =========
+    // ========== MATERIAIS RECEBIDOS ==========
     const recebidosTable = document.getElementById('recebidosTable');
     const rowsRecebidos = recebidosTable.querySelectorAll('tbody tr');
     const listaMateriaisRecebidos = [];
 
     rowsRecebidos.forEach((row) => {
       const cols = row.querySelectorAll('td');
-      // Esperamos 10 colunas no "recebidosTable":
+      // Esperamos 10 colunas (0..9) para materiais recebidos
+      if (cols.length < 10) return;
+
       // 0 -> (checkbox hidden)
       // 1 -> LOCAL
       // 2 -> ITEM
@@ -59,10 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // 5 -> DATA
       // 6 -> HORA
       // 7 -> RECEBIDO
-      // 8 -> TEMPO (tempo decorrido para ser recebido)
+      // 8 -> TEMPO (decorrido p/ ser recebido)
       // 9 -> GUARDADO
-      if (cols.length < 10) return; // Se houver menos, pula
-
       const local = cols[1].innerText;
       const item = cols[2].innerText;
       const qtd = cols[3].innerText;
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = cols[5].innerText;
       const hora = cols[6].innerText;
       const recebido = cols[7].innerText;
-      const tempo = cols[8].innerText;   // tempo decorrido
+      const tempo = cols[8].innerText; // Tempo decorrido
       const guardado = cols[9].innerText;
 
       listaMateriaisRecebidos.push({
@@ -86,10 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // ======== GERAR DATA DO RELATÓRIO (MÊS, DIA, ANO) ========
+    // ========== GERA DATA E MÊS DO RELATÓRIO ==========
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
-    const mesIndex = hoje.getMonth();
+    const mesIndex = hoje.getMonth(); // 0..11
     const anoDoisDig = String(hoje.getFullYear()).slice(-2);
 
     const MESES = [
@@ -97,9 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
       'JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'
     ];
     const nomeMes = MESES[mesIndex];
-    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2,'0')}_${anoDoisDig}`;
+    const dataCurta = `${dia}_${String(mesIndex+1).padStart(2, '0')}_${anoDoisDig}`;
 
-    // ======== SALVAR NO LOCALSTORAGE ========
+    // ========== SALVA NO LOCALSTORAGE ==========
     const stored = localStorage.getItem('relatoriosMes');
     let relatoriosMes = stored ? JSON.parse(stored) : {};
 
@@ -107,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
       relatoriosMes[nomeMes] = {};
     }
 
+    // Salva objetos "solicitados" e "recebidos"
     relatoriosMes[nomeMes][dataCurta] = {
       solicitados: listaMateriaisSolicitados,
       recebidos: listaMateriaisRecebidos
@@ -114,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
 
-    // Exibe mensagem de sucesso
+    // Mensagem de sucesso
     alert('Relatório registrado com sucesso!');
   });
 });
