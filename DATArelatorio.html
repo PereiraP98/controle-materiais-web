@@ -77,6 +77,7 @@
             <th>DATA</th>
             <th>HORA</th>
             <th>RECEBIDO</th>
+            <th>TEMPO</th>  <!-- Importante -->
             <th>GUARDADO</th>
           </tr>
         </thead>
@@ -153,20 +154,20 @@
             console.log(`[DATArelatorio] solicitados #${idx}`, item);
             solBody.insertAdjacentHTML('beforeend', `
               <tr>
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.qtd}</td>
-                <td>${item.destino}</td>
-                <td>${item.data}</td>
-                <td>${item.hora}</td>
-                <td>${item.tempo}</td>
-                <td>${item.reportado}</td>
+                <td>${item.local || ""}</td>
+                <td>${item.item || ""}</td>
+                <td>${item.qtd || ""}</td>
+                <td>${item.destino || ""}</td>
+                <td>${item.data || item.dataAtual || ""}</td>
+                <td>${item.hora || ""}</td>
+                <td>${item.tempo || ""}</td>
+                <td>${item.reportado || ""}</td>
               </tr>
             `);
           });
         }
 
-        // Preenche recebidos
+        // Preenche recebidos (exibir col[8] = tempo)
         const recBody = document.getElementById('recebidosBody');
         recBody.innerHTML = '';
         if (recebidos && recebidos.length > 0) {
@@ -174,14 +175,15 @@
             console.log(`[DATArelatorio] recebidos #${idx}`, item);
             recBody.insertAdjacentHTML('beforeend', `
               <tr>
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.qtd}</td>
-                <td>${item.destino}</td>
-                <td>${item.data}</td>
-                <td>${item.hora}</td>
-                <td>${item.recebido}</td>
-                <td>${item.guardado}</td>
+                <td>${item.local || ""}</td>
+                <td>${item.item || ""}</td>
+                <td>${item.quantidade || ""}</td>
+                <td>${item.destino || ""}</td>
+                <td>${item.data || item.dataAtual || ""}</td>
+                <td>${item.hora || ""}</td>
+                <td>${item.recebido || ""}</td>
+                <td>${item.tempo || ""}</td>  <!-- Tempo -->
+                <td>${item.guardado || ""}</td>
               </tr>
             `);
           });
