@@ -1178,6 +1178,29 @@ if (recebimentoForm) {
     });
 }
 
+function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
+    const [horaS, minS] = horarioSolicitado.split(":").map(Number);
+    const [horaR, minR] = horarioRecebido.split(":").map(Number);
+
+    const dataAtual = new Date();
+    const dataSolicitada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaS, minS);
+    const dataRecebida = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaR, minR);
+
+    // Caso a hora recebida seja menor, presume-se que foi no dia seguinte
+    if (dataRecebida < dataSolicitada) {
+        dataRecebida.setDate(dataRecebida.getDate() + 1);
+    }
+
+    const diffMs = dataRecebida - dataSolicitada; // Diferença em milissegundos
+    const diffMinutes = Math.floor(diffMs / 60000); // Diferença em minutos
+
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+
 
 
 // Função para atualizar a tabela de materiais recebidos
