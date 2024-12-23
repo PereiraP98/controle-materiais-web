@@ -96,26 +96,17 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <!-- 9 colunas -->
-                        <!-- (0) hidden checkbox -->
+                        <!-- 9 colunas (0..8) -->
                         <th class="checkbox-column hidden">
                             <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
                         </th>
-                        <!-- (1) LOCAL -->
                         <th>LOCAL</th>
-                        <!-- (2) ITEM -->
                         <th>ITEM</th>
-                        <!-- (3) QTD -->
                         <th>QTD</th>
-                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
-                        <!-- (5) DATA -->
                         <th>DATA</th>
-                        <!-- (6) HORA -->
                         <th>HORA</th>
-                        <!-- (7) RECEBER -->
                         <th>RECEBER</th>
-                        <!-- (8) TEMPO -->
                         <th>TEMPO</th>
                     </tr>
                 </thead>
@@ -137,24 +128,14 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <!-- 10 colunas -->
-                        <!-- (0) hidden checkbox -->
-                        <th class="checkbox-column hidden">
-                            <input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos">
-                        </th>
-                        <!-- (1) LOCAL -->
+                        <!-- 10 colunas (0..9) -->
+                        <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
                         <th>LOCAL</th>
-                        <!-- (2) ITEM -->
                         <th>ITEM</th>
-                        <!-- (3) QTD -->
                         <th>QTD</th>
-                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
-                        <!-- (5) DATA -->
                         <th>DATA</th>
-                        <!-- (6) HORA -->
                         <th>HORA</th>
-                        <!-- (7) RECEBIDO -->
                         <th>RECEBIDO</th>
                         <!-- (8) TEMPO (oculto) -->
                         <th class="hidden">TEMPO</th>
@@ -163,7 +144,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dados dinâmicos (10 <td> por linha, col[8] = TEMPO, hidden) -->
+                    <!-- 10 <td> por linha, com col[8] TEMPO oculto -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -213,7 +194,7 @@
                 document.body.classList.remove('dark-mode');
             }
 
-            // Botão de alternar tema
+            // Lógica do botão de alternar tema
             const themeToggleButton = document.getElementById('themeToggleButton');
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
@@ -225,7 +206,7 @@
                 }
             });
 
-            // Removido o clique de "Gerar Relatório" daqui, pois está em relatorio.js
+            // (Removido o evento de clique do botão Gerar Relatório daqui, pois está em relatorio.js)
         });
     </script>
 </body>
