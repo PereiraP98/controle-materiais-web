@@ -96,7 +96,7 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <!-- 9 colunas (0..8) -->
+                        <!-- 9 colunas (0..8) para Solicitados -->
                         <th class="checkbox-column hidden">
                             <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
                         </th>
@@ -128,7 +128,7 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <!-- 10 colunas (0..9) -->
+                        <!-- 10 colunas (0..9) para Recebidos -->
                         <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
                         <th>LOCAL</th>
                         <th>ITEM</th>
@@ -144,7 +144,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 10 <td> por linha, com col[8] TEMPO oculto -->
+                    <!-- 10 <td> por linha, com col[8] TEMPO (oculto) -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -194,7 +194,7 @@
                 document.body.classList.remove('dark-mode');
             }
 
-            // Lógica do botão de alternar tema
+            // Botão de alternar tema
             const themeToggleButton = document.getElementById('themeToggleButton');
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
@@ -206,7 +206,7 @@
                 }
             });
 
-            // (Removido o evento de clique do botão Gerar Relatório daqui, pois está em relatorio.js)
+            // O clique do botão "Gerar Relatório" está em relatorio.js
         });
     </script>
 </body>
