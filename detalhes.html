@@ -87,28 +87,19 @@
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <!-- (0) checkbox hidden -->
                         <th class="checkbox-column hidden"><input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos"></th>
-                        <!-- (1) LOCAL -->
                         <th>LOCAL</th>
-                        <!-- (2) ITEM -->
                         <th>ITEM</th>
-                        <!-- (3) QTD -->
                         <th>QTD</th>
-                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
-                        <!-- (5) DATA -->
                         <th>DATA</th>
-                        <!-- (6) HORA -->
                         <th>HORA</th>
-                        <!-- (7) RECEBER (ignorado no relatório) -->
                         <th>RECEBER</th>
-                        <!-- (8) TEMPO (decorrido para solicitação) -->
                         <th>TEMPO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Cada <tr> deve ter 9 <td> para esse script funcionar -->
+                    <!-- Dados dinâmicos -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -125,30 +116,19 @@
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <!-- (0) checkbox hidden -->
                         <th class="checkbox-column hidden"><input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos"></th>
-                        <!-- (1) LOCAL -->
                         <th>LOCAL</th>
-                        <!-- (2) ITEM -->
                         <th>ITEM</th>
-                        <!-- (3) QTD -->
                         <th>QTD</th>
-                        <!-- (4) DESTINO -->
                         <th>DESTINO</th>
-                        <!-- (5) DATA -->
                         <th>DATA</th>
-                        <!-- (6) HORA -->
                         <th>HORA</th>
-                        <!-- (7) RECEBIDO -->
                         <th>RECEBIDO</th>
-                        <!-- (8) TEMPO (decorrido para receber) -->
-                        <th>TEMPO</th>
-                        <!-- (9) GUARDADO -->
                         <th>GUARDADO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Cada <tr> deve ter 10 <td> para esse script funcionar -->
+                    <!-- Dados dinâmicos -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -190,7 +170,7 @@
     <script>
         // Lógica de tema escuro e outras inicializações
         document.addEventListener('DOMContentLoaded', function () {
-            // Carrega o tema salvo
+            // Carregar tema salvo
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-mode');
@@ -198,7 +178,7 @@
                 document.body.classList.remove('dark-mode');
             }
 
-            // Botão de alternar tema
+            // Lógica do botão de alternar tema
             const themeToggleButton = document.getElementById('themeToggleButton');
             themeToggleButton.addEventListener('click', function () {
                 if (document.body.classList.contains('dark-mode')) {
@@ -210,8 +190,7 @@
                 }
             });
 
-            // Outras lógicas (ex.: excluirItensButton, etc.) podem ser no script.js
-            // O clique de "Gerar Relatório" foi removido daqui e colocado em relatorio.js
+            // (Removido o evento de clique do botão Gerar Relatório daqui, pois está em relatorio.js)
         });
     </script>
 </body>
