@@ -1657,36 +1657,41 @@ if (justificativaForm) {
     });
 
     // Submeter o form => salvar justificativa
-    justificativaForm.addEventListener("submit", function(e) {
-        e.preventDefault();
+justificativaForm.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-        let item = recebidos[justificativaIndex];
-        if (!item) {
-            alert("Erro: item não encontrado!");
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[justificativaIndex];
+    if (!item) {
+        alert("Erro: item não encontrado!");
+        return;
+    }
+
+    // Decide se vai justificar ou não
+    if (justificarRadio.checked) {
+        let texto = justificativaTexto.value.trim();
+        if (texto.length > 200) {
+            alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
             return;
         }
+        item.justificativa = texto;
+    } else {
+        // Sem justificativa
+        item.justificativa = "";
+    }
 
-        if (justificarRadio.checked) {
-            let texto = justificativaTexto.value.trim();
-            if (texto.length > 200) {
-                alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
-                return;
-            }
-            item.justificativa = texto;
-        } else {
-            // Sem justificativa
-            item.justificativa = "";
-        }
+    // Salva no localStorage
+    recebidos[justificativaIndex] = item;
+    localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        // Salvar no localStorage
-        recebidos[justificativaIndex] = item;
-        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+    // 1) Exibe a mensagem
+    alert("Justificativa salva com sucesso!");
 
-        // Atualiza a tabela => trocar ⚠️ por 📜 se necessário
-        atualizarTabelaRecebidos();
+    // 2) Atualiza a tabela (emoji troca imediatamente)
+    atualizarTabelaRecebidos();
 
-        fecharJanelaJustificativa();
-        alert("Justificativa salva com sucesso!");
-    });
+    // 3) Fecha a janela
+    fecharJanelaJustificativa();
+});
+
 }
