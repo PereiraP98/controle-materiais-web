@@ -174,6 +174,44 @@
         </form>
     </div>
 
+    <!-- Janela Flutuante para Justificativa de Material Atrasado -->
+    <div id="janelaJustificativaAtraso" class="janela-flutuante hidden">
+        <h2>Justificativa de material atrasado</h2>
+        <form id="justificativaForm">
+            <div style="text-align: left; margin-bottom: 10px;">
+                <label>
+                    <input type="radio" name="radioJustificativa" value="sem" checked>
+                    Material atrasado sem justificativa
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="radioJustificativa" value="com">
+                    Justificar atraso deste material
+                </label>
+            </div>
+
+            <!-- Campo de texto para justificativa, inicia desabilitado -->
+            <textarea 
+                id="justificativaTexto"
+                rows="4"
+                maxlength="200"
+                placeholder="Descreva o motivo do atraso (máx 200 caracteres)..."
+                style="width: 100%; resize: none; display: block; margin-bottom: 5px;"
+                disabled
+            ></textarea>
+
+            <!-- Contador -->
+            <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">
+                0/200
+            </div>
+
+            <div class="button-container">
+                <button type="button" id="cancelarJustificativaButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="salvarJustificativaButton" class="primary-button">Salvar</button>
+            </div>
+        </form>
+    </div>
+
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
