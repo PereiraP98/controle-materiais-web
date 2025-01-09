@@ -1187,7 +1187,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     let totalMin = h * 60 + m; 
                     let isAtrasado = (totalMin > 30);
         
-                    // Define o emoji (⚠️ ou 📜 ou nada)
+                    // Define o emoji (⚠️ ou 📜 ou nenhum)
                     let emoji = "";
                     if (isAtrasado) {
                         if (item.justificativa && item.justificativa.trim() !== "") {
@@ -1197,23 +1197,31 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
         
-                    // Monta o campo TEMPO (ex: "01:25📜")
-                    let tempoCell = (item.tempo || "");
-                    if (emoji) {
-                        tempoCell += `${emoji}`; // "hh:mm📜" na mesma linha
-                    }
+                    // Monta o campo TEMPO, ex.: "hh:mm" + emoji no canto superior direito
+                    // Usamos um container "position: relative" e o emoji "position: absolute"
+                    let tempoDisplay = (item.tempo || "00:00");
+                    let tempoCell = `
+                        <div style="display: inline-block; position: relative;">
+                            <span>${tempoDisplay}</span>
+                    `;
         
-                    // Injetar onclick se estiver atrasado
                     if (emoji) {
-                        tempoCell = `
-                            <span style="cursor: pointer;"
-                                  onclick="abrirJanelaJustificativa(${index})"
-                                  title="Clique para justificar ou ver justificativa">
-                                ${tempoCell}
-                            </span>
+                        tempoCell += `
+                            <span 
+                              style="
+                                position: absolute;
+                                top: -8px; 
+                                right: -14px;
+                                cursor: pointer;"
+                              onclick="abrirJanelaJustificativa(${index})"
+                              title="Clique para justificar ou ver justificativa"
+                            >${emoji}</span>
                         `;
                     }
         
+                    tempoCell += `</div>`; // Fecha o container
+        
+                    // Monta a linha na tabela
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -1242,6 +1250,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
         }
+        
         
 
         atualizarTabelaRecebidos();
@@ -1547,7 +1556,7 @@ window.abrirJanelaJustificativa = function (index) {
         return;
     }
 
-    // Caso o item já tenha justificativa, exibe somente a descrição + botão "Editar"
+    // Caso o item já tenha justificativa => exibe somente a descrição + botão "Editar"
     if (item.justificativa && item.justificativa.trim() !== "") {
         justificarRadio.checked = true;
         // Esconde os rádios para mostrar só a descrição
@@ -1559,7 +1568,7 @@ window.abrirJanelaJustificativa = function (index) {
         contadorJustificativa.textContent = justificativaTexto.value.length + "/200";
 
         if (editarJustificativaButton) {
-            editarJustificativaButton.style.display = ""; // Exibe o botão "Editar"
+            editarJustificativaButton.style.display = "";
         }
     } else {
         // Não tem justificativa => permitir a escolha
@@ -1581,6 +1590,7 @@ window.abrirJanelaJustificativa = function (index) {
     if (overlay) overlay.classList.add("active");
 };
 
+
 // Fecha a janela de justificativa
 function fecharJanelaJustificativa() {
     if (janelaJustificativa) {
@@ -1594,57 +1604,58 @@ function fecharJanelaJustificativa() {
 }
 
 
+
     if (cancelarJustificativaButton) {
         cancelarJustificativaButton.addEventListener("click", function () {
             fecharJanelaJustificativa();
         });
     }
 
-// Botão "Editar": exibe novamente os rádios e habilita o texto
-if (editarJustificativaButton) {
-    editarJustificativaButton.addEventListener("click", function () {
-        // Mostra os rádios
-        justificarRadio.style.display = "";
-        semJustificaRadio.style.display = "";
-
-        // Marca "com" para habilitar texto
-        justificarRadio.checked = true;
-        justificativaTexto.disabled = false;
-
-        // Esconde o botão "Editar"
-        editarJustificativaButton.style.display = "none";
-    });
-}
-
-// Submeter o form => salvar justificativa e atualizar emoji
-justificativaForm.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-    let item = recebidos[justificativaIndex];
-    if (!item) {
-        alert("Erro: item não encontrado!");
-        return;
+    if (editarJustificativaButton) {
+        editarJustificativaButton.addEventListener("click", function () {
+            // Mostra os rádios
+            justificarRadio.style.display = "";
+            semJustificaRadio.style.display = "";
+    
+            // Marca "com" para habilitar o texto
+            justificarRadio.checked = true;
+            justificativaTexto.disabled = false;
+    
+            // Esconde o botão "Editar"
+            editarJustificativaButton.style.display = "none";
+        });
     }
+    
 
-    if (justificarRadio.checked) {
-        let texto = justificativaTexto.value.trim();
-        if (texto.length > 200) {
-            alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
+    justificativaForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+    
+        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        let item = recebidos[justificativaIndex];
+        if (!item) {
+            alert("Erro: item não encontrado!");
             return;
         }
-        item.justificativa = texto;
-    } else {
-        item.justificativa = "";
-    }
-
-    recebidos[justificativaIndex] = item;
-    localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-    alert("Justificativa salva com sucesso!");
-    atualizarTabelaRecebidos(); // Atualiza o emoji imediatamente
-    fecharJanelaJustificativa();
-});
+    
+        if (justificarRadio.checked) {
+            let texto = justificativaTexto.value.trim();
+            if (texto.length > 200) {
+                alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
+                return;
+            }
+            item.justificativa = texto;
+        } else {
+            item.justificativa = "";
+        }
+    
+        recebidos[justificativaIndex] = item;
+        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+    
+        alert("Justificativa salva com sucesso!");
+        atualizarTabelaRecebidos(); // Atualiza o emoji imediatamente
+        fecharJanelaJustificativa();
+    });
+    
 
 
     // Contador de caracteres
