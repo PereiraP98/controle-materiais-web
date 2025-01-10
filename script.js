@@ -1651,6 +1651,7 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
     okConfirmacaoButton.onclick = function() {
         if (typeof onOk === 'function') onOk();
         fecharJanelaConfirmacao();
+        window.location.reload();
     };
 }
 
