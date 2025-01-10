@@ -1648,9 +1648,13 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
     janelaConfirmacao.classList.remove("hidden");
     janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
 
-    okConfirmacaoButton.onclick = function() {
-        if (typeof onOk === 'function') onOk();
+    if (typeof onOk === 'function') {
+            onOk();
+        }
+        // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
+
+        // ==> AQUI recarrega a página, fechando tudo o que estiver aberto <==
         window.location.reload();
     };
 }
