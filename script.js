@@ -1617,7 +1617,8 @@ if (justificativaForm) {
             fecharJanelaJustificativa();     
             atualizarTabelaRecebidos();      
             // Recarrega a página (conforme solicitado)
-            location.reload();  // <--- ADICIONADO
+            window.location.href = "detalhes.html";
+
         });
     });
 }
