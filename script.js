@@ -827,10 +827,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                 // Gradiente dinâmico para preenchimento da barra
                                 let backgroundGradient;
                                 if (elapsed <= midTime) {
-                                    const percentage = (elapsed / midTime) * 100; 
+                                    const percentage = (elapsed / midTime) * 100;
                                     backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
                                 } else {
-                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; 
+                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100;
                                     backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
                                 }
 
@@ -870,11 +870,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Pausa o intervalo padrão, se existir
                             if (intervalMap.has(index)) {
                                 clearInterval(intervalMap.get(index));
-                                intervalMap.delete(index); 
+                                intervalMap.delete(index);
                             }
 
                             // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                            updateTimeCell(true); 
+                            updateTimeCell(true);
                             if (!tempoCell._hoverInterval) {
                                 tempoCell._hoverInterval = setInterval(() => {
                                     const elapsedHover = Date.now() - detalhe.timestamp;
@@ -887,7 +887,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Para a contagem dos segundos durante o hover
                             if (tempoCell._hoverInterval) {
                                 clearInterval(tempoCell._hoverInterval);
-                                delete tempoCell._hoverInterval; 
+                                delete tempoCell._hoverInterval;
                             }
 
                             // Verifica se o item é futuro ou passado e retoma a contagem normal
@@ -976,12 +976,12 @@ document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
 
             if (janelaRecebimento && overlay) {
-                overlay.classList.remove("active"); 
-                janelaRecebimento.classList.add("hidden"); 
+                overlay.classList.remove("active");
+                janelaRecebimento.classList.add("hidden");
 
                 // Reseta estilos e animações
                 janelaRecebimento.style.animation = "";
-                janelaRecebimento.style.display = ""; 
+                janelaRecebimento.style.display = "";
             }
         });
 
@@ -989,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
             if (overlay) {
-                overlay.classList.remove("active"); 
+                overlay.classList.remove("active");
             }
         });
 
@@ -1163,7 +1163,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 dataRecebida.setDate(dataRecebida.getDate() + 1);
             }
 
-            const diffMs = dataRecebida - dataSolicitada; 
+            const diffMs = dataRecebida - dataSolicitada;
             const diffMinutes = Math.floor(diffMs / 60000);
 
             const hours = Math.floor(diffMinutes / 60);
@@ -1184,7 +1184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 recebidos.forEach(function (item, index) {
                     // Verifica se é atrasado
                     let [h, m] = (item.tempo || "00:00").split(":").map(Number);
-                    let totalMin = h * 60 + m; 
+                    let totalMin = h * 60 + m;
                     let isAtrasado = (totalMin > 30);
 
                     // Define o emoji (⚠️ ou 📜 ou nada)
@@ -1197,11 +1197,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
 
-                    // Monta o campo TEMPO (ex: "01:25📜")
+                    // Monta o campo TEMPO (ex: "01:25⚠️")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
-                        tempoCell += `${emoji}`; // Por exemplo "01:25⚠️"
-                        // Se quiser espaço no meio => tempoCell += ` ${emoji}`;
+                        tempoCell += `${emoji}`; // Ex.: "01:25⚠️"
                     }
 
                     // Injetar onclick se estiver atrasado
@@ -1444,10 +1443,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         selectAllCheckbox.addEventListener("change", function () {
                             checkboxes.forEach((checkbox) => {
                                 var row = checkbox.closest("tr");
-                                var horaCell = row.children[6].textContent; 
+                                var horaCell = row.children[6].textContent;
 
                                 if (verificarAtraso(horaCell)) {
-                                    checkbox.checked = this.checked; 
+                                    checkbox.checked = this.checked;
                                 }
                             });
                         });
@@ -1465,9 +1464,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     selectedCheckboxes.forEach((checkbox) => {
                         var row = checkbox.closest("tr");
-                        var horaCell = row.children[6].textContent; 
-                        var local = row.children[1].textContent; 
-                        var item = row.children[2].textContent;  
+                        var horaCell = row.children[6].textContent;
+                        var local = row.children[1].textContent;
+                        var item = row.children[2].textContent;
 
                         if (!verificarAtraso(horaCell)) {
                             alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
@@ -1504,7 +1503,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
 
-            return diferencaMinutos >= 30; 
+            return diferencaMinutos >= 30;
         }
     }
     document.getElementById("selecionarDataButton").addEventListener("click", function () {
@@ -1634,8 +1633,61 @@ if (justificativaForm) {
         recebidos[justificativaIndex] = item;
         localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        alert("Justificativa salva com sucesso!");
-        atualizarTabelaRecebidos();
-        fecharJanelaJustificativa();
+        // Aqui substituímos o ALERT pela janela de confirmação
+        mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
+            // Ao clicar em OK:
+            fecharJanelaJustificativa();     // Fecha a janela de justificativa
+            atualizarTabelaRecebidos();      // Atualiza para trocar ⚠️ por 📜 se houver texto
+        });
     });
+}
+
+
+/* 
+ * =======================
+ *   JANELA DE CONFIRMAÇÃO
+ * =======================
+ *  (Usando o mesmo design da janela de justificativa)
+ */
+
+// Função para mostrar a janela de confirmação (mesma "pegada" visual)
+function mostrarJanelaConfirmacao(mensagem, onOk) {
+    var janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    var confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+    var okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
+    var overlay = document.getElementById("overlay");
+
+    if (!janelaConfirmacao || !confirmacaoMensagem || !okConfirmacaoButton) {
+        console.error("Elementos da janela de confirmação não encontrados.");
+        return;
+    }
+
+    // Define a mensagem
+    confirmacaoMensagem.textContent = mensagem;
+
+    // Exibe overlay e janela no mesmo estilo
+    overlay.classList.add("active");
+    janelaConfirmacao.classList.remove("hidden");
+    janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
+
+    okConfirmacaoButton.onclick = function() {
+        if (typeof onOk === 'function') onOk();
+        fecharJanelaConfirmacao();
+    };
+}
+
+// Função para fechar a janela de confirmação
+function fecharJanelaConfirmacao() {
+    var janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    var overlay = document.getElementById("overlay");
+
+    if (janelaConfirmacao) {
+        janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
+        setTimeout(function() {
+            janelaConfirmacao.classList.add("hidden");
+            janelaConfirmacao.style.animation = '';
+        }, 300);
+    }
+    // Remover overlay se nenhuma outra janela estiver ativa
+    overlay.classList.remove("active");
 }
