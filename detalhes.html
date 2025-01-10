@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Cabeçalho permanece o mesmo -->
+    <!-- Cabeçalho -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes de Materiais</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Inclusão do SDK do EmailJS atualizado -->
+    <!-- Inclusão do SDK do EmailJS (se necessário) -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
     <style>
@@ -16,9 +16,11 @@
             width: 60px;
             height: auto;
         }
+
         body.dark-mode #themeToggleButton img {
             filter: invert(1) brightness(1.2);
         }
+
         /* Botão de gerar relatório (se quiser estilizar) */
         .gerar-relatorio-button {
             background-color: #007bff;
@@ -32,19 +34,22 @@
         .gerar-relatorio-button:hover {
             background-color: #0056b3;
         }
+
         /* Oculta elementos com .hidden */
         .hidden {
             display: none !important;
         }
     </style>
 </head>
+
 <body class="detalhes-page">
-    <!-- Overlay -->
+    <!-- Overlay para escurecer o fundo -->
     <div id="overlay" class="overlay"></div>
 
     <header>
         <div class="header-container">
             <div class="logo-container">
+                <!-- Logo da sua aplicação -->
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
                      alt="DevCore Logo" class="logo">
             </div>
@@ -60,7 +65,7 @@
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
                          alt="Logout" width="30" height="30">
                 </button>
-                <!-- Botão de Alternar Tema -->
+                <!-- Botão de Alternar Tema (Dark/Light) -->
                 <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
                          alt="Tema Escuro" width="30" height="30">
@@ -80,6 +85,7 @@
                     <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
                 </div>
                 <div>
+                    <!-- Botão de gerar relatório -->
                     <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button">
                         Gerar relatório
                     </button>
@@ -104,9 +110,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 9 <td> por linha -->
+                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
                 </tbody>
             </table>
+
             <div class="button-container">
                 <button onclick="location.href='index.html'">Voltar</button>
             </div>
@@ -118,6 +125,7 @@
                 <h2>Detalhes de Materiais Recebidos</h2>
                 <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
             </div>
+
             <table id="recebidosTable">
                 <thead>
                     <tr>
@@ -139,9 +147,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 10 <td> por linha -->
+                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
                 </tbody>
             </table>
+
             <div class="button-container">
                 <button onclick="location.href='index.html'">Voltar</button>
             </div>
@@ -193,7 +202,7 @@
                 disabled
             ></textarea>
 
-            <!-- Contador -->
+            <!-- Contador de caracteres -->
             <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">
                 0/200
             </div>
@@ -207,7 +216,6 @@
 
     <!-- ======================
          JANELA DE CONFIRMAÇÃO
-         (Usando o mesmo design)
          ====================== -->
     <div id="janelaConfirmacao" class="janela-flutuante hidden">
         <div class="conteudo-justificativa">
@@ -224,36 +232,37 @@
     </footer>
 
     <!-- Scripts básicos da aplicação -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <!-- (Verifique se a versão do script.js bate com aquela atualizada) -->
     <script src="script.js?v=2"></script>
+    
     <!-- Script de relatório (carregado por último) -->
     <script src="relatorio.js"></script>
 
     <script>
-        // Lógica de tema escuro e outras inicializações
-        document.addEventListener('DOMContentLoaded', function () {
-            // Carregar tema salvo
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
+    // Lógica de tema escuro e outras inicializações
+    document.addEventListener('DOMContentLoaded', function () {
+        // Carregar tema salvo
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+
+        // Botão de alternar tema
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        themeToggleButton.addEventListener('click', function () {
+            if (document.body.classList.contains('dark-mode')) {
                 document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
             }
-
-            // Botão de alternar tema
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
-
-            // O evento de clique em "Gerar Relatório" está em relatorio.js
         });
+
+        // O evento de clique em "Gerar Relatório" está em relatorio.js
+    });
     </script>
 </body>
 </html>
