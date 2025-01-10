@@ -133,7 +133,6 @@ if (cancelarSolicitacaoButton) {
     });
 }
 
-
 var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
@@ -251,8 +250,6 @@ if (janelaForm) {
     });
 }
 
-
-
 function abrirJanelaSolicitacao(dados, index) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -294,7 +291,6 @@ function abrirJanelaSolicitacao(dados, index) {
     }
 }
 
-
 // Função para fechar a janela de solicitação
 function fecharJanelaSolicitacao() {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
@@ -324,8 +320,6 @@ function fecharJanelaSolicitacao() {
     if (fromReservadosInput) fromReservadosInput.value = "false";
     if (itemIndexInput) itemIndexInput.value = "-1";
 }
-
-
 
 // Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
@@ -374,7 +368,6 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     }
 }
 
-
 // Função para fechar a janela de atenção com animação
 function fecharJanelaAtencao() {
     var janelaAtencao = document.getElementById("janelaAtencao");
@@ -397,8 +390,6 @@ function fecharJanelaAtencao() {
         }, 300); // Tempo igual à duração da animação
     }
 }
-
-
 
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
@@ -452,7 +443,6 @@ if (reservarButton) {
     });
 }
 
-
 // Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
@@ -484,7 +474,6 @@ function abrirJanelaReserva(dados) {
     }
 }
 
-
 // Função para fechar a janela de reserva
 function fecharJanelaReserva() {
     var janelaReserva = document.getElementById("janelaReserva");
@@ -509,7 +498,6 @@ function fecharJanelaReserva() {
     }
 }
 
-
 // Evento para cancelar a reserva
 var cancelarReservaButton = document.getElementById("cancelarReservaButton");
 if (cancelarReservaButton) {
@@ -517,7 +505,6 @@ if (cancelarReservaButton) {
         fecharJanelaReserva();
     });
 }
-
 
 // Evento para confirmar a reserva
 var janelaReservaForm = document.getElementById("janelaReservaForm");
@@ -562,7 +549,6 @@ if (janelaReservaForm) {
         if (itemInputReset) itemInputReset.value = "";
     });
 }
-
 
 // Função para excluir itens da tabela de materiais reservados
 var excluirReservadosButton = document.getElementById("excluirReservadosButton");
@@ -651,7 +637,6 @@ if (excluirReservadosButton) {
     });
 }
 
-
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableElement = document.getElementById("reservadosTable");
@@ -699,8 +684,6 @@ function atualizarTabelaReservados() {
     }
 }
 
-
-
 function atualizarTabelaSolicitados() {
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     var solicitadosTable = document.getElementById("solicitadosTable");
@@ -728,7 +711,6 @@ function atualizarTabelaSolicitados() {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
-
 
 // Carrega os dados ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
@@ -765,7 +747,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
-
             var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
             var detalhesTableElement = document.getElementById("detalhesTable");
             var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
@@ -812,11 +793,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Função para atualizar o tempo na célula
                         function updateTimeCell(showSeconds = false) {
                             const now = Date.now();
-                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em ms
 
                             // Define tempos limites
-                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+                            const maxTime = 30 * 60 * 1000; // 30 minutos
+                            const midTime = 15 * 60 * 1000; // 15 minutos
 
                             if (elapsed > maxTime) {
                                 newRow.classList.add("oscillation");
@@ -827,10 +808,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                 // Gradiente dinâmico para preenchimento da barra
                                 let backgroundGradient;
                                 if (elapsed <= midTime) {
-                                    const percentage = (elapsed / midTime) * 100; // Progresso da barra
+                                    const percentage = (elapsed / midTime) * 100;
                                     backgroundGradient = `linear-gradient(to left, rgb(0, 255, 0) ${100 - percentage}%, rgb(255, 255, 0) ${100 - percentage}%)`;
                                 } else {
-                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100; // Progresso da barra
+                                    const percentage = ((elapsed - midTime) / (maxTime - midTime)) * 100;
                                     backgroundGradient = `linear-gradient(to left, rgb(255, 255, 0) ${100 - percentage}%, rgb(255, 0, 0) ${100 - percentage}%)`;
                                 }
 
@@ -853,11 +834,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // Inicializa a contagem
                         if (detalhe.isFuture) {
-                            // Inicia a contagem regressiva a cada segundo
+                            // Inicia a contagem regressiva
                             var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, countdownInterval);
                         } else {
-                            // Inicia a contagem do tempo decorrido a cada segundo
+                            // Inicia a contagem do tempo decorrido
                             var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, elapsedInterval);
                         }
@@ -867,18 +848,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // Eventos de hover para exibir e ocultar os segundos
                         newRow.addEventListener("mouseover", function () {
-                            // Pausa o intervalo padrão, se existir
+                            // Pausa o intervalo padrão
                             if (intervalMap.has(index)) {
                                 clearInterval(intervalMap.get(index));
-                                intervalMap.delete(index); // Remove a referência do mapa para evitar conflitos
+                                intervalMap.delete(index);
                             }
 
                             // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                            updateTimeCell(true); // Atualiza para exibir HH:MM:SS
+                            updateTimeCell(true);
                             if (!tempoCell._hoverInterval) {
                                 tempoCell._hoverInterval = setInterval(() => {
                                     const elapsedHover = Date.now() - detalhe.timestamp;
-                                    tempoCell.textContent = formatTime(elapsedHover, true); // Atualiza com HH:MM:SS
+                                    tempoCell.textContent = formatTime(elapsedHover, true);
                                 }, 1000);
                             }
                         });
@@ -887,19 +868,17 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Para a contagem dos segundos durante o hover
                             if (tempoCell._hoverInterval) {
                                 clearInterval(tempoCell._hoverInterval);
-                                delete tempoCell._hoverInterval; // Remove a referência ao intervalo
+                                delete tempoCell._hoverInterval;
                             }
 
                             // Verifica se o item é futuro ou passado e retoma a contagem normal
                             if (detalhe.isFuture) {
                                 if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem regressiva apenas se não estiver já ativa
                                     var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
                                     intervalMap.set(index, countdownInterval);
                                 }
                             } else {
                                 if (!intervalMap.has(index)) {
-                                    // Reinicia a contagem do tempo decorrido apenas se não estiver já ativa
                                     var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
                                     intervalMap.set(index, elapsedInterval);
                                 }
@@ -909,9 +888,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             const elapsed = Date.now() - detalhe.timestamp;
                             tempoCell.textContent = formatTime(elapsed, false);
                         });
-
                     }
-
                 });
 
                 // Mensagem para tabela vazia
@@ -925,11 +902,9 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.error("Tabela de detalhes não encontrada.");
             }
-
         }
 
         atualizarTabelaDetalhes();
-
 
         // Função para abrir a janela flutuante de recebimento
         function abrirJanelaRecebimento(index) {
@@ -941,7 +916,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Converte a quantidade para número para evitar problemas de tipo
+            // Converte a quantidade para número
             var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
 
             var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
@@ -981,12 +956,12 @@ document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
 
             if (janelaRecebimento && overlay) {
-                overlay.classList.remove("active"); // Remove o escurecimento da página
-                janelaRecebimento.classList.add("hidden"); // Oculta a janela de recebimento
+                overlay.classList.remove("active");
+                janelaRecebimento.classList.add("hidden");
 
                 // Reseta estilos e animações
                 janelaRecebimento.style.animation = "";
-                janelaRecebimento.style.display = ""; // Garante que o display seja resetado
+                janelaRecebimento.style.display = "";
             }
         });
 
@@ -994,10 +969,9 @@ document.addEventListener("DOMContentLoaded", function () {
         document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
             if (overlay) {
-                overlay.classList.remove("active"); // Remove qualquer estado residual
+                overlay.classList.remove("active");
             }
         });
-
 
         // Função para fechar a janela de recebimento
         function fecharJanelaRecebimento() {
@@ -1005,22 +979,18 @@ document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
 
             if (janelaRecebimento && overlay) {
-                // Adiciona animação de saída para a janela
                 janelaRecebimento.style.animation = "slideUp 0.3s forwards";
 
-                // Remove o overlay após a animação
                 setTimeout(function () {
                     overlay.classList.remove("active");
                     janelaRecebimento.classList.add("hidden");
 
-                    // Reseta as propriedades de animação
                     janelaRecebimento.style.animation = "";
-                    document.body.classList.remove("modal-open"); // Garante que a rolagem da página seja reativada
-                }, 300); // Tempo igual à duração da animação
+                    document.body.classList.remove("modal-open");
+                }, 300);
             }
         }
 
-        // Evento de clique para o botão de cancelar
         var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
         if (cancelarRecebimentoButton) {
             cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
@@ -1071,7 +1041,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Calcula o tempo decorrido
                 function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
                     const [horaS, minS] = horarioSolicitado.split(":").map(Number);
                     const [horaR, minR] = horarioRecebido.split(":").map(Number);
@@ -1169,20 +1138,18 @@ document.addEventListener("DOMContentLoaded", function () {
             const dataSolicitada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaS, minS);
             const dataRecebida = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaR, minR);
 
-            // Caso a hora recebida seja menor, presume-se que foi no dia seguinte
             if (dataRecebida < dataSolicitada) {
                 dataRecebida.setDate(dataRecebida.getDate() + 1);
             }
 
-            const diffMs = dataRecebida - dataSolicitada; // Diferença em milissegundos
-            const diffMinutes = Math.floor(diffMs / 60000); // Diferença em minutos
+            const diffMs = dataRecebida - dataSolicitada;
+            const diffMinutes = Math.floor(diffMs / 60000);
 
             const hours = Math.floor(diffMinutes / 60);
             const minutes = diffMinutes % 60;
 
             return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
         }
-
 
         // Função para atualizar a tabela de materiais recebidos
         var recebidosTableElement = document.getElementById("recebidosTable");
@@ -1194,16 +1161,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
 
                 recebidos.forEach(function (item, index) {
-                    // 1) Verifica se é atrasado, parseando item.tempo (hh:mm)
+                    // Verifica se é atrasado
                     let [h, m] = (item.tempo || "00:00").split(":").map(Number);
-                    let totalMin = h * 60 + m; 
-                    // Se totalMin > 30 => atrasado
+                    let totalMin = h * 60 + m;
                     let isAtrasado = (totalMin > 30);
 
-                    // Define o emoji a exibir (⚠️ ou 📜 ou nada)
+                    // Define o emoji (⚠️ ou 📜 ou nada)
                     let emoji = "";
                     if (isAtrasado) {
-                        // Se já existe item.justificativa != ""
                         if (item.justificativa && item.justificativa.trim() !== "") {
                             emoji = "📜";
                         } else {
@@ -1211,16 +1176,19 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
 
-                    // Monta o campo TEMPO, colocando o emoji no canto superior direito
-                    let tempoCell = `${item.tempo || ""}`;
+                    // Monta o campo TEMPO (ex: "01:25⚠️")
+                    let tempoCell = (item.tempo || "");
                     if (emoji) {
-                        tempoCell += `
-                            <span 
-                                style="cursor: pointer; float: right; margin-left: 5px;"
-                                onclick="abrirJanelaJustificativa(${index})"
-                                title="Clique para justificar ou ver justificativa"
-                            >
-                                ${emoji}
+                        tempoCell += `${emoji}`; // Ex.: "01:25⚠️"
+                    }
+
+                    // Injetar onclick se estiver atrasado
+                    if (emoji) {
+                        tempoCell = `
+                            <span style="cursor: pointer;"
+                                  onclick="abrirJanelaJustificativa(${index})"
+                                  title="Clique para justificar ou ver justificativa">
+                                ${tempoCell}
                             </span>
                         `;
                     }
@@ -1256,7 +1224,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         atualizarTabelaRecebidos();
 
-
         // Função para excluir itens da tabela de materiais solicitados
         var excluirItensButton = document.getElementById("excluirItensButton");
 
@@ -1271,14 +1238,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Verifica se há itens na tabela
                 if (detalhesTableBody.rows.length === 0) {
                     alert("A lista de materiais solicitados está vazia! Adicione itens para poder realizar a exclusão.");
                     excluirItensButton.textContent = "Excluir Itens";
                     return;
                 }
 
-                // Seleciona todas as colunas de checkbox
                 var checkboxColumns = detalhesTable.querySelectorAll(".checkbox-column");
                 var checkboxes = detalhesTableBody.querySelectorAll(".delete-checkbox");
 
@@ -1287,18 +1252,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Verifica se a coluna está oculta
                 var isHidden = checkboxColumns[0].classList.contains("hidden");
 
                 if (isHidden) {
-                    // Exibir a coluna "SELECIONE"
                     checkboxColumns.forEach((column) => column.classList.remove("hidden"));
                     excluirItensButton.textContent = "Confirmar Exclusão";
 
-                    // Adiciona evento para "Selecionar Todos" no cabeçalho
                     if (selectAllCheckbox) {
                         selectAllCheckbox.addEventListener("change", function () {
-                            // Marca ou desmarca todas as caixas de seleção
                             var isChecked = this.checked;
                             checkboxes.forEach((checkbox) => {
                                 checkbox.checked = isChecked;
@@ -1306,7 +1267,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
                 } else {
-                    // Processar exclusão
                     var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
                     if (selectedCheckboxes.length === 0) {
@@ -1322,10 +1282,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             var row = checkbox.closest("tr");
                             var rowIndex = Array.from(detalhesTableBody.rows).indexOf(row);
 
-                            // Remove do array de detalhes
                             var detalheExcluido = detalhes.splice(rowIndex, 1)[0];
 
-                            // Remove o item correspondente da lista de solicitados em index
                             solicitados = solicitados.filter((itemSolicitado) => {
                                 return !(
                                     itemSolicitado.local === detalheExcluido.local &&
@@ -1334,24 +1292,19 @@ document.addEventListener("DOMContentLoaded", function () {
                                 );
                             });
 
-                            // Remove a linha da tabela
                             row.remove();
                         });
 
-                        // Atualiza o localStorage
                         localStorage.setItem("detalhes", JSON.stringify(detalhes));
                         localStorage.setItem("solicitados", JSON.stringify(solicitados));
 
                         alert("Itens excluídos com sucesso!");
 
-                        // Ocultar novamente a coluna "SELECIONE"
                         checkboxColumns.forEach((column) => column.classList.add("hidden"));
                         excluirItensButton.textContent = "Excluir Itens";
 
-                        // Desmarcar a caixa "Selecionar Todos"
                         if (selectAllCheckbox) selectAllCheckbox.checked = false;
 
-                        // Atualizar a tabela de materiais solicitados na página index.html (se estiver carregada)
                         if (window.location.pathname.includes("index.html")) {
                             atualizarTabelaSolicitados();
                         }
@@ -1374,14 +1327,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Verifica se há itens na tabela
                 if (recebidosTableBody.rows.length === 0) {
                     alert("A lista de materiais recebidos está vazia! Adicione itens para poder realizar a exclusão.");
                     excluirRecebidosButton.textContent = "Excluir Itens";
                     return;
                 }
 
-                // Seleciona todas as colunas de checkbox
                 var checkboxColumns = recebidosTable.querySelectorAll(".checkbox-column");
                 var checkboxes = recebidosTableBody.querySelectorAll(".delete-checkbox");
 
@@ -1390,18 +1341,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Verifica se a coluna está oculta
                 var isHidden = checkboxColumns[0].classList.contains("hidden");
 
                 if (isHidden) {
-                    // Exibir a coluna "SELECIONE"
                     checkboxColumns.forEach((column) => column.classList.remove("hidden"));
                     excluirRecebidosButton.textContent = "Confirmar Exclusão";
 
-                    // Adiciona evento para "Selecionar Todos" no cabeçalho
                     if (selectAllRecebidosCheckbox) {
                         selectAllRecebidosCheckbox.addEventListener("change", function () {
-                            // Marca ou desmarca todas as caixas de seleção
                             var isChecked = this.checked;
                             checkboxes.forEach((checkbox) => {
                                 checkbox.checked = isChecked;
@@ -1409,7 +1356,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
                 } else {
-                    // Processar exclusão
                     var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
                     if (selectedCheckboxes.length === 0) {
@@ -1424,23 +1370,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             var row = checkbox.closest("tr");
                             var rowIndex = Array.from(recebidosTableBody.rows).indexOf(row);
 
-                            // Remove do array de itens recebidos
                             recebidos.splice(rowIndex, 1);
 
-                            // Remove a linha da tabela
                             row.remove();
                         });
 
-                        // Atualiza o localStorage
                         localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
                         alert("Itens excluídos com sucesso!");
 
-                        // Ocultar novamente a coluna "SELECIONE"
                         checkboxColumns.forEach((column) => column.classList.add("hidden"));
                         excluirRecebidosButton.textContent = "Excluir Itens";
 
-                        // Desmarcar a caixa "Selecionar Todos"
                         if (selectAllRecebidosCheckbox) selectAllRecebidosCheckbox.checked = false;
                     }
                 }
@@ -1472,27 +1413,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 var isHidden = checkboxColumns[0].classList.contains("hidden");
 
                 if (isHidden) {
-                    // Exibir as caixas de seleção e resetar marcações
                     checkboxColumns.forEach((column) => column.classList.remove("hidden"));
-                    checkboxes.forEach((checkbox) => (checkbox.checked = false)); // Desmarca todas as caixas
+                    checkboxes.forEach((checkbox) => (checkbox.checked = false));
                     reportarItensButton.textContent = "Confirmar Reporte";
 
-                    // Vincular a função ao checkbox de selecionar todos
                     if (selectAllCheckbox) {
                         selectAllCheckbox.addEventListener("change", function () {
                             checkboxes.forEach((checkbox) => {
                                 var row = checkbox.closest("tr");
-                                var horaCell = row.children[6].textContent; // Coluna "HORA"
+                                var horaCell = row.children[6].textContent;
 
-                                // Verifica se o item está atrasado (30 minutos ou mais)
                                 if (verificarAtraso(horaCell)) {
-                                    checkbox.checked = this.checked; // Marca apenas itens atrasados
+                                    checkbox.checked = this.checked;
                                 }
                             });
                         });
                     }
                 } else {
-                    // Verifica itens selecionados
                     var selectedCheckboxes = Array.from(checkboxes).filter((checkbox) => checkbox.checked);
 
                     if (selectedCheckboxes.length === 0) {
@@ -1500,30 +1437,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
-                    // Verificar se todos os itens selecionados estão atrasados
                     var detalhesReportados = [];
                     var erro = false;
 
                     selectedCheckboxes.forEach((checkbox) => {
                         var row = checkbox.closest("tr");
-                        var horaCell = row.children[6].textContent; // Coluna "HORA"
-                        var local = row.children[1].textContent; // Local do material
-                        var item = row.children[2].textContent;  // Código do item
+                        var horaCell = row.children[6].textContent;
+                        var local = row.children[1].textContent;
+                        var item = row.children[2].textContent;
 
                         if (!verificarAtraso(horaCell)) {
                             alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
                             erro = true;
-                            checkbox.checked = false; // Desmarca o item não atrasado
+                            checkbox.checked = false;
                         } else {
                             detalhesReportados.push(`• ${local} - ${item}`);
                         }
                     });
 
                     if (erro) {
-                        return; // Interrompe o processo se houver erro
+                        return;
                     }
 
-                    // Confirmar com a lista dos itens reportados
                     var confirmacao = confirm(
                         `Tem certeza que deseja reportar os seguintes itens?\n\n${detalhesReportados.join("\n")}`
                     );
@@ -1537,7 +1472,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Função para verificar se um item está atrasado
         function verificarAtraso(horaSolicitada) {
             var agora = new Date();
             var [horas, minutos] = horaSolicitada.split(":").map(Number);
@@ -1547,16 +1481,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
 
-            return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
+            return diferencaMinutos >= 30;
         }
     }
+
     document.getElementById("selecionarDataButton").addEventListener("click", function () {
         const dateInput = document.getElementById("data-relatorio");
         if (dateInput) {
             dateInput.showPicker();
         }
     });
-
 });
 
 /* 
@@ -1565,12 +1499,10 @@ document.addEventListener("DOMContentLoaded", function () {
  * =======================
  *
  * Adicionamos abaixo a janela flutuante moderna para justificar 
- * atraso. Você pode inserir o HTML correspondente em "detalhes.html"
- * (por exemplo, <div id="janelaJustificativaAtraso" ...>).
- * Aqui, no script, manipulamos a lógica (abrir, fechar, salvar).
+ * atraso. Você deve ter o HTML correspondente em "detalhes.html"
+ * (ex.: <div id="janelaJustificativaAtraso" ...>).
  */
 
-// Variáveis e referências para a Janela de Justificativa:
 let justificativaIndex = -1;
 const janelaJustificativa = document.getElementById("janelaJustificativaAtraso");
 const justificativaForm = document.getElementById("justificativaForm");
@@ -1592,7 +1524,6 @@ if (justificativaForm) {
             return;
         }
 
-        // Se já existir item.justificativa => marcamos radio "com"
         if (item.justificativa && item.justificativa !== "") {
             justificarRadio.checked = true;
             justificativaTexto.disabled = false;
@@ -1625,7 +1556,6 @@ if (justificativaForm) {
         if (overlay) overlay.classList.remove("active");
     }
 
-    // Botão Cancelar
     if (cancelarJustificativaButton) {
         cancelarJustificativaButton.addEventListener("click", function () {
             fecharJanelaJustificativa();
@@ -1675,18 +1605,84 @@ if (justificativaForm) {
             }
             item.justificativa = texto;
         } else {
-            // Sem justificativa
             item.justificativa = "";
         }
 
-        // Salvar no localStorage
         recebidos[justificativaIndex] = item;
         localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        // Atualiza a tabela => trocar ⚠️ por 📜 se necessário
-        atualizarTabelaRecebidos();
+        // Aqui substituímos o ALERT pela janela de confirmação
+        mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
+            // Ao clicar em OK, fechamos a de justificativa e executamos a callback
+            fecharJanelaJustificativa();     
+            atualizarTabelaRecebidos();      
 
-        fecharJanelaJustificativa();
-        alert("Justificativa salva com sucesso!");
+            // Redireciona (ou recarrega) para detalhes.html
+            window.location.href = "detalhes.html";
+        });
     });
+}
+
+/* 
+ * =======================
+ *   JANELA DE CONFIRMAÇÃO
+ * =======================
+ */
+
+// Função para mostrar a janela de confirmação (mesma "pegada" visual)
+function mostrarJanelaConfirmacao(mensagem, onOk) {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+    const okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
+    const overlay = document.getElementById("overlay");
+
+    if (!janelaConfirmacao || !confirmacaoMensagem || !okConfirmacaoButton) {
+        console.error("Elementos da janela de confirmação não encontrados.");
+        return;
+    }
+
+    // Define a mensagem
+    confirmacaoMensagem.textContent = mensagem;
+
+    // Exibe overlay e janela
+    overlay.classList.add("active");
+    janelaConfirmacao.classList.remove("hidden");
+    janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
+
+    // Ao clicar em OK
+    okConfirmacaoButton.onclick = function() {
+        // Fecha a janela de justificativa, se ainda estiver aberta
+        fecharJanelaJustificativa();
+
+        // Executa callback personalizado
+        if (typeof onOk === 'function') {
+            onOk();
+        }
+
+        // Fecha a janela de confirmação
+        fecharJanelaConfirmacao();
+    };
+}
+
+// Função para fechar a janela de confirmação
+function fecharJanelaConfirmacao() {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const overlay = document.getElementById("overlay");
+
+    if (!janelaConfirmacao) {
+        console.error("janelaConfirmacao não encontrada!");
+        // Remover overlay mesmo assim, caso esteja ativo
+        if (overlay) overlay.classList.remove("active");
+        return;
+    }
+
+    janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
+
+    setTimeout(function() {
+        janelaConfirmacao.classList.add("hidden");
+        janelaConfirmacao.style.animation = '';
+
+        // Remove o overlay (caso nenhuma outra janela esteja usando)
+        overlay.classList.remove("active");
+    }, 300);
 }
