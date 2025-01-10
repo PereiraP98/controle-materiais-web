@@ -1613,10 +1613,11 @@ if (justificativaForm) {
 
         // Aqui substituímos o ALERT pela janela de confirmação
         mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
-            // Ao clicar em OK:
+            // Ao clicar em OK, fechamos a de justificativa e executamos a callback
             fecharJanelaJustificativa();     
             atualizarTabelaRecebidos();      
-            // Agora, em vez de location.reload(), forçamos abrir (ou recarregar) a detalhes.html
+
+            // Redireciona (ou recarrega) para detalhes.html
             window.location.href = "detalhes.html";
         });
     });
@@ -1626,15 +1627,14 @@ if (justificativaForm) {
  * =======================
  *   JANELA DE CONFIRMAÇÃO
  * =======================
- *  (Usando o mesmo design da janela de justificativa)
  */
 
 // Função para mostrar a janela de confirmação (mesma "pegada" visual)
 function mostrarJanelaConfirmacao(mensagem, onOk) {
-    var janelaConfirmacao = document.getElementById("janelaConfirmacao");
-    var confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
-    var okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
-    var overlay = document.getElementById("overlay");
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+    const okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
+    const overlay = document.getElementById("overlay");
 
     if (!janelaConfirmacao || !confirmacaoMensagem || !okConfirmacaoButton) {
         console.error("Elementos da janela de confirmação não encontrados.");
@@ -1644,16 +1644,21 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
     // Define a mensagem
     confirmacaoMensagem.textContent = mensagem;
 
-    // Exibe overlay e janela no mesmo estilo
+    // Exibe overlay e janela
     overlay.classList.add("active");
     janelaConfirmacao.classList.remove("hidden");
     janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
 
+    // Ao clicar em OK
     okConfirmacaoButton.onclick = function() {
-        // Executa callback personalizado (se passado)
+        // Fecha a janela de justificativa, se ainda estiver aberta
+        fecharJanelaJustificativa();
+
+        // Executa callback personalizado
         if (typeof onOk === 'function') {
             onOk();
         }
+
         // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
     };
@@ -1661,16 +1666,23 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
 
 // Função para fechar a janela de confirmação
 function fecharJanelaConfirmacao() {
-    var janelaConfirmacao = document.getElementById("janelaConfirmacao");
-    var overlay = document.getElementById("overlay");
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const overlay = document.getElementById("overlay");
 
-    if (janelaConfirmacao) {
-        janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
-        setTimeout(function() {
-            janelaConfirmacao.classList.add("hidden");
-            janelaConfirmacao.style.animation = '';
-        }, 300);
+    if (!janelaConfirmacao) {
+        console.error("janelaConfirmacao não encontrada!");
+        // Remover overlay mesmo assim, caso esteja ativo
+        if (overlay) overlay.classList.remove("active");
+        return;
     }
-    // Remover overlay se nenhuma outra janela estiver ativa
-    overlay.classList.remove("active");
+
+    janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
+
+    setTimeout(function() {
+        janelaConfirmacao.classList.add("hidden");
+        janelaConfirmacao.style.animation = '';
+
+        // Remove o overlay (caso nenhuma outra janela esteja usando)
+        overlay.classList.remove("active");
+    }, 300);
 }
