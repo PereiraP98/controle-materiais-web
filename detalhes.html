@@ -10,32 +10,29 @@
 
     <!-- Inclusão do SDK do EmailJS atualizado -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
     <style>
         .logo {
             width: 60px;
             height: auto;
         }
-
-        /* Apenas o ícone do botão de alternar tema será alterado no modo escuro */
         body.dark-mode #themeToggleButton img {
             filter: invert(1) brightness(1.2);
         }
-
-        /* Exemplo de classe para o botão de gerar relatório (caso queira estilizar) */
+        /* Botão de gerar relatório (se quiser estilizar) */
         .gerar-relatorio-button {
-            background-color: #007bff; /* cor de fundo (ex: azul) */
-            color: #fff;              /* cor do texto */
+            background-color: #007bff;
+            color: #fff;
             border: none;
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            margin-left: 10px;       /* espaçamento em relação a outros botões */
+            margin-left: 10px;
         }
         .gerar-relatorio-button:hover {
             background-color: #0056b3;
         }
-
-        /* (Opcional) Oculta elementos com esta classe, se quiser ainda ocultar outra coisa */
+        /* Oculta elementos com .hidden */
         .hidden {
             display: none !important;
         }
@@ -46,7 +43,6 @@
     <div id="overlay" class="overlay"></div>
 
     <header>
-        <!-- Header com mesma lógica do index -->
         <div class="header-container">
             <div class="logo-container">
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
@@ -78,14 +74,11 @@
         <section class="detalhes-container">
             <h2>Detalhes de Materiais Solicitados</h2>
 
-            <!-- Contêiner para os botões, dividindo-os em lados opostos -->
             <div class="botoes-detalhes" style="display: flex; justify-content: space-between; margin-top: 10px;">
-                <!-- Botões à esquerda -->
                 <div>
                     <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
                     <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
                 </div>
-                <!-- Botão à direita -->
                 <div>
                     <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button">
                         Gerar relatório
@@ -139,14 +132,14 @@
                         <th>DATA</th>
                         <th>HORA</th>
                         <th>RECEBIDO</th>
-                        <!-- (8) TEMPO (agora visível) -->
+                        <!-- (8) TEMPO -->
                         <th>TEMPO</th>
                         <!-- (9) GUARDADO -->
                         <th>GUARDADO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 10 <td> por linha, col[8] = TEMPO, col[9] = GUARDADO -->
+                    <!-- 10 <td> por linha -->
                 </tbody>
             </table>
             <div class="button-container">
@@ -216,9 +209,10 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts básicos da aplicação -->
+    <!-- Scripts básicos da aplicação 
+         Adicione ?v=2 ou outro parâmetro para forçar atualização do script no navegador -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
     
     <!-- Script de relatório (carregado por último) -->
     <script src="relatorio.js"></script>
