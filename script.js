@@ -1616,9 +1616,8 @@ if (justificativaForm) {
             // Ao clicar em OK:
             fecharJanelaJustificativa();     
             atualizarTabelaRecebidos();      
-            // Recarrega a página (conforme solicitado)
+            // Agora, em vez de location.reload(), forçamos abrir (ou recarregar) a detalhes.html
             window.location.href = "detalhes.html";
-
         });
     });
 }
@@ -1657,7 +1656,6 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
         }
         // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
-        window.location.href = "detalhes.html";
     };
 }
 
