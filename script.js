@@ -976,12 +976,12 @@ document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
 
             if (janelaRecebimento && overlay) {
-                overlay.classList.remove("active"); 
-                janelaRecebimento.classList.add("hidden"); 
+                overlay.classList.remove("active");
+                janelaRecebimento.classList.add("hidden");
 
                 // Reseta estilos e animações
                 janelaRecebimento.style.animation = "";
-                janelaRecebimento.style.display = ""; 
+                janelaRecebimento.style.display = "";
             }
         });
 
@@ -989,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.addEventListener("DOMContentLoaded", function () {
             var overlay = document.getElementById("overlay");
             if (overlay) {
-                overlay.classList.remove("active"); 
+                overlay.classList.remove("active");
             }
         });
 
@@ -1197,11 +1197,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
 
-                    // Monta o campo TEMPO (ex: "01:25📜")
+                    // Monta o campo TEMPO (ex: "01:25⚠️")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
-                        tempoCell += `${emoji}`; // Por exemplo "01:25⚠️"
-                        // Se quiser espaço no meio => tempoCell += ` ${emoji}`;
+                        tempoCell += `${emoji}`;
                     }
 
                     // Injetar onclick se estiver atrasado
@@ -1447,7 +1446,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 var horaCell = row.children[6].textContent; 
 
                                 if (verificarAtraso(horaCell)) {
-                                    checkbox.checked = this.checked; 
+                                    checkbox.checked = this.checked;
                                 }
                             });
                         });
@@ -1465,9 +1464,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     selectedCheckboxes.forEach((checkbox) => {
                         var row = checkbox.closest("tr");
-                        var horaCell = row.children[6].textContent; 
-                        var local = row.children[1].textContent; 
-                        var item = row.children[2].textContent;  
+                        var horaCell = row.children[6].textContent;
+                        var local = row.children[1].textContent;
+                        var item = row.children[2].textContent;
 
                         if (!verificarAtraso(horaCell)) {
                             alert(`Não é possível reportar o material (${local} - ${item}) porque ele não ultrapassou o tempo de atraso!`);
@@ -1504,7 +1503,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             var diferencaMinutos = Math.floor((agora - horarioSolicitado) / 60000);
 
-            return diferencaMinutos >= 30; 
+            return diferencaMinutos >= 30;
         }
     }
     document.getElementById("selecionarDataButton").addEventListener("click", function () {
