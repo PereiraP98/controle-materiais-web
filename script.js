@@ -747,7 +747,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Função para atualizar a tabela de detalhes
         function atualizarTabelaDetalhes() {
-
             var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
             var detalhesTableElement = document.getElementById("detalhesTable");
             var detalhesTable = detalhesTableElement ? detalhesTableElement.querySelector("tbody") : null;
@@ -1615,8 +1614,10 @@ if (justificativaForm) {
         // Aqui substituímos o ALERT pela janela de confirmação
         mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
             // Ao clicar em OK:
-            fecharJanelaJustificativa();     // Fecha a janela de justificativa
-            atualizarTabelaRecebidos();      // Atualiza para trocar ⚠️ por 📜 (ou vice-versa)
+            fecharJanelaJustificativa();     
+            atualizarTabelaRecebidos();      
+            // Recarrega a página (conforme solicitado)
+            location.reload();  // <--- ADICIONADO
         });
     });
 }
@@ -1672,5 +1673,4 @@ function fecharJanelaConfirmacao() {
     }
     // Remover overlay se nenhuma outra janela estiver ativa
     overlay.classList.remove("active");
-
 }
