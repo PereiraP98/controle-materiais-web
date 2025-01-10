@@ -1508,6 +1508,86 @@ let justificativaIndex = -1;
 const janelaJustificativa = document.getElementById("janelaJustificativaAtraso");
 const justificativaForm = document.getElementById("justificativaForm");
 if (justificativaForm) {
+    const justificarRadio = justificativaForm.querySelector('input[value="com"]');
+    const semJustificaRadio = justificativaForm.querySelector('input[value="sem"]');
+    const justificativaTexto = document.getElementById("justificativaTexto");
+    const contadorJustificativa = document.getElementById("contadorJustificativa");
+    const cancelarJustificativaButton = document.getElementById("cancelarJustificativaButton");
+
+    // Abre a janela de justificativa
+    window.abrirJanelaJustificativa = function (index) {
+        justificativaIndex = index;
+
+        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        let item = recebidos[index];
+        if (!item) {
+            console.warn("Item de recebidos não encontrado para index:", index);
+            return;
+        }
+
+        if (item.justificativa && item.justificativa !== "") {
+            justificarRadio.checked = true;
+            justificativaTexto.disabled = false;
+            justificativaTexto.value = item.justificativa;
+            contadorJustificativa.textContent = justificativaTexto.value.length + "/200";
+        } else {
+            semJustificaRadio.checked = true;
+            justificativaTexto.disabled = true;
+            justificativaTexto.value = "";
+            contadorJustificativa.textContent = "0/200";
+        }
+
+        if (janelaJustificativa) {
+            janelaJustificativa.classList.remove("hidden");
+            janelaJustificativa.style.animation = 'slideDown 0.3s forwards';
+        }
+        let overlay = document.getElementById("overlay");
+        if (overlay) overlay.classList.add("active");
+    };
+
+    // Fecha a janela de justificativa
+    function fecharJanelaJustificativa() {
+        if (janelaJustificativa) {
+            janelaJustificativa.style.animation = 'slideUp 0.3s forwards';
+            setTimeout(function () {
+                janelaJustificativa.classList.add("hidden");
+            }, 300);
+        }
+        let overlay = document.getElementById("overlay");
+        if (overlay) overlay.classList.remove("active");
+    }
+
+    if (cancelarJustificativaButton) {
+        cancelarJustificativaButton.addEventListener("click", function () {
+            fecharJanelaJustificativa();
+        });
+    }
+
+    // Radios => habilitar/desabilitar textarea
+    justificativaForm.addEventListener("change", function(e) {
+        if (e.target.name === "radioJustificativa") {
+            if (justificarRadio.checked) {
+                justificativaTexto.disabled = false;
+            } else {
+                justificativaTexto.disabled = true;
+                justificativaTexto.value = "";
+                contadorJustificativa.textContent = "0/200";
+            }
+        }
+    });
+
+    // Contador de caracteres
+    justificativaTexto.addEventListener("input", function() {
+        let len = justificativaTexto.value.length;
+        contadorJustificativa.textContent = len + "/200";
+        if (len > 200) {
+            justificativaTexto.style.color = "red";
+        } else {
+            justificativaTexto.style.color = "";
+        }
+    });
+
+    // Submeter o form => salvar justificativa
     justificativaForm.addEventListener("submit", function(e) {
         e.preventDefault();
 
@@ -1518,8 +1598,7 @@ if (justificativaForm) {
             return;
         }
 
-        // Se o radio "com justificativa" estiver marcado...
-        if (justificarRadio && justificarRadio.checked) {
+        if (justificarRadio.checked) {
             let texto = justificativaTexto.value.trim();
             if (texto.length > 200) {
                 alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
@@ -1527,22 +1606,17 @@ if (justificativaForm) {
             }
             item.justificativa = texto;
         } else {
-            // Se o usuário marcou "sem justificativa", limpamos
             item.justificativa = "";
         }
 
-        // Salva a informação de justificativa no localStorage
         recebidos[justificativaIndex] = item;
         localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        // Mostra a JANELA DE CONFIRMAÇÃO MODERNA (SEM usar alert).
+        // Aqui substituímos o ALERT pela janela de confirmação
         mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
-            // Callback que roda AO CLICAR EM "OK" NA JANELA DE CONFIRMAÇÃO
-            fecharJanelaJustificativa();    // Fecha a janela de justificativa
-            atualizarTabelaRecebidos();     // Atualiza o emoji ⚠️ para 📜, caso haja justificativa
-
-            // Recarrega a página automaticamente
-            location.reload();
+            // Ao clicar em OK:
+            fecharJanelaJustificativa();     // Fecha a janela de justificativa
+            atualizarTabelaRecebidos();      // Atualiza para trocar ⚠️ por 📜 (ou vice-versa)
         });
     });
 }
@@ -1574,11 +1648,12 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
     janelaConfirmacao.classList.remove("hidden");
     janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
 
-    // Ação ao clicar em OK
     okConfirmacaoButton.onclick = function() {
+        // Executa callback personalizado (se passado)
         if (typeof onOk === 'function') {
             onOk();
         }
+        // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
     };
 }
@@ -1597,4 +1672,5 @@ function fecharJanelaConfirmacao() {
     }
     // Remover overlay se nenhuma outra janela estiver ativa
     overlay.classList.remove("active");
+
 }
