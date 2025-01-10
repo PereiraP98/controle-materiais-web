@@ -1197,11 +1197,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
 
-                    // Monta o campo TEMPO (ex: "01:25📜")
+                    // Monta o campo TEMPO (ex: "01:25⚠️")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
                         tempoCell += `${emoji}`; // Por exemplo "01:25⚠️"
-                        // Se quiser espaço no meio => tempoCell += ` ${emoji}`;
                     }
 
                     // Injetar onclick se estiver atrasado
