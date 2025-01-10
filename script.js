@@ -1675,4 +1675,5 @@ function fecharJanelaConfirmacao() {
     }
     // Remover overlay se nenhuma outra janela estiver ativa
     overlay.classList.remove("active");
+    window.location.reload();
 }
