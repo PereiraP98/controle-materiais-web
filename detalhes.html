@@ -205,15 +205,27 @@
         </form>
     </div>
 
+    <!-- ======================
+         JANELA DE CONFIRMAÇÃO
+         (Usando o mesmo design)
+         ====================== -->
+    <div id="janelaConfirmacao" class="janela-flutuante hidden">
+        <div class="conteudo-justificativa">
+            <!-- Mensagem dinâmica de confirmação -->
+            <p id="confirmacaoMensagem" class="titulo-janela"></p>
+            <div class="botoes-justificativa">
+                <button id="okConfirmacaoButton" class="primary-button">OK</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts básicos da aplicação 
-         Adicione ?v=2 ou outro parâmetro para forçar atualização do script no navegador -->
+    <!-- Scripts básicos da aplicação -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="script.js?v=2"></script>
-    
     <!-- Script de relatório (carregado por último) -->
     <script src="relatorio.js"></script>
 
