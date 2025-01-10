@@ -1629,60 +1629,48 @@ if (justificativaForm) {
  * =======================
  */
 
-// Função para mostrar a janela de confirmação (mesma "pegada" visual)
-function mostrarJanelaConfirmacao(mensagem, onOk) {
-    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
-    const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
-    const okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
-    const overlay = document.getElementById("overlay");
+// Mostra a janela de confirmação
+function mostrarJanelaConfirmacao(mensagem) {
+    // Pega os elementos
+    var janelaConfirmacao   = document.getElementById("janelaConfirmacao");
+    var confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+    var overlay             = document.getElementById("overlay");
 
-    if (!janelaConfirmacao || !confirmacaoMensagem || !okConfirmacaoButton) {
-        console.error("Elementos da janela de confirmação não encontrados.");
+    if (!janelaConfirmacao || !confirmacaoMensagem || !overlay) {
+        console.error("Janela de confirmação ou overlay não encontrados!");
         return;
     }
 
     // Define a mensagem
     confirmacaoMensagem.textContent = mensagem;
 
-    // Exibe overlay e janela
+    // Exibe a janela (display block) e ativa o overlay
+    janelaConfirmacao.style.display = "block";
     overlay.classList.add("active");
-    janelaConfirmacao.classList.remove("hidden");
-    janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
-
-    // Ao clicar em OK
-    okConfirmacaoButton.onclick = function() {
-        // Fecha a janela de justificativa, se ainda estiver aberta
-        fecharJanelaJustificativa();
-
-        // Executa callback personalizado
-        if (typeof onOk === 'function') {
-            onOk();
-        }
-
-        // Fecha a janela de confirmação
-        fecharJanelaConfirmacao();
-    };
 }
 
-// Função para fechar a janela de confirmação
+// Fecha a janela de confirmação
 function fecharJanelaConfirmacao() {
-    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
-    const overlay = document.getElementById("overlay");
+    var janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    var overlay = document.getElementById("overlay");
 
-    if (!janelaConfirmacao) {
-        console.error("janelaConfirmacao não encontrada!");
-        // Remover overlay mesmo assim, caso esteja ativo
-        if (overlay) overlay.classList.remove("active");
-        return;
+    if (janelaConfirmacao) {
+        janelaConfirmacao.style.display = "none";
     }
-
-    janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
-
-    setTimeout(function() {
-        janelaConfirmacao.classList.add("hidden");
-        janelaConfirmacao.style.animation = '';
-
-        // Remove o overlay (caso nenhuma outra janela esteja usando)
+    if (overlay) {
         overlay.classList.remove("active");
-    }, 300);
+    }
 }
+
+/***************************************************************
+ *  GARANTE O FECHAMENTO AO CLICAR EM "OK"
+ ***************************************************************/
+document.addEventListener("DOMContentLoaded", function() {
+    var okConfirmacaoButton = document.getElementById("okConfirmacaoButton");
+    if (okConfirmacaoButton) {
+        // Ao clicar em OK, fecha a janela
+        okConfirmacaoButton.addEventListener("click", function() {
+            fecharJanelaConfirmacao();
+        });
+    }
+});
