@@ -286,16 +286,13 @@ function abrirJanelaSolicitacao(dados, index) {
         janelaSolicitacao.style.animation = 'none';
         janelaSolicitacao.style.transform = '';
         janelaSolicitacao.style.opacity = '';
-        janelaSolicitacao.offsetHeight; 
+        janelaSolicitacao.offsetHeight;
         overlay.classList.add("active");
         janelaSolicitacao.classList.remove("hidden");
         janelaSolicitacao.style.animation = 'slideDown 0.3s forwards';
         document.body.classList.add('modal-open');
     }
 }
-
-
-
 
 
 // Função para fechar a janela de solicitação
@@ -327,8 +324,6 @@ function fecharJanelaSolicitacao() {
     if (fromReservadosInput) fromReservadosInput.value = "false";
     if (itemIndexInput) itemIndexInput.value = "-1";
 }
-
-
 
 
 
@@ -458,12 +453,11 @@ if (reservarButton) {
 }
 
 
-
 // Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
     var reservaQuantidadeInput = document.getElementById("reservaQuantidade");
-    var localSelect = document.getElementById("local"); 
+    var localSelect = document.getElementById("local");
     var destinoSelect = document.getElementById("destino");
 
     if (reservaQuantidadeInput) reservaQuantidadeInput.value = "1";
@@ -491,9 +485,6 @@ function abrirJanelaReserva(dados) {
 }
 
 
-
-
-
 // Função para fechar a janela de reserva
 function fecharJanelaReserva() {
     var janelaReserva = document.getElementById("janelaReserva");
@@ -517,8 +508,6 @@ function fecharJanelaReserva() {
         }, 300); // Duração da animação
     }
 }
-
-
 
 
 // Evento para cancelar a reserva
@@ -712,8 +701,6 @@ function atualizarTabelaReservados() {
 
 
 
-
-
 function atualizarTabelaSolicitados() {
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     var solicitadosTable = document.getElementById("solicitadosTable");
@@ -741,8 +728,6 @@ function atualizarTabelaSolicitados() {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
-
-
 
 
 // Carrega os dados ao carregar a página
@@ -796,7 +781,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     detalhe.isFuture = detalhe.timestamp > agora;
 
                     // Calcula o tempo restante ou decorrido
-                    var tempoDisplay = detalhe.isFuture ? formatTime(detalhe.timestamp - agora, true) : formatTime(agora - detalhe.timestamp);
+                    var tempoDisplay = detalhe.isFuture
+                        ? formatTime(detalhe.timestamp - agora, true)
+                        : formatTime(agora - detalhe.timestamp);
 
                     newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -923,326 +910,352 @@ document.addEventListener("DOMContentLoaded", function () {
                             tempoCell.textContent = formatTime(elapsed, false);
                         });
 
-                        
-
                     }
 
-                    
                 });
 
                 // Mensagem para tabela vazia
-        if (detalhes.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
-            `;
-            detalhesTable.appendChild(emptyRow);
-        }
-    } else {
-        console.error("Tabela de detalhes não encontrada.");
+                if (detalhes.length === 0) {
+                    var emptyRow = document.createElement("tr");
+                    emptyRow.innerHTML = `
+                        <td colspan="9" style="text-align: center;">Nenhum material solicitado no momento.</td>
+                    `;
+                    detalhesTable.appendChild(emptyRow);
+                }
+            } else {
+                console.error("Tabela de detalhes não encontrada.");
             }
-            
+
         }
 
         atualizarTabelaDetalhes();
 
 
-// Função para abrir a janela flutuante de recebimento
-function abrirJanelaRecebimento(index) {
-    var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-    var detalhe = detalhes[index];
+        // Função para abrir a janela flutuante de recebimento
+        function abrirJanelaRecebimento(index) {
+            var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            var detalhe = detalhes[index];
 
-    if (!detalhe) {
-        alert("Erro: Detalhe não encontrado para o índice fornecido.");
-        return;
-    }
+            if (!detalhe) {
+                alert("Erro: Detalhe não encontrado para o índice fornecido.");
+                return;
+            }
 
-    // Converte a quantidade para número para evitar problemas de tipo
-    var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
+            // Converte a quantidade para número para evitar problemas de tipo
+            var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
 
-    var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-    var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-    var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+            var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+            var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+            var recebimentoIndexInput = document.getElementById("recebimentoIndex");
 
-    if (recebimentoQuantidadeInput) {
-        recebimentoQuantidadeInput.value = quantidadeSolicitada.toString();
-        // Desabilita o campo de quantidade somente se quantidadeSolicitada === 1
-        recebimentoQuantidadeInput.disabled = (quantidadeSolicitada === 1);
-    }
+            if (recebimentoQuantidadeInput) {
+                recebimentoQuantidadeInput.value = quantidadeSolicitada.toString();
+                // Desabilita o campo de quantidade somente se quantidadeSolicitada === 1
+                recebimentoQuantidadeInput.disabled = (quantidadeSolicitada === 1);
+            }
 
-    if (recebimentoHorarioInput) {
-        var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        recebimentoHorarioInput.value = horarioAtual;
-    }
+            if (recebimentoHorarioInput) {
+                var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                recebimentoHorarioInput.value = horarioAtual;
+            }
 
-    if (recebimentoIndexInput) {
-        recebimentoIndexInput.value = index;
-    }
+            if (recebimentoIndexInput) {
+                recebimentoIndexInput.value = index;
+            }
 
-    var janelaRecebimento = document.getElementById("janelaRecebimento");
-    var overlay = document.getElementById("overlay");
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            var overlay = document.getElementById("overlay");
 
-    if (janelaRecebimento && overlay) {
-        overlay.classList.add("active");
-        janelaRecebimento.classList.remove("hidden");
-        janelaRecebimento.style.animation = "slideDown 0.3s forwards";
-    } else {
-        alert("Erro: Elementos da janela de recebimento não encontrados.");
-    }
-}
-
-// Evento para fechar a janela de recebimento e remover o overlay
-document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
-    var janelaRecebimento = document.getElementById("janelaRecebimento");
-    var overlay = document.getElementById("overlay");
-
-    if (janelaRecebimento && overlay) {
-        overlay.classList.remove("active"); // Remove o escurecimento da página
-        janelaRecebimento.classList.add("hidden"); // Oculta a janela de recebimento
-
-        // Reseta estilos e animações
-        janelaRecebimento.style.animation = "";
-        janelaRecebimento.style.display = ""; // Garante que o display seja resetado
-    }
-});
-
-// Garantia de reset do overlay ao carregar a página
-document.addEventListener("DOMContentLoaded", function () {
-    var overlay = document.getElementById("overlay");
-    if (overlay) {
-        overlay.classList.remove("active"); // Remove qualquer estado residual
-    }
-});
-
-
- // Função para fechar a janela de recebimento
-function fecharJanelaRecebimento() {
-    var janelaRecebimento = document.getElementById("janelaRecebimento");
-    var overlay = document.getElementById("overlay");
-
-    if (janelaRecebimento && overlay) {
-        // Adiciona animação de saída para a janela
-        janelaRecebimento.style.animation = "slideUp 0.3s forwards";
-
-        // Remove o overlay após a animação
-        setTimeout(function () {
-            overlay.classList.remove("active");
-            janelaRecebimento.classList.add("hidden");
-
-            // Reseta as propriedades de animação
-            janelaRecebimento.style.animation = "";
-            document.body.classList.remove("modal-open"); // Garante que a rolagem da página seja reativada
-        }, 300); // Tempo igual à duração da animação
-    }
-}
-
-// Evento de clique para o botão de cancelar
-var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
-if (cancelarRecebimentoButton) {
-    cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
-}
-
-// Confirma o recebimento
-// Confirma o recebimento
-var recebimentoForm = document.getElementById("recebimentoForm");
-if (recebimentoForm) {
-    recebimentoForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        var recebimentoIndexInput = document.getElementById("recebimentoIndex");
-        var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
-        var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
-
-        var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1, 10);
-        var quantidadeRecebidaStr = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
-        var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
-
-        if (index === -1 || isNaN(index)) {
-            alert("Erro ao identificar o item a ser recebido.");
-            return;
+            if (janelaRecebimento && overlay) {
+                overlay.classList.add("active");
+                janelaRecebimento.classList.remove("hidden");
+                janelaRecebimento.style.animation = "slideDown 0.3s forwards";
+            } else {
+                alert("Erro: Elementos da janela de recebimento não encontrados.");
+            }
         }
 
-        if (!horarioRecebido) {
-            alert("Por favor, insira o horário de recebimento.");
-            return;
+        // Evento para fechar a janela de recebimento e remover o overlay
+        document.getElementById("cancelarRecebimentoButton").addEventListener("click", function () {
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            var overlay = document.getElementById("overlay");
+
+            if (janelaRecebimento && overlay) {
+                overlay.classList.remove("active"); // Remove o escurecimento da página
+                janelaRecebimento.classList.add("hidden"); // Oculta a janela de recebimento
+
+                // Reseta estilos e animações
+                janelaRecebimento.style.animation = "";
+                janelaRecebimento.style.display = ""; // Garante que o display seja resetado
+            }
+        });
+
+        // Garantia de reset do overlay ao carregar a página
+        document.addEventListener("DOMContentLoaded", function () {
+            var overlay = document.getElementById("overlay");
+            if (overlay) {
+                overlay.classList.remove("active"); // Remove qualquer estado residual
+            }
+        });
+
+
+        // Função para fechar a janela de recebimento
+        function fecharJanelaRecebimento() {
+            var janelaRecebimento = document.getElementById("janelaRecebimento");
+            var overlay = document.getElementById("overlay");
+
+            if (janelaRecebimento && overlay) {
+                // Adiciona animação de saída para a janela
+                janelaRecebimento.style.animation = "slideUp 0.3s forwards";
+
+                // Remove o overlay após a animação
+                setTimeout(function () {
+                    overlay.classList.remove("active");
+                    janelaRecebimento.classList.add("hidden");
+
+                    // Reseta as propriedades de animação
+                    janelaRecebimento.style.animation = "";
+                    document.body.classList.remove("modal-open"); // Garante que a rolagem da página seja reativada
+                }, 300); // Tempo igual à duração da animação
+            }
         }
 
-        var quantidadeRecebida = parseInt(quantidadeRecebidaStr, 10);
-        if (isNaN(quantidadeRecebida) || quantidadeRecebida <= 0) {
-            alert("Por favor, insira uma quantidade válida recebida.");
-            return;
+        // Evento de clique para o botão de cancelar
+        var cancelarRecebimentoButton = document.getElementById("cancelarRecebimentoButton");
+        if (cancelarRecebimentoButton) {
+            cancelarRecebimentoButton.addEventListener("click", fecharJanelaRecebimento);
         }
 
-        var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
-        var detalhe = detalhes[index];
+        // Confirma o recebimento
+        var recebimentoForm = document.getElementById("recebimentoForm");
+        if (recebimentoForm) {
+            recebimentoForm.addEventListener("submit", function (event) {
+                event.preventDefault();
 
-        if (!detalhe) {
-            alert("Erro ao encontrar o material nos detalhes.");
-            return;
+                var recebimentoIndexInput = document.getElementById("recebimentoIndex");
+                var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
+                var recebimentoHorarioInput = document.getElementById("recebimentoHorario");
+
+                var index = parseInt(recebimentoIndexInput ? recebimentoIndexInput.value : -1, 10);
+                var quantidadeRecebidaStr = recebimentoQuantidadeInput ? recebimentoQuantidadeInput.value.trim() : "";
+                var horarioRecebido = recebimentoHorarioInput ? recebimentoHorarioInput.value.trim() : "";
+
+                if (index === -1 || isNaN(index)) {
+                    alert("Erro ao identificar o item a ser recebido.");
+                    return;
+                }
+
+                if (!horarioRecebido) {
+                    alert("Por favor, insira o horário de recebimento.");
+                    return;
+                }
+
+                var quantidadeRecebida = parseInt(quantidadeRecebidaStr, 10);
+                if (isNaN(quantidadeRecebida) || quantidadeRecebida <= 0) {
+                    alert("Por favor, insira uma quantidade válida recebida.");
+                    return;
+                }
+
+                var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+                var detalhe = detalhes[index];
+
+                if (!detalhe) {
+                    alert("Erro ao encontrar o material nos detalhes.");
+                    return;
+                }
+
+                var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
+
+                if (quantidadeRecebida > quantidadeSolicitada) {
+                    alert("A quantidade recebida não pode ser maior que a quantidade solicitada.");
+                    return;
+                }
+
+                // Calcula o tempo decorrido
+                function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
+                    const [horaS, minS] = horarioSolicitado.split(":").map(Number);
+                    const [horaR, minR] = horarioRecebido.split(":").map(Number);
+
+                    const minutosSolicitados = horaS * 60 + minS;
+                    const minutosRecebidos = horaR * 60 + minR;
+
+                    const minutosDecorridos = minutosRecebidos - minutosSolicitados;
+
+                    const horas = Math.floor(minutosDecorridos / 60);
+                    const minutos = minutosDecorridos % 60;
+
+                    return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+                }
+
+                const tempoDecorrido = calcularTempoDecorrido(detalhe.horario, horarioRecebido);
+
+                // Limpa os intervals do cronômetro, se houver
+                if (intervalMap.has(index)) {
+                    clearInterval(intervalMap.get(index));
+                    intervalMap.delete(index);
+                }
+
+                var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+
+                if (quantidadeRecebida === quantidadeSolicitada) {
+                    // Recebimento total
+                    recebidos.push({
+                        local: detalhe.local,
+                        item: detalhe.item,
+                        quantidade: quantidadeRecebida,
+                        destino: detalhe.destino,
+                        dataAtual: detalhe.dataAtual,
+                        horario: detalhe.horario,
+                        recebido: horarioRecebido,
+                        tempo: tempoDecorrido,
+                        guardado: ''
+                    });
+                    localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                    // Remove o item de detalhes, pois não há mais pendência
+                    detalhes.splice(index, 1);
+                    localStorage.setItem("detalhes", JSON.stringify(detalhes));
+
+                    // Remove o item de solicitados também
+                    var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
+                    var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
+                        return itemSolicitado.local === detalhe.local &&
+                            itemSolicitado.item === detalhe.item &&
+                            itemSolicitado.destino === detalhe.destino;
+                    });
+
+                    if (solicitadosIndex !== -1) {
+                        solicitados.splice(solicitadosIndex, 1);
+                        localStorage.setItem("solicitados", JSON.stringify(solicitados));
+                    }
+
+                } else {
+                    // Recebimento parcial
+                    recebidos.push({
+                        local: detalhe.local,
+                        item: detalhe.item,
+                        quantidade: quantidadeRecebida,
+                        destino: detalhe.destino,
+                        dataAtual: detalhe.dataAtual,
+                        horario: detalhe.horario,
+                        recebido: horarioRecebido,
+                        tempo: tempoDecorrido,
+                        guardado: ''
+                    });
+                    localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+                    // Atualiza a quantidade pendente
+                    detalhe.quantidade = quantidadeSolicitada - quantidadeRecebida;
+                    detalhes[index] = detalhe;
+                    localStorage.setItem("detalhes", JSON.stringify(detalhes));
+                }
+
+                atualizarTabelaDetalhes();
+                atualizarTabelaRecebidos();
+                if (window.location.pathname.includes("index.html")) {
+                    atualizarTabelaSolicitados();
+                }
+
+                fecharJanelaRecebimento();
+                alert("Material recebido com sucesso!");
+            });
         }
 
-        var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
-
-        if (quantidadeRecebida > quantidadeSolicitada) {
-            alert("A quantidade recebida não pode ser maior que a quantidade solicitada.");
-            return;
-        }
-
-        // Calcula o tempo decorrido
         function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
             const [horaS, minS] = horarioSolicitado.split(":").map(Number);
             const [horaR, minR] = horarioRecebido.split(":").map(Number);
 
-            const minutosSolicitados = horaS * 60 + minS;
-            const minutosRecebidos = horaR * 60 + minR;
+            const dataAtual = new Date();
+            const dataSolicitada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaS, minS);
+            const dataRecebida = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaR, minR);
 
-            const minutosDecorridos = minutosRecebidos - minutosSolicitados;
-
-            const horas = Math.floor(minutosDecorridos / 60);
-            const minutos = minutosDecorridos % 60;
-
-            return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
-        }
-
-        const tempoDecorrido = calcularTempoDecorrido(detalhe.horario, horarioRecebido);
-
-        // Limpa os intervals do cronômetro, se houver
-        if (intervalMap.has(index)) {
-            clearInterval(intervalMap.get(index));
-            intervalMap.delete(index);
-        }
-
-        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-
-        if (quantidadeRecebida === quantidadeSolicitada) {
-            // Recebimento total
-            recebidos.push({
-                local: detalhe.local,
-                item: detalhe.item,
-                quantidade: quantidadeRecebida,
-                destino: detalhe.destino,
-                dataAtual: detalhe.dataAtual,
-                horario: detalhe.horario,
-                recebido: horarioRecebido,
-                tempo: tempoDecorrido,
-                guardado: ''
-            });
-            localStorage.setItem("recebidos", JSON.stringify(recebidos));
-
-            // Remove o item de detalhes, pois não há mais pendência
-            detalhes.splice(index, 1);
-            localStorage.setItem("detalhes", JSON.stringify(detalhes));
-
-            // Remove o item de solicitados também
-            var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
-            var solicitadosIndex = solicitados.findIndex(function (itemSolicitado) {
-                return itemSolicitado.local === detalhe.local &&
-                    itemSolicitado.item === detalhe.item &&
-                    itemSolicitado.destino === detalhe.destino;
-            });
-
-            if (solicitadosIndex !== -1) {
-                solicitados.splice(solicitadosIndex, 1);
-                localStorage.setItem("solicitados", JSON.stringify(solicitados));
+            // Caso a hora recebida seja menor, presume-se que foi no dia seguinte
+            if (dataRecebida < dataSolicitada) {
+                dataRecebida.setDate(dataRecebida.getDate() + 1);
             }
 
-        } else {
-            // Recebimento parcial
-            recebidos.push({
-                local: detalhe.local,
-                item: detalhe.item,
-                quantidade: quantidadeRecebida,
-                destino: detalhe.destino,
-                dataAtual: detalhe.dataAtual,
-                horario: detalhe.horario,
-                recebido: horarioRecebido,
-                tempo: tempoDecorrido,
-                guardado: ''
-            });
-            localStorage.setItem("recebidos", JSON.stringify(recebidos));
+            const diffMs = dataRecebida - dataSolicitada; // Diferença em milissegundos
+            const diffMinutes = Math.floor(diffMs / 60000); // Diferença em minutos
 
-            // Atualiza a quantidade pendente
-            detalhe.quantidade = quantidadeSolicitada - quantidadeRecebida;
-            detalhes[index] = detalhe;
-            localStorage.setItem("detalhes", JSON.stringify(detalhes));
+            const hours = Math.floor(diffMinutes / 60);
+            const minutes = diffMinutes % 60;
+
+            return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
         }
 
-        atualizarTabelaDetalhes();
-        atualizarTabelaRecebidos();
-        if (window.location.pathname.includes("index.html")) {
-            atualizarTabelaSolicitados();
+
+        // Função para atualizar a tabela de materiais recebidos
+        var recebidosTableElement = document.getElementById("recebidosTable");
+        var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
+
+        function atualizarTabelaRecebidos() {
+            var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            if (recebidosTable) {
+                recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
+
+                recebidos.forEach(function (item, index) {
+                    // 1) Verifica se é atrasado, parseando item.tempo (hh:mm)
+                    let [h, m] = (item.tempo || "00:00").split(":").map(Number);
+                    let totalMin = h * 60 + m; 
+                    // Se totalMin > 30 => atrasado
+                    let isAtrasado = (totalMin > 30);
+
+                    // Define o emoji a exibir (⚠️ ou 📜 ou nada)
+                    let emoji = "";
+                    if (isAtrasado) {
+                        // Se já existe item.justificativa != ""
+                        if (item.justificativa && item.justificativa.trim() !== "") {
+                            emoji = "📜";
+                        } else {
+                            emoji = "⚠️";
+                        }
+                    }
+
+                    // Monta o campo TEMPO, colocando o emoji no canto superior direito
+                    let tempoCell = `${item.tempo || ""}`;
+                    if (emoji) {
+                        tempoCell += `
+                            <span 
+                                style="cursor: pointer; float: right; margin-left: 5px;"
+                                onclick="abrirJanelaJustificativa(${index})"
+                                title="Clique para justificar ou ver justificativa"
+                            >
+                                ${emoji}
+                            </span>
+                        `;
+                    }
+
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.dataAtual}</td>
+                        <td>${item.horario}</td>
+                        <td>${item.recebido}</td>
+                        <td>${tempoCell}</td>
+                        <td>${item.guardado}</td>
+                    `;
+                    recebidosTable.appendChild(newRow);
+                });
+
+                // Mensagem para tabela vazia
+                if (recebidos.length === 0) {
+                    var emptyRow = document.createElement("tr");
+                    emptyRow.innerHTML = `
+                        <td colspan="10" style="text-align: center;">Nenhum material recebido no momento.</td>
+                    `;
+                    recebidosTable.appendChild(emptyRow);
+                }
+            } else {
+                console.error("Tabela de materiais recebidos não encontrada.");
+            }
         }
-
-        fecharJanelaRecebimento();
-        alert("Material recebido com sucesso!");
-    });
-}
-
-function calcularTempoDecorrido(horarioSolicitado, horarioRecebido) {
-    const [horaS, minS] = horarioSolicitado.split(":").map(Number);
-    const [horaR, minR] = horarioRecebido.split(":").map(Number);
-
-    const dataAtual = new Date();
-    const dataSolicitada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaS, minS);
-    const dataRecebida = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate(), horaR, minR);
-
-    // Caso a hora recebida seja menor, presume-se que foi no dia seguinte
-    if (dataRecebida < dataSolicitada) {
-        dataRecebida.setDate(dataRecebida.getDate() + 1);
-    }
-
-    const diffMs = dataRecebida - dataSolicitada; // Diferença em milissegundos
-    const diffMinutes = Math.floor(diffMs / 60000); // Diferença em minutos
-
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
-
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-}
-
-
-
-
-// Função para atualizar a tabela de materiais recebidos
-var recebidosTableElement = document.getElementById("recebidosTable");
-var recebidosTable = recebidosTableElement ? recebidosTableElement.querySelector("tbody") : null;
-
-function atualizarTabelaRecebidos() {
-    var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-    if (recebidosTable) {
-        recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
-
-        recebidos.forEach(function (item, index) {
-            var newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
-                <td>${item.local}</td>
-                <td>${item.item}</td>
-                <td>${item.quantidade}</td>
-                <td>${item.destino}</td>
-                <td>${item.dataAtual}</td>
-                <td>${item.horario}</td>
-                <td>${item.recebido}</td>
-                <td>${item.guardado}</td>
-            `;
-            recebidosTable.appendChild(newRow);
-        });
-
-        // Mensagem para tabela vazia
-        if (recebidos.length === 0) {
-            var emptyRow = document.createElement("tr");
-            emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center;">Nenhum material recebido no momento.</td>
-            `;
-            recebidosTable.appendChild(emptyRow);
-        }
-    } else {
-        console.error("Tabela de materiais recebidos não encontrada.");
-    }
-}
-
 
         atualizarTabelaRecebidos();
+
 
         // Função para excluir itens da tabela de materiais solicitados
         var excluirItensButton = document.getElementById("excluirItensButton");
@@ -1537,13 +1550,143 @@ function atualizarTabelaRecebidos() {
             return diferencaMinutos >= 30; // Retorna true se estiver atrasado (30 minutos ou mais)
         }
     }
-document.getElementById("selecionarDataButton").addEventListener("click", function () {
-    const dateInput = document.getElementById("data-relatorio");
-    if (dateInput) {
-        dateInput.showPicker();
-    }
+    document.getElementById("selecionarDataButton").addEventListener("click", function () {
+        const dateInput = document.getElementById("data-relatorio");
+        if (dateInput) {
+            dateInput.showPicker();
+        }
+    });
+
 });
 
-    
-    
-});
+/* 
+ * =======================
+ *   JANELA DE JUSTIFICATIVA
+ * =======================
+ *
+ * Adicionamos abaixo a janela flutuante moderna para justificar 
+ * atraso. Você pode inserir o HTML correspondente em "detalhes.html"
+ * (por exemplo, <div id="janelaJustificativaAtraso" ...>).
+ * Aqui, no script, manipulamos a lógica (abrir, fechar, salvar).
+ */
+
+// Variáveis e referências para a Janela de Justificativa:
+let justificativaIndex = -1;
+const janelaJustificativa = document.getElementById("janelaJustificativaAtraso");
+const justificativaForm = document.getElementById("justificativaForm");
+if (justificativaForm) {
+    const justificarRadio = justificativaForm.querySelector('input[value="com"]');
+    const semJustificaRadio = justificativaForm.querySelector('input[value="sem"]');
+    const justificativaTexto = document.getElementById("justificativaTexto");
+    const contadorJustificativa = document.getElementById("contadorJustificativa");
+    const cancelarJustificativaButton = document.getElementById("cancelarJustificativaButton");
+
+    // Abre a janela de justificativa
+    window.abrirJanelaJustificativa = function (index) {
+        justificativaIndex = index;
+
+        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        let item = recebidos[index];
+        if (!item) {
+            console.warn("Item de recebidos não encontrado para index:", index);
+            return;
+        }
+
+        // Se já existir item.justificativa => marcamos radio "com"
+        if (item.justificativa && item.justificativa !== "") {
+            justificarRadio.checked = true;
+            justificativaTexto.disabled = false;
+            justificativaTexto.value = item.justificativa;
+            contadorJustificativa.textContent = justificativaTexto.value.length + "/200";
+        } else {
+            semJustificaRadio.checked = true;
+            justificativaTexto.disabled = true;
+            justificativaTexto.value = "";
+            contadorJustificativa.textContent = "0/200";
+        }
+
+        if (janelaJustificativa) {
+            janelaJustificativa.classList.remove("hidden");
+            janelaJustificativa.style.animation = 'slideDown 0.3s forwards';
+        }
+        let overlay = document.getElementById("overlay");
+        if (overlay) overlay.classList.add("active");
+    };
+
+    // Fecha a janela de justificativa
+    function fecharJanelaJustificativa() {
+        if (janelaJustificativa) {
+            janelaJustificativa.style.animation = 'slideUp 0.3s forwards';
+            setTimeout(function () {
+                janelaJustificativa.classList.add("hidden");
+            }, 300);
+        }
+        let overlay = document.getElementById("overlay");
+        if (overlay) overlay.classList.remove("active");
+    }
+
+    // Botão Cancelar
+    if (cancelarJustificativaButton) {
+        cancelarJustificativaButton.addEventListener("click", function () {
+            fecharJanelaJustificativa();
+        });
+    }
+
+    // Radios => habilitar/desabilitar textarea
+    justificativaForm.addEventListener("change", function(e) {
+        if (e.target.name === "radioJustificativa") {
+            if (justificarRadio.checked) {
+                justificativaTexto.disabled = false;
+            } else {
+                justificativaTexto.disabled = true;
+                justificativaTexto.value = "";
+                contadorJustificativa.textContent = "0/200";
+            }
+        }
+    });
+
+    // Contador de caracteres
+    justificativaTexto.addEventListener("input", function() {
+        let len = justificativaTexto.value.length;
+        contadorJustificativa.textContent = len + "/200";
+        if (len > 200) {
+            justificativaTexto.style.color = "red";
+        } else {
+            justificativaTexto.style.color = "";
+        }
+    });
+
+    // Submeter o form => salvar justificativa
+    justificativaForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        let item = recebidos[justificativaIndex];
+        if (!item) {
+            alert("Erro: item não encontrado!");
+            return;
+        }
+
+        if (justificarRadio.checked) {
+            let texto = justificativaTexto.value.trim();
+            if (texto.length > 200) {
+                alert("O texto ultrapassou 200 caracteres. Por favor, diminua.");
+                return;
+            }
+            item.justificativa = texto;
+        } else {
+            // Sem justificativa
+            item.justificativa = "";
+        }
+
+        // Salvar no localStorage
+        recebidos[justificativaIndex] = item;
+        localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+        // Atualiza a tabela => trocar ⚠️ por 📜 se necessário
+        atualizarTabelaRecebidos();
+
+        fecharJanelaJustificativa();
+        alert("Justificativa salva com sucesso!");
+    });
+}
