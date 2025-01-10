@@ -1656,6 +1656,7 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
         }
         // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
+        window.location.href = "detalhes.html";
     };
 }
 
