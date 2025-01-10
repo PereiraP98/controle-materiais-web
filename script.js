@@ -1648,7 +1648,9 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
     janelaConfirmacao.classList.remove("hidden");
     janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
 
-    if (typeof onOk === 'function') {
+    okConfirmacaoButton.onclick = function() {
+        // Executa callback personalizado (se passado)
+        if (typeof onOk === 'function') {
             onOk();
         }
         // Fecha a janela de confirmação
