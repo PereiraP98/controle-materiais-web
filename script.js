@@ -1655,9 +1655,7 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
         }
         // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
-
-        // ==> AQUI recarrega a página, fechando tudo o que estiver aberto <==
-        window.location.reload();
+        location.reload();
     };
 }
 
@@ -1675,5 +1673,5 @@ function fecharJanelaConfirmacao() {
     }
     // Remover overlay se nenhuma outra janela estiver ativa
     overlay.classList.remove("active");
-    window.location.reload();
+
 }
