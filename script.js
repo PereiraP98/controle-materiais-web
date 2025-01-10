@@ -870,11 +870,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Pausa o intervalo padrão, se existir
                             if (intervalMap.has(index)) {
                                 clearInterval(intervalMap.get(index));
-                                intervalMap.delete(index); 
+                                intervalMap.delete(index);
                             }
 
                             // Atualiza imediatamente com segundos e inicia um intervalo de hover
-                            updateTimeCell(true); 
+                            updateTimeCell(true);
                             if (!tempoCell._hoverInterval) {
                                 tempoCell._hoverInterval = setInterval(() => {
                                     const elapsedHover = Date.now() - detalhe.timestamp;
@@ -887,7 +887,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Para a contagem dos segundos durante o hover
                             if (tempoCell._hoverInterval) {
                                 clearInterval(tempoCell._hoverInterval);
-                                delete tempoCell._hoverInterval; 
+                                delete tempoCell._hoverInterval;
                             }
 
                             // Verifica se o item é futuro ou passado e retoma a contagem normal
@@ -1163,7 +1163,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 dataRecebida.setDate(dataRecebida.getDate() + 1);
             }
 
-            const diffMs = dataRecebida - dataSolicitada; 
+            const diffMs = dataRecebida - dataSolicitada;
             const diffMinutes = Math.floor(diffMs / 60000);
 
             const hours = Math.floor(diffMinutes / 60);
@@ -1184,7 +1184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 recebidos.forEach(function (item, index) {
                     // Verifica se é atrasado
                     let [h, m] = (item.tempo || "00:00").split(":").map(Number);
-                    let totalMin = h * 60 + m; 
+                    let totalMin = h * 60 + m;
                     let isAtrasado = (totalMin > 30);
 
                     // Define o emoji (⚠️ ou 📜 ou nada)
@@ -1443,7 +1443,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         selectAllCheckbox.addEventListener("change", function () {
                             checkboxes.forEach((checkbox) => {
                                 var row = checkbox.closest("tr");
-                                var horaCell = row.children[6].textContent; 
+                                var horaCell = row.children[6].textContent;
 
                                 if (verificarAtraso(horaCell)) {
                                     checkbox.checked = this.checked;
@@ -1600,7 +1600,7 @@ if (justificativaForm) {
     // Contador de caracteres
     justificativaTexto.addEventListener("input", function() {
         let len = justificativaTexto.value.length;
-        contadorJustificativa.textContent = len + "/200";
+        contadorJustificativa.textContent = len + "/200;
         if (len > 200) {
             justificativaTexto.style.color = "red";
         } else {
@@ -1633,8 +1633,72 @@ if (justificativaForm) {
         recebidos[justificativaIndex] = item;
         localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-        alert("Justificativa salva com sucesso!");
+        // === AQUI ocorre a atualização da tabela e fechamento da janela
         atualizarTabelaRecebidos();
         fecharJanelaJustificativa();
+
+        // Substituímos o alert por uma janela de confirmação personalizada (opcional)
+        // Caso deseje manter o alert padrão, basta descomentar a linha abaixo e remover as funções de janela de confirmação
+        // alert("Justificativa salva com sucesso!");
+
+        // USO de uma janela de confirmação (se você adicionou no HTML)
+        mostrarJanelaConfirmacao("Justificativa salva com sucesso!");
     });
+}
+
+/* 
+ * Janela de Confirmação Personalizada
+ * (Só funciona se você tiver <div id="janelaConfirmacao"> no seu HTML)
+ */
+function mostrarJanelaConfirmacao(mensagem, onOk) {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+    const okButton = document.getElementById("okConfirmacaoButton");
+    const overlay = document.getElementById("overlay");
+
+    if (!janelaConfirmacao || !confirmacaoMensagem || !okButton || !overlay) {
+        console.error("Elementos da janela de confirmação não encontrados.");
+        return;
+    }
+
+    // Define a mensagem
+    confirmacaoMensagem.textContent = mensagem;
+
+    // Zera estilos prévios
+    janelaConfirmacao.style.animation = 'none';
+    janelaConfirmacao.style.transform = '';
+    janelaConfirmacao.style.opacity = '';
+    janelaConfirmacao.offsetHeight;
+
+    // Exibe overlay e janela
+    overlay.classList.add("active");
+    janelaConfirmacao.classList.remove("hidden");
+    janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
+    document.body.classList.add('modal-open');
+
+    // Ao clicar em OK
+    okButton.onclick = function () {
+        if (onOk) onOk();  // se foi passada alguma callback extra
+        fecharJanelaConfirmacao();
+    };
+}
+
+function fecharJanelaConfirmacao() {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const overlay = document.getElementById("overlay");
+
+    if (!janelaConfirmacao || !overlay) return;
+
+    // Animação de saída
+    janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
+    
+    setTimeout(function () {
+        overlay.classList.remove("active");
+        janelaConfirmacao.classList.add("hidden");
+        document.body.classList.remove('modal-open');
+
+        janelaConfirmacao.style.animation = '';
+        janelaConfirmacao.style.transform = '';
+        janelaConfirmacao.style.opacity = '';
+    }, 300);
 }
