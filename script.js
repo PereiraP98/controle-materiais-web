@@ -133,7 +133,6 @@ if (cancelarSolicitacaoButton) {
     });
 }
 
-
 var janelaForm = document.getElementById("janelaForm");
 if (janelaForm) {
     janelaForm.addEventListener("submit", function (event) {
@@ -251,8 +250,6 @@ if (janelaForm) {
     });
 }
 
-
-
 function abrirJanelaSolicitacao(dados, index) {
     var horarioAtual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -294,7 +291,6 @@ function abrirJanelaSolicitacao(dados, index) {
     }
 }
 
-
 // Função para fechar a janela de solicitação
 function fecharJanelaSolicitacao() {
     var janelaSolicitacao = document.getElementById("janelaSolicitacao");
@@ -324,8 +320,6 @@ function fecharJanelaSolicitacao() {
     if (fromReservadosInput) fromReservadosInput.value = "false";
     if (itemIndexInput) itemIndexInput.value = "-1";
 }
-
-
 
 // Função para mostrar uma janela de atenção
 function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
@@ -374,7 +368,6 @@ function mostrarJanelaAtencao(mensagem, onConfirm, onCancel) {
     }
 }
 
-
 // Função para fechar a janela de atenção com animação
 function fecharJanelaAtencao() {
     var janelaAtencao = document.getElementById("janelaAtencao");
@@ -397,8 +390,6 @@ function fecharJanelaAtencao() {
         }, 300); // Tempo igual à duração da animação
     }
 }
-
-
 
 // Reservar um item (Página Index)
 var reservarButton = document.getElementById("reservarButton");
@@ -452,7 +443,6 @@ if (reservarButton) {
     });
 }
 
-
 // Função para abrir a janela de reserva
 function abrirJanelaReserva(dados) {
     var janelaReserva = document.getElementById("janelaReserva");
@@ -484,7 +474,6 @@ function abrirJanelaReserva(dados) {
     }
 }
 
-
 // Função para fechar a janela de reserva
 function fecharJanelaReserva() {
     var janelaReserva = document.getElementById("janelaReserva");
@@ -509,7 +498,6 @@ function fecharJanelaReserva() {
     }
 }
 
-
 // Evento para cancelar a reserva
 var cancelarReservaButton = document.getElementById("cancelarReservaButton");
 if (cancelarReservaButton) {
@@ -517,7 +505,6 @@ if (cancelarReservaButton) {
         fecharJanelaReserva();
     });
 }
-
 
 // Evento para confirmar a reserva
 var janelaReservaForm = document.getElementById("janelaReservaForm");
@@ -562,7 +549,6 @@ if (janelaReservaForm) {
         if (itemInputReset) itemInputReset.value = "";
     });
 }
-
 
 // Função para excluir itens da tabela de materiais reservados
 var excluirReservadosButton = document.getElementById("excluirReservadosButton");
@@ -651,7 +637,6 @@ if (excluirReservadosButton) {
     });
 }
 
-
 function atualizarTabelaReservados() {
     var reservados = JSON.parse(localStorage.getItem("reservados")) || [];
     var reservadosTableElement = document.getElementById("reservadosTable");
@@ -699,8 +684,6 @@ function atualizarTabelaReservados() {
     }
 }
 
-
-
 function atualizarTabelaSolicitados() {
     var solicitados = JSON.parse(localStorage.getItem("solicitados")) || [];
     var solicitadosTable = document.getElementById("solicitadosTable");
@@ -728,7 +711,6 @@ function atualizarTabelaSolicitados() {
         console.error("Tabela de materiais solicitados não encontrada.");
     }
 }
-
 
 // Carrega os dados ao carregar a página
 document.addEventListener("DOMContentLoaded", function () {
@@ -812,11 +794,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Função para atualizar o tempo na célula
                         function updateTimeCell(showSeconds = false) {
                             const now = Date.now();
-                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em milissegundos
+                            const elapsed = now - detalhe.timestamp; // Tempo decorrido em ms
 
                             // Define tempos limites
-                            const maxTime = 30 * 60 * 1000; // 30 minutos em milissegundos
-                            const midTime = 15 * 60 * 1000; // 15 minutos em milissegundos
+                            const maxTime = 30 * 60 * 1000; // 30 minutos
+                            const midTime = 15 * 60 * 1000; // 15 minutos
 
                             if (elapsed > maxTime) {
                                 newRow.classList.add("oscillation");
@@ -853,11 +835,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // Inicializa a contagem
                         if (detalhe.isFuture) {
-                            // Inicia a contagem regressiva a cada segundo
+                            // Inicia a contagem regressiva
                             var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, countdownInterval);
                         } else {
-                            // Inicia a contagem do tempo decorrido a cada segundo
+                            // Inicia a contagem do tempo decorrido
                             var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
                             intervalMap.set(index, elapsedInterval);
                         }
@@ -867,7 +849,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         // Eventos de hover para exibir e ocultar os segundos
                         newRow.addEventListener("mouseover", function () {
-                            // Pausa o intervalo padrão, se existir
+                            // Pausa o intervalo padrão
                             if (intervalMap.has(index)) {
                                 clearInterval(intervalMap.get(index));
                                 intervalMap.delete(index);
@@ -925,7 +907,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         atualizarTabelaDetalhes();
 
-
         // Função para abrir a janela flutuante de recebimento
         function abrirJanelaRecebimento(index) {
             var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
@@ -936,7 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Converte a quantidade para número para evitar problemas de tipo
+            // Converte a quantidade para número
             var quantidadeSolicitada = parseInt(detalhe.quantidade, 10);
 
             var recebimentoQuantidadeInput = document.getElementById("recebimentoQuantidade");
@@ -992,7 +973,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 overlay.classList.remove("active");
             }
         });
-
 
         // Função para fechar a janela de recebimento
         function fecharJanelaRecebimento() {
@@ -1244,7 +1224,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         atualizarTabelaRecebidos();
-
 
         // Função para excluir itens da tabela de materiais solicitados
         var excluirItensButton = document.getElementById("excluirItensButton");
@@ -1506,13 +1485,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return diferencaMinutos >= 30;
         }
     }
+
     document.getElementById("selecionarDataButton").addEventListener("click", function () {
         const dateInput = document.getElementById("data-relatorio");
         if (dateInput) {
             dateInput.showPicker();
         }
     });
-
 });
 
 /* 
@@ -1637,11 +1616,10 @@ if (justificativaForm) {
         mostrarJanelaConfirmacao("Justificativa salva com sucesso!", function() {
             // Ao clicar em OK:
             fecharJanelaJustificativa();     // Fecha a janela de justificativa
-            atualizarTabelaRecebidos();      // Atualiza para trocar ⚠️ por 📜 se houver texto
+            atualizarTabelaRecebidos();      // Atualiza para trocar ⚠️ por 📜 (ou vice-versa)
         });
     });
 }
-
 
 /* 
  * =======================
