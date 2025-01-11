@@ -1723,3 +1723,13 @@ okConfirmacaoButton.onclick = function () {
     // Redireciona ou recarrega a página, se necessário
     window.location.href = "detalhes.html";
 };
+
+document.getElementById("okConfirmacaoButton").addEventListener("click", function () {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    if (janelaConfirmacao) {
+        janelaConfirmacao.classList.add("hidden");
+        console.log("Janela de confirmação foi fechada.");
+    } else {
+        console.error("Elemento #janelaConfirmacao não encontrado.");
+    }
+});
