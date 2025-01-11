@@ -191,6 +191,7 @@ if (janelaForm) {
         var dataAtual = new Date().toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "2-digit",
+            year: "numeric"
         });
 
         var dataAtualObj = new Date();
@@ -199,6 +200,7 @@ if (janelaForm) {
         var minutos = parseInt(horarioParts[1], 10);
 
         var timestampDate = new Date(
+            dataAtualObj.getFullYear(),
             dataAtualObj.getMonth(),
             dataAtualObj.getDate(),
             horas,
