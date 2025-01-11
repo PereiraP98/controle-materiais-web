@@ -1209,8 +1209,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     let guardadoCell = item.guardado || "NÃO📥";
                     guardadoCell = `
                         <span style="cursor: pointer; color: ${guardadoCell.includes("NÃO") ? "red" : "green"};"
-                              onclick="abrirJanelaGuardarMaterial(${index})"
-                              title="Clique para ${guardadoCell.includes("NÃO") ? "guardar" : "visualizar dados do material guardado"}">
+                              onclick="${guardadoCell.includes("NÃO") ? `abrirJanelaGuardarMaterial(${index})` : `mostrarMaterialGuardado(${index})`}"
+                              title="${guardadoCell.includes("NÃO") ? "Clique para guardar o material" : "Clique para visualizar os detalhes do material guardado"}">
                             ${guardadoCell}
                         </span>
                     `;
@@ -1244,6 +1244,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
         }
+        
         
         
         
@@ -1827,29 +1828,23 @@ function abrirJanelaGuardarMaterial(index) {
     let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
     let item = recebidos[index];
     if (!item) {
-        console.warn("Item de recebidos não encontrado para index:", index);
+        console.error("Material não encontrado.");
         return;
     }
 
-    // Preenche os dados na janela
-    document.getElementById("guardarCodigo").textContent = item.item;
-    document.getElementById("guardarQuantidade").value = item.quantidade || 1;
-    document.getElementById("guardarEndereco").value = "";
-    document.getElementById("guardarEnderecoUZ").value = "";
-    document.getElementById("guardarNome").value = "";
-
-    // Exibe a janela flutuante
-    let janelaGuardar = document.getElementById("janelaGuardarMaterial");
-    if (janelaGuardar) {
-        janelaGuardar.classList.remove("hidden");
-        janelaGuardar.style.animation = "slideDown 0.3s forwards";
-    }
+    let janela = document.getElementById("janelaGuardarMaterial");
     let overlay = document.getElementById("overlay");
-    if (overlay) overlay.classList.add("active");
 
-    // Define o índice do item para salvar
-    document.getElementById("guardarMaterialButton").dataset.index = index;
+    document.getElementById("guardarCodigo").textContent = item.item;
+    document.getElementById("quantidadeCaixas").value = item.quantidade || "";
+    document.getElementById("endereco").value = item.endereco || "";
+    document.getElementById("enderecoUZ").value = item.enderecoUZ || "";
+    document.getElementById("repositor").value = item.repositor || "";
+
+    janela.classList.remove("hidden");
+    overlay.classList.add("active");
 }
+
 
 function guardarMaterial() {
     let index = document.getElementById("guardarMaterialButton").dataset.index;
@@ -1901,4 +1896,54 @@ function fecharJanelaGuardarMaterial() {
     if (overlay) overlay.classList.remove("active");
 }
 
+function mostrarMaterialGuardado(index) {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+    if (!item) {
+        console.error("Material não encontrado.");
+        return;
+    }
+
+    let janela = document.getElementById("janelaVisualizacaoMaterial");
+    let overlay = document.getElementById("overlay");
+
+    document.getElementById("visualizacaoCodigo").textContent = item.item;
+    document.getElementById("visualizacaoQuantidade").textContent = item.quantidadeGuardada || "Não informado";
+    document.getElementById("visualizacaoEndereco").textContent = item.endereco || "Não informado";
+    document.getElementById("visualizacaoEnderecoUZ").textContent = item.enderecoUZ || "Não informado";
+    document.getElementById("visualizacaoRepositor").textContent = item.repositor || "Não informado";
+
+    janela.classList.remove("hidden");
+    overlay.classList.add("active");
+}
+
+function salvarMaterialGuardado(index) {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+    if (!item) {
+        console.error("Material não encontrado.");
+        return;
+    }
+
+    let quantidadeCaixas = document.getElementById("quantidadeCaixas").value;
+    let endereco = document.getElementById("endereco").value.toUpperCase().trim();
+    let enderecoUZ = document.getElementById("enderecoUZ").value.trim();
+    let repositor = document.getElementById("repositor").value.toUpperCase().trim();
+
+    if (!quantidadeCaixas || !endereco || !enderecoUZ || !repositor) {
+        alert("Todos os campos são obrigatórios.");
+        return;
+    }
+
+    item.quantidadeGuardada = quantidadeCaixas;
+    item.endereco = endereco;
+    item.enderecoUZ = enderecoUZ;
+    item.repositor = repositor;
+    item.guardado = "SIM📦";
+
+    localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+    alert("Material guardado com sucesso!");
+    location.reload();
+}
 
