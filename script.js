@@ -1828,18 +1828,18 @@ function abrirJanelaGuardarMaterial(index) {
     let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
     let item = recebidos[index];
     if (!item) {
-        console.warn("Item não encontrado para edição no index:", index);
+        console.warn("Item de recebidos não encontrado para index:", index);
         return;
     }
 
     // Preenche os dados na janela de guarda
-    document.getElementById("guardarCodigo").textContent = item.item || "";
-    document.getElementById("guardarQuantidade").value = item.quantidadeGuardada || 1;
+    document.getElementById("guardarCodigo").textContent = item.item;
+    document.getElementById("guardarQuantidade").value = item.quantidadeGuardada || item.quantidade || 1;
     document.getElementById("guardarEndereco").value = item.endereco || "";
     document.getElementById("guardarEnderecoUZ").value = item.enderecoUZ || "";
     document.getElementById("guardarNome").value = item.nomeRepositor || "";
 
-    // Exibe a janela de edição
+    // Exibe a janela de guarda
     let janelaGuardar = document.getElementById("janelaGuardarMaterial");
     if (janelaGuardar) {
         janelaGuardar.classList.remove("hidden");
@@ -1848,9 +1848,10 @@ function abrirJanelaGuardarMaterial(index) {
     let overlay = document.getElementById("overlay");
     if (overlay) overlay.classList.add("active");
 
-    // Define o índice do item para salvar alterações
+    // Define o índice do item para salvar
     document.getElementById("guardarMaterialButton").dataset.index = index;
 }
+
 
 
 function guardarMaterial() {
@@ -1922,26 +1923,27 @@ function visualizarMaterialGuardado(index) {
     let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
     let item = recebidos[index];
     if (!item) {
-        console.warn("Item não encontrado para visualização no index:", index);
+        console.warn("Item de recebidos não encontrado para index:", index);
         return;
     }
 
     // Preenche os dados na janela de visualização
-    document.getElementById("visualizacaoCodigo").textContent = item.item || "N/A";
-    document.getElementById("visualizacaoQuantidade").textContent = item.quantidadeGuardada || "N/A";
+    document.getElementById("visualizacaoCodigo").textContent = item.item;
+    document.getElementById("visualizacaoQuantidade").textContent = item.quantidadeGuardada || item.quantidade || "";
     document.getElementById("visualizacaoEndereco").textContent = item.endereco || "N/A";
     document.getElementById("visualizacaoEnderecoUZ").textContent = item.enderecoUZ || "N/A";
-    document.getElementById("visualizacaoNome").textContent = item.nomeRepositor || "N/A";
+    document.getElementById("visualizacaoRepositor").textContent = item.nomeRepositor || "N/A";
 
-    // Exibe a janela flutuante
+    // Define o índice no botão Editar para abrir a janela de guarda
+    document.getElementById("editarMaterialButton").dataset.index = index;
+
+    // Exibe a janela de visualização
     let janelaVisualizacao = document.getElementById("janelaVisualizacaoMaterial");
     if (janelaVisualizacao) {
         janelaVisualizacao.classList.remove("hidden");
-        janelaVisualizacao.style.animation = "slideDown 0.3s forwards";
+        janelaVisualizacao.style.animation = "fadeIn 0.3s forwards";
     }
     let overlay = document.getElementById("overlay");
     if (overlay) overlay.classList.add("active");
-
-    // Define o índice para edição
-    document.getElementById("guardarMaterialButton").dataset.index = index;
 }
+
