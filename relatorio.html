@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatórios Armazenados</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Pode usar o mesmo CSS de detalhes -->
+  <link rel="stylesheet" href="styles.css">
   <style>
-    /* Ajustes adicionais se precisar */
     .relatorio-mes {
       margin-bottom: 20px;
     }
@@ -14,6 +14,9 @@
       cursor: pointer;
       color: blue;
       text-decoration: underline;
+    }
+    .relatorio-data:hover {
+      color: darkblue;
     }
     .detalhes-container {
       margin: 10px 0;
@@ -41,9 +44,7 @@
       </div>
       <h1>Relatórios Armazenados</h1>
       <div class="header-buttons">
-        <!-- Botão de Voltar -->
         <button onclick="window.location.href='detalhes.html'">Voltar</button>
-        <!-- Se quiser, pode ter tema escuro, etc. -->
       </div>
     </div>
   </header>
@@ -60,41 +61,26 @@
   </footer>
 
   <script>
-    // Ao carregar a página, ler localStorage e exibir os relatórios
     document.addEventListener('DOMContentLoaded', () => {
       const stored = localStorage.getItem('relatoriosMes');
       if (!stored) {
-        document.getElementById('listaRelatorios').innerHTML = 
-          '<p>Nenhum relatório encontrado.</p>';
+        document.getElementById('listaRelatorios').innerHTML = '<p>Nenhum relatório encontrado.</p>';
         return;
       }
 
       const relatoriosMes = JSON.parse(stored);
-
-      // Exemplo: relatoriosMes = {
-      //   "DEZEMBRO": {
-      //     "21_12_24": { items: [...] },
-      //     "22_12_24": { items: [...] }
-      //   },
-      //   "JANEIRO": { ... }
-      // }
-
       let html = '';
 
-      // Percorrer cada mês (pasta)
       for (let mes in relatoriosMes) {
         html += `<div class="relatorio-mes">
                    <h3>📁 ${mes}</h3>`;
 
-        // Para cada data (arquivo)
-        const datasObjeto = relatoriosMes[mes]; 
-        // datasObjeto = {"21_12_24": { items: [...] }, ...}
-        
+        const datasObjeto = relatoriosMes[mes];
+
         for (let dataCurta in datasObjeto) {
           html += `<div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
                      📄 ${dataCurta}
                    </div>
-                   <!-- Aqui criaremos um container para exibir a tabela ao clicar -->
                    <div id="container-${mes}-${dataCurta}" style="display:none;"></div>`;
         }
 
@@ -103,7 +89,6 @@
 
       document.getElementById('listaRelatorios').innerHTML = html;
 
-      // Adiciona evento de clique em cada "relatorio-data"
       const dataElements = document.querySelectorAll('.relatorio-data');
       dataElements.forEach(elem => {
         elem.addEventListener('click', () => {
@@ -111,14 +96,12 @@
           const dataCurta = elem.getAttribute('data-data');
           const containerId = `container-${mes}-${dataCurta}`;
 
-          // Obter os itens:
-          const items = relatoriosMes[mes][dataCurta].items;
-
-          // Se estiver oculto, mostra a tabela; se já estiver visível, oculta
+          const { solicitados, recebidos } = relatoriosMes[mes][dataCurta];
           const containerDiv = document.getElementById(containerId);
+
           if (containerDiv.style.display === 'none') {
-            // Monta a tabela
-            let tableHtml = `
+            let solicitadosHtml = `
+              <h4>Materiais Solicitados</h4>
               <table>
                 <thead>
                   <tr>
@@ -133,8 +116,8 @@
                 </thead>
                 <tbody>
             `;
-            items.forEach(item => {
-              tableHtml += `
+            solicitados.forEach(item => {
+              solicitadosHtml += `
                 <tr>
                   <td>${item.local}</td>
                   <td>${item.item}</td>
@@ -143,12 +126,49 @@
                   <td>${item.data}</td>
                   <td>${item.hora}</td>
                   <td>${item.reportado}</td>
-                </tr>
-              `;
+                </tr>`;
             });
-            tableHtml += `</tbody></table>`;
+            solicitadosHtml += '</tbody></table>';
 
-            containerDiv.innerHTML = tableHtml;
+            let recebidosHtml = `
+              <h4>Materiais Recebidos</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>RECEBIDO</th>
+                    <th>TEMPO</th>
+                    <th>GUARDADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            recebidos.forEach(item => {
+              const tempoCell = item.tempo.includes('📜')
+                ? `<span style="color: green; cursor: pointer;" onclick="mostrarJustificativa('${item.justificativa}')">${item.tempo}</span>`
+                : item.tempo;
+
+              recebidosHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.quantidade}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.horario}</td>
+                  <td>${item.recebido}</td>
+                  <td>${tempoCell}</td>
+                  <td>${item.guardado}</td>
+                </tr>`;
+            });
+            recebidosHtml += '</tbody></table>';
+
+            containerDiv.innerHTML = solicitadosHtml + recebidosHtml;
             containerDiv.style.display = 'block';
           } else {
             containerDiv.style.display = 'none';
@@ -156,6 +176,10 @@
         });
       });
     });
+
+    function mostrarJustificativa(justificativa) {
+      alert(`Justificativa: ${justificativa || 'Nenhuma justificativa registrada.'}`);
+    }
   </script>
 </body>
 </html>
