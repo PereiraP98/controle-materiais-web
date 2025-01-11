@@ -1629,7 +1629,7 @@ if (justificativaForm) {
  * =======================
  */
 
-// Função para mostrar a janela de confirmação (mesma "pegada" visual)
+// Função para abrir a janela de confirmação
 function mostrarJanelaConfirmacao(mensagem, onOk) {
     const janelaConfirmacao = document.getElementById("janelaConfirmacao");
     const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
@@ -1641,26 +1641,29 @@ function mostrarJanelaConfirmacao(mensagem, onOk) {
         return;
     }
 
-    // Define a mensagem
+    // Define a mensagem de confirmação
     confirmacaoMensagem.textContent = mensagem;
 
-    // Exibe overlay e janela
+    // Exibe o overlay e a janela
     overlay.classList.add("active");
     janelaConfirmacao.classList.remove("hidden");
-    janelaConfirmacao.style.animation = 'slideDown 0.3s forwards';
+    janelaConfirmacao.style.animation = "slideDown 0.3s forwards";
 
-    // Ao clicar em OK
-    okConfirmacaoButton.onclick = function() {
-        // Fecha a janela de justificativa, se ainda estiver aberta
+    // Adiciona evento ao botão "OK"
+    okConfirmacaoButton.onclick = function () {
+        // Fecha a janela de justificativa, se estiver aberta
         fecharJanelaJustificativa();
 
-        // Executa callback personalizado
-        if (typeof onOk === 'function') {
+        // Executa a callback personalizada
+        if (typeof onOk === "function") {
             onOk();
         }
 
         // Fecha a janela de confirmação
         fecharJanelaConfirmacao();
+
+        // Recarrega a página detalhes.html
+        window.location.href = "detalhes.html";
     };
 }
 
@@ -1671,18 +1674,39 @@ function fecharJanelaConfirmacao() {
 
     if (!janelaConfirmacao) {
         console.error("janelaConfirmacao não encontrada!");
-        // Remover overlay mesmo assim, caso esteja ativo
+        // Remove o overlay como fallback
         if (overlay) overlay.classList.remove("active");
         return;
     }
 
-    janelaConfirmacao.style.animation = 'slideUp 0.3s forwards';
+    janelaConfirmacao.style.animation = "slideUp 0.3s forwards";
 
-    setTimeout(function() {
+    setTimeout(() => {
         janelaConfirmacao.classList.add("hidden");
-        janelaConfirmacao.style.animation = '';
+        janelaConfirmacao.style.animation = "";
 
-        // Remove o overlay (caso nenhuma outra janela esteja usando)
+        // Remove o overlay se nenhuma outra janela estiver ativa
         overlay.classList.remove("active");
+    }, 300);
+}
+
+// Função para fechar a janela de justificativa
+function fecharJanelaJustificativa() {
+    const janelaJustificativa = document.getElementById("janelaJustificativaAtraso");
+    const overlay = document.getElementById("overlay");
+
+    if (!janelaJustificativa) {
+        console.error("janelaJustificativa não encontrada!");
+        return;
+    }
+
+    janelaJustificativa.style.animation = "slideUp 0.3s forwards";
+
+    setTimeout(() => {
+        janelaJustificativa.classList.add("hidden");
+        janelaJustificativa.style.animation = "";
+
+        // Remove o overlay caso nenhuma outra janela esteja ativa
+        if (overlay) overlay.classList.remove("active");
     }, 300);
 }
