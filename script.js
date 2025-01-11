@@ -1515,35 +1515,31 @@ if (justificativaForm) {
     const cancelarJustificativaButton = document.getElementById("cancelarJustificativaButton");
 
     // Abre a janela de justificativa
-    window.abrirJanelaJustificativa = function (index) {
-        justificativaIndex = index;
-
-        let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-        let item = recebidos[index];
-        if (!item) {
-            console.warn("Item de recebidos não encontrado para index:", index);
-            return;
-        }
-
-        if (item.justificativa && item.justificativa !== "") {
-            justificarRadio.checked = true;
-            justificativaTexto.disabled = false;
-            justificativaTexto.value = item.justificativa;
-            contadorJustificativa.textContent = justificativaTexto.value.length + "/200";
-        } else {
-            semJustificaRadio.checked = true;
-            justificativaTexto.disabled = true;
-            justificativaTexto.value = "";
-            contadorJustificativa.textContent = "0/200";
-        }
-
-        if (janelaJustificativa) {
-            janelaJustificativa.classList.remove("hidden");
-            janelaJustificativa.style.animation = 'slideDown 0.3s forwards';
-        }
-        let overlay = document.getElementById("overlay");
-        if (overlay) overlay.classList.add("active");
-    };
+    function abrirJanelaJustificativa(index) {
+        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+        var item = recebidos[index];
+    
+        // Preenche os campos na janela de justificativa
+        document.getElementById("justificativaTexto").value = item.justificativa || "";
+    
+        // Mostra a janela
+        document.getElementById("janelaJustificativaAtraso").classList.remove("hidden");
+    
+        // Salvar justificativa ao clicar no botão "Salvar"
+        document.getElementById("salvarJustificativaButton").onclick = function () {
+            var justificativa = document.getElementById("justificativaTexto").value.trim();
+            if (justificativa) {
+                item.justificativa = justificativa;
+                recebidos[index] = item;
+                localStorage.setItem("recebidos", JSON.stringify(recebidos));
+                atualizarTabelaRecebidos(); // Atualiza a tabela com o novo emoji
+                document.getElementById("janelaJustificativaAtraso").classList.add("hidden");
+            } else {
+                alert("A justificativa não pode estar vazia.");
+            }
+        };
+    }
+    
 
     // Fecha a janela de justificativa
     function fecharJanelaJustificativa() {
