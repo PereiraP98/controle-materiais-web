@@ -1832,6 +1832,12 @@ function abrirJanelaGuardarMaterial(index) {
         return;
     }
 
+    // Fecha a janela de visualização se estiver aberta
+    let janelaVisualizacao = document.getElementById("janelaVisualizacaoMaterial");
+    if (janelaVisualizacao && !janelaVisualizacao.classList.contains("hidden")) {
+        janelaVisualizacao.classList.add("hidden");
+    }
+
     // Preenche os dados na janela de guarda
     document.getElementById("guardarCodigo").textContent = item.item;
     document.getElementById("guardarQuantidade").value = item.quantidadeGuardada || item.quantidade || 1;
@@ -1851,6 +1857,7 @@ function abrirJanelaGuardarMaterial(index) {
     // Define o índice do item para salvar
     document.getElementById("guardarMaterialButton").dataset.index = index;
 }
+
 
 
 
