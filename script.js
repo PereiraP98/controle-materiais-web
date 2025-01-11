@@ -1743,5 +1743,59 @@ document.getElementById("okConfirmacaoButton").addEventListener("click", functio
     location.reload();
 });
 
+window.mostrarJustificativa = function (index) {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+
+    if (!item || !item.justificativa || item.justificativa.trim() === "") {
+        alert("Nenhuma justificativa salva para este item.");
+        return;
+    }
+
+    // Atualiza o conteúdo da janela com a justificativa salva
+    document.getElementById("justificativaTextoSalvo").textContent = item.justificativa;
+
+    // Mostra a janela flutuante
+    let janelaMostrar = document.getElementById("janelaMostrarJustificativa");
+    if (janelaMostrar) {
+        janelaMostrar.classList.remove("hidden");
+        janelaMostrar.style.animation = "slideDown 0.3s forwards";
+    }
+
+    // Ativa o overlay
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.add("active");
+
+    // Armazena o índice do item atual para edição
+    justificativaIndex = index;
+};
+
+document.getElementById("editarJustificativaButton").addEventListener("click", function () {
+    // Fecha a janela de exibição
+    let janelaMostrar = document.getElementById("janelaMostrarJustificativa");
+    if (janelaMostrar) {
+        janelaMostrar.style.animation = "slideUp 0.3s forwards";
+        setTimeout(() => {
+            janelaMostrar.classList.add("hidden");
+        }, 300);
+    }
+
+    // Abre a janela de edição de justificativa
+    abrirJanelaJustificativa(justificativaIndex);
+});
+
+document.getElementById("fecharMostrarJustificativaButton").addEventListener("click", function () {
+    let janelaMostrar = document.getElementById("janelaMostrarJustificativa");
+    if (janelaMostrar) {
+        janelaMostrar.style.animation = "slideUp 0.3s forwards";
+        setTimeout(() => {
+            janelaMostrar.classList.add("hidden");
+        }, 300);
+    }
+
+    // Remove o overlay
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.remove("active");
+});
 
 
