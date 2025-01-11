@@ -1982,6 +1982,7 @@ function abrirJanelaVisualizacaoMaterial(index) {
     if (overlay) overlay.classList.add("active");
 }
 
+
 function fecharJanela(janelaId) {
     let janela = document.getElementById(janelaId);
     if (janela) {
