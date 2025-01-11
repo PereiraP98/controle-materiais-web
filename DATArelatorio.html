@@ -258,6 +258,18 @@ function exibirDetalhesRelatorio(index) {
     });
 }
 
+function abrirJustificativa() {
+    const janela = document.getElementById("janelaMostrarJustificativa");
+    janela.classList.remove("hidden");
+    janela.style.animation = "fadeIn 0.3s forwards";
+
+    const overlay = document.getElementById("overlay");
+    overlay.classList.add("active");
+
+    // Oculta o botão de edição
+    const editarButton = document.getElementById("editarJustificativaButton");
+    if (editarButton) editarButton.style.display = "none";
+}
 
     
   </script>
