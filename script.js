@@ -1932,10 +1932,10 @@ function visualizarMaterialGuardado(index) {
     document.getElementById("visualizacaoQuantidade").textContent = item.quantidadeGuardada || item.quantidade || "";
     document.getElementById("visualizacaoEndereco").textContent = item.endereco || "N/A";
     document.getElementById("visualizacaoEnderecoUZ").textContent = item.enderecoUZ || "N/A";
-    document.getElementById("visualizacaoRepositor").textContent = item.nomeRepositor || "N/A";
+    document.getElementById("visualizacaoNome").textContent = item.nomeRepositor || "N/A";
 
-    // Define o índice no botão Editar para abrir a janela de guarda
-    document.getElementById("editarMaterialButton").dataset.index = index;
+    // Armazena o índice no campo oculto
+    document.getElementById("visualizacaoIndex").value = index;
 
     // Exibe a janela de visualização
     let janelaVisualizacao = document.getElementById("janelaVisualizacaoMaterial");
@@ -1946,4 +1946,5 @@ function visualizarMaterialGuardado(index) {
     let overlay = document.getElementById("overlay");
     if (overlay) overlay.classList.add("active");
 }
+
 
