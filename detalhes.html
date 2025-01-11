@@ -239,31 +239,35 @@
 
     <!-- Janela Flutuante para Guardar Material -->
 <div id="janelaGuardarMaterial" class="janela-flutuante hidden">
-    <h2>Guarda de Material Recebido</h2>
-    <form id="guardarMaterialForm">
-        <label for="guardarCodigo">Código do Item:</label>
-        <p id="guardarCodigo" style="font-weight: bold;"></p>
-
-        <label for="guardarQuantidade">Quantidade de Caixa:</label>
-        <input type="number" id="guardarQuantidade" name="guardarQuantidade" min="1" required>
-
-        <label for="guardarEndereco">Endereço:</label>
-        <input type="text" id="guardarEndereco" name="guardarEndereco" style="text-transform: uppercase;" required>
-
-        <label for="guardarEnderecoUZ">Endereço de UZ:</label>
-        <input type="number" id="guardarEnderecoUZ" name="guardarEnderecoUZ" required>
-
-        <label for="guardarNome">Nome do Repositor:</label>
-        <input type="text" id="guardarNome" name="guardarNome" required>
-
-        <div class="button-container">
-            <button type="button" id="cancelarGuardarButton" class="secondary-button" onclick="fecharJanelaGuardarMaterial()">Cancelar</button>
-            <button type="button" id="guardarMaterialButton" class="primary-button" onclick="guardarMaterial()">Guardar</button>
-        </div>
-    </form>
+    <h2>Guardar Material Recebido</h2>
+    <p><strong>Código do Item:</strong> <span id="guardarCodigo"></span></p>
+    <label>Quantidade de Caixas:</label>
+    <input type="number" id="quantidadeCaixas" min="1" required>
+    <label>Endereço:</label>
+    <input type="text" id="endereco" required>
+    <label>Endereço de UZ:</label>
+    <input type="number" id="enderecoUZ" required>
+    <label>Nome do Repositor:</label>
+    <input type="text" id="repositor" required>
+    <div class="button-container">
+        <button onclick="salvarMaterialGuardado(justificativaIndex)">Salvar</button>
+        <button onclick="fecharJanela('janelaGuardarMaterial')">Cancelar</button>
+    </div>
 </div>
 
 
+<div id="janelaVisualizacaoMaterial" class="janela-flutuante hidden">
+    <h2>Material Guardado</h2>
+    <p><strong>Código do Item:</strong> <span id="visualizacaoCodigo"></span></p>
+    <p><strong>Quantidade de Caixas:</strong> <span id="visualizacaoQuantidade"></span></p>
+    <p><strong>Endereço:</strong> <span id="visualizacaoEndereco"></span></p>
+    <p><strong>Endereço de UZ:</strong> <span id="visualizacaoEnderecoUZ"></span></p>
+    <p><strong>Nome do Repositor:</strong> <span id="visualizacaoRepositor"></span></p>
+    <button onclick="abrirJanelaGuardarMaterial(justificativaIndex)">Editar</button>
+    <button onclick="fecharJanela('janelaVisualizacaoMaterial')">Fechar</button>
+</div>
+
+    
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
