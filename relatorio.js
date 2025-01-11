@@ -142,3 +142,122 @@ document.addEventListener("DOMContentLoaded", function () {
         atualizarTabelaRecebidos(); // chama a função para exibir TEMPO em RECEBIDOS
     }
 });
+
+function gerarRelatorio() {
+    const solicitados = [];
+    const solicitadosRows = document.querySelectorAll("#detalhesTable tbody tr");
+    solicitadosRows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        solicitados.push({
+            local: cells[1]?.textContent || "",
+            item: cells[2]?.textContent || "",
+            qtd: cells[3]?.textContent || "",
+            destino: cells[4]?.textContent || "",
+            data: cells[5]?.textContent || "",
+            hora: cells[6]?.textContent || "",
+            reportado: cells[7]?.textContent || ""
+        });
+    });
+
+    const recebidos = [];
+    const recebidosRows = document.querySelectorAll("#recebidosTable tbody tr");
+    recebidosRows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        recebidos.push({
+            local: cells[1]?.textContent || "",
+            item: cells[2]?.textContent || "",
+            quantidade: cells[3]?.textContent || "",
+            destino: cells[4]?.textContent || "",
+            data: cells[5]?.textContent || "",
+            horario: cells[6]?.textContent || "",
+            recebido: cells[7]?.textContent || "",
+            tempo: cells[8]?.textContent || "",
+            guardado: cells[9]?.textContent || ""
+        });
+    });
+
+    const relatorio = {
+        solicitados,
+        recebidos,
+        dataGeracao: new Date().toLocaleString()
+    };
+
+    // Salva o relatório no localStorage
+    const relatorios = JSON.parse(localStorage.getItem("relatoriosMes")) || [];
+    relatorios.push(relatorio);
+    localStorage.setItem("relatoriosMes", JSON.stringify(relatorios));
+
+    alert("Relatório gerado com sucesso!");
+}
+
+function carregarRelatorios() {
+    const relatorios = JSON.parse(localStorage.getItem("relatoriosMes")) || [];
+
+    const listaRelatorios = document.getElementById("listaRelatorios");
+    listaRelatorios.innerHTML = "";
+
+    relatorios.forEach((relatorio, index) => {
+        const div = document.createElement("div");
+        div.classList.add("relatorio-mes");
+        div.innerHTML = `
+            <h3>📄 Relatório - ${relatorio.dataGeracao}</h3>
+            <button onclick="exibirDetalhesRelatorio(${index})">Visualizar</button>
+        `;
+        listaRelatorios.appendChild(div);
+    });
+}
+
+function exibirDetalhesRelatorio(index) {
+    const relatorios = JSON.parse(localStorage.getItem("relatoriosMes")) || [];
+    const relatorio = relatorios[index];
+
+    const solicitadosBody = document.getElementById("solicitadosBody");
+    solicitadosBody.innerHTML = "";
+    relatorio.solicitados.forEach(item => {
+        solicitadosBody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.qtd}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.hora}</td>
+                <td>${item.reportado}</td>
+            </tr>
+        `);
+    });
+
+    const recebidosBody = document.getElementById("recebidosBody");
+    recebidosBody.innerHTML = "";
+    relatorio.recebidos.forEach(item => {
+        const tempoCell = item.tempo.includes("📜")
+            ? `<span onclick="abrirJustificativa()" style="color: green; cursor: pointer;">${item.tempo}</span>`
+            : item.tempo;
+        recebidosBody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${tempoCell}</td>
+                <td>${item.guardado}</td>
+            </tr>
+        `);
+    });
+}
+
+function abrirJustificativa() {
+    const janela = document.getElementById("janelaMostrarJustificativa");
+    janela.classList.remove("hidden");
+    janela.style.animation = "fadeIn 0.3s forwards";
+
+    const overlay = document.getElementById("overlay");
+    overlay.classList.add("active");
+
+    // Oculta o botão de edição
+    const editarButton = document.getElementById("editarJustificativaButton");
+    if (editarButton) editarButton.style.display = "none";
+}
