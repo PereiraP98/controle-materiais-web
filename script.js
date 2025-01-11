@@ -1220,6 +1220,17 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
+            // Adaptação no campo TEMPO para itens com emoji 📜
+if (emoji === "📜") {
+    tempoCell = `
+        <span style="cursor: pointer; color: blue; text-decoration: underline;"
+              onclick="mostrarJustificativa(${index})"
+              title="Clique para ver a justificativa">
+            ${tempoCell}
+        </span>
+    `;
+}
+
         }
         
 
