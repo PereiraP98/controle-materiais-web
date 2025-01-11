@@ -1176,23 +1176,36 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
         
-                    // Monta o campo TEMPO (ex: "01:25⚠️")
+                    // Monta o campo TEMPO (ex: "01:25⚠️" ou "01:25📜")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
-                        tempoCell += `${emoji}`; // Ex.: "01:25⚠️"
+                        tempoCell += `${emoji}`; // Adiciona o emoji ao lado do tempo
                     }
         
-                    // Adiciona funcionalidade de clicar para justificar
+                    // Adiciona funcionalidade de clicar para visualizar ou justificar
                     if (emoji) {
-                        tempoCell = `
-                            <span style="cursor: pointer; color: ${emoji === "⚠️" ? "red" : "green"};"
-                                  onclick="abrirJanelaJustificativa(${index})"
-                                  title="Clique para justificar ou ver justificativa">
-                                ${tempoCell}
-                            </span>
-                        `;
+                        if (emoji === "⚠️") {
+                            // Clique para justificar
+                            tempoCell = `
+                                <span style="cursor: pointer; color: red;"
+                                      onclick="abrirJanelaJustificativa(${index})"
+                                      title="Clique para justificar o atraso">
+                                    ${tempoCell}
+                                </span>
+                            `;
+                        } else if (emoji === "📜") {
+                            // Clique para exibir justificativa salva
+                            tempoCell = `
+                                <span style="cursor: pointer; color: green;"
+                                      onclick="mostrarJustificativa(${index})"
+                                      title="Clique para visualizar a justificativa">
+                                    ${tempoCell}
+                                </span>
+                            `;
+                        }
                     }
         
+                    // Cria uma nova linha na tabela
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -1220,18 +1233,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
-            // Adaptação no campo TEMPO para itens com emoji 📜
-if (emoji === "📜") {
-    tempoCell = `
-        <span style="cursor: pointer; color: blue; text-decoration: underline;"
-              onclick="mostrarJustificativa(${index})"
-              title="Clique para ver a justificativa">
-            ${tempoCell}
-        </span>
-    `;
-}
-
         }
+        
         
 
         atualizarTabelaRecebidos();
