@@ -1733,3 +1733,27 @@ document.getElementById("okConfirmacaoButton").addEventListener("click", functio
         console.error("Elemento #janelaConfirmacao não encontrado.");
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const okButton = document.getElementById("okConfirmacaoButton");
+    const janela = document.getElementById("janelaConfirmacao");
+    const emojiElement = document.querySelector(".emoji-status"); // Substitua pela classe ou ID real do elemento do emoji
+
+    if (okButton && janela && emojiElement) {
+        okButton.addEventListener("click", function () {
+            // Fecha a janela de confirmação
+            janela.classList.add("hidden");
+
+            // Atualiza o emoji
+            const currentEmoji = emojiElement.textContent.trim();
+            if (currentEmoji === "⚠️") {
+                emojiElement.textContent = "📜";
+            } else if (currentEmoji === "📜") {
+                emojiElement.textContent = "⚠️";
+            }
+
+            console.log("Janela fechada e emoji atualizado.");
+        });
+    } else {
+        console.error("Botão OK, janela de confirmação ou elemento do emoji não encontrado.");
+    }
+});
