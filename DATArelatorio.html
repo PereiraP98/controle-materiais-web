@@ -126,13 +126,14 @@
                 <tbody>
             `;
             solicitados.forEach(item => {
+              const dataFormatada = formatarData(item.data);
               solicitadosHtml += `
                 <tr>
                   <td>${item.local}</td>
                   <td>${item.item}</td>
                   <td>${item.qtd}</td>
                   <td>${item.destino}</td>
-                  <td>${item.data}</td>
+                  <td>${dataFormatada}</td>
                   <td>${item.hora}</td>
                   <td>${item.reportado}</td>
                 </tr>`;
@@ -158,6 +159,7 @@
                 <tbody>
             `;
             recebidos.forEach(item => {
+              const dataFormatada = formatarData(item.data);
               const tempoCell = item.tempo.includes('📜')
                 ? `<span style="color: green; cursor: pointer;" onclick="mostrarJustificativa('${item.justificativa}')">${item.tempo}</span>`
                 : item.tempo;
@@ -168,7 +170,7 @@
                   <td>${item.item}</td>
                   <td>${item.quantidade}</td>
                   <td>${item.destino}</td>
-                  <td>${item.data}</td>
+                  <td>${dataFormatada}</td>
                   <td>${item.horario}</td>
                   <td>${item.recebido}</td>
                   <td>${tempoCell}</td>
@@ -202,6 +204,11 @@
         });
       });
     });
+
+    function formatarData(data) {
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}`; // Formata para dd/mm
+    }
 
     function mostrarJustificativa(justificativa) {
       alert(`Justificativa: ${justificativa || 'Nenhuma justificativa registrada.'}`);
