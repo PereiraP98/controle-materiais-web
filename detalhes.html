@@ -237,6 +237,32 @@
     </div>
 </div>
 
+    <!-- Janela Flutuante para Guardar Material -->
+<div id="janelaGuardarMaterial" class="janela-flutuante hidden">
+    <h2>Guarda de Material Recebido</h2>
+    <form id="guardarMaterialForm">
+        <label for="guardarCodigo">Código do Item:</label>
+        <p id="guardarCodigo" style="font-weight: bold;"></p>
+
+        <label for="guardarQuantidade">Quantidade de Caixa:</label>
+        <input type="number" id="guardarQuantidade" name="guardarQuantidade" min="1" required>
+
+        <label for="guardarEndereco">Endereço:</label>
+        <input type="text" id="guardarEndereco" name="guardarEndereco" style="text-transform: uppercase;" required>
+
+        <label for="guardarEnderecoUZ">Endereço de UZ:</label>
+        <input type="number" id="guardarEnderecoUZ" name="guardarEnderecoUZ" required>
+
+        <label for="guardarNome">Nome do Repositor:</label>
+        <input type="text" id="guardarNome" name="guardarNome" required>
+
+        <div class="button-container">
+            <button type="button" id="cancelarGuardarButton" class="secondary-button" onclick="fecharJanelaGuardarMaterial()">Cancelar</button>
+            <button type="button" id="guardarMaterialButton" class="primary-button" onclick="guardarMaterial()">Guardar</button>
+        </div>
+    </form>
+</div>
+
 
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
