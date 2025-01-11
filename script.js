@@ -200,7 +200,6 @@ if (janelaForm) {
         var minutos = parseInt(horarioParts[1], 10);
 
         var timestampDate = new Date(
-            dataAtualObj.getFullYear(),
             dataAtualObj.getMonth(),
             dataAtualObj.getDate(),
             horas,
@@ -2046,6 +2045,3 @@ function gerarRelatorio() {
 
     alert("Relatório gerado com sucesso!");
 }
-
-
-
