@@ -1883,13 +1883,11 @@ function guardarMaterial() {
     // Salva no localStorage
     localStorage.setItem("recebidos", JSON.stringify(recebidos));
 
-    // Fecha a janela
+    // Fecha a janela de guardar material
     fecharJanelaGuardarMaterial();
 
-    // Atualiza a tabela
-    atualizarTabelaRecebidos();
-
-    alert("Material guardado com sucesso!");
+    // Exibe a janela de confirmação
+    exibirJanelaConfirmacao("Material guardado com sucesso!");
 }
 
 function fecharJanelaGuardarMaterial() {
@@ -1899,4 +1897,21 @@ function fecharJanelaGuardarMaterial() {
     }
     let overlay = document.getElementById("overlay");
     if (overlay) overlay.classList.remove("active");
+}
+
+function exibirJanelaConfirmacao(mensagem) {
+    const janelaConfirmacao = document.getElementById("janelaConfirmacao");
+    const confirmacaoMensagem = document.getElementById("confirmacaoMensagem");
+
+    if (janelaConfirmacao && confirmacaoMensagem) {
+        confirmacaoMensagem.textContent = mensagem;
+        janelaConfirmacao.classList.remove("hidden");
+        janelaConfirmacao.style.animation = "fadeIn 0.3s forwards";
+
+        const okButton = document.getElementById("okConfirmacaoButton");
+        okButton.onclick = () => {
+            janelaConfirmacao.classList.add("hidden");
+            location.reload(); // Recarrega a página
+        };
+    }
 }
