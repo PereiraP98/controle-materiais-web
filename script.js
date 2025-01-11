@@ -1733,27 +1733,28 @@ document.getElementById("okConfirmacaoButton").addEventListener("click", functio
         console.error("Elemento #janelaConfirmacao não encontrado.");
     }
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const okButton = document.getElementById("okConfirmacaoButton");
-    const janela = document.getElementById("janelaConfirmacao");
-    const emojiElement = document.querySelector(".emoji-status"); // Substitua pela classe ou ID real do elemento do emoji
+document.addEventListener('DOMContentLoaded', function () {
+    const salvarJustificativaButton = document.getElementById('salvarJustificativaButton');
 
-    if (okButton && janela && emojiElement) {
-        okButton.addEventListener("click", function () {
-            // Fecha a janela de confirmação
-            janela.classList.add("hidden");
+    salvarJustificativaButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Previne o envio do formulário
 
-            // Atualiza o emoji
-            const currentEmoji = emojiElement.textContent.trim();
-            if (currentEmoji === "⚠️") {
-                emojiElement.textContent = "📜";
-            } else if (currentEmoji === "📜") {
-                emojiElement.textContent = "⚠️";
+        const justificativaTexto = document.getElementById('justificativaTexto').value.trim();
+        const selectedRow = document.querySelector('.selected-row'); // A linha que foi selecionada
+        const tempoCell = selectedRow.querySelector('.tempo-cell'); // Célula da coluna TEMPO
+
+        if (justificativaTexto !== '') {
+            // Substituir o emoji ⚠️ por 📜
+            const tempoText = tempoCell.textContent.trim();
+            if (tempoText.includes('⚠️')) {
+                tempoCell.innerHTML = tempoText.replace('⚠️', '📜');
             }
 
-            console.log("Janela fechada e emoji atualizado.");
-        });
-    } else {
-        console.error("Botão OK, janela de confirmação ou elemento do emoji não encontrado.");
-    }
+            // Fechar a janela de justificativa
+            document.getElementById('janelaJustificativaAtraso').classList.add('hidden');
+        } else {
+            alert('A justificativa não pode estar vazia.');
+        }
+    });
 });
+
