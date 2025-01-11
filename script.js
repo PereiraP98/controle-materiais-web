@@ -1159,40 +1159,40 @@ document.addEventListener("DOMContentLoaded", function () {
             var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
             if (recebidosTable) {
                 recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
-
+        
                 recebidos.forEach(function (item, index) {
                     // Verifica se é atrasado
                     let [h, m] = (item.tempo || "00:00").split(":").map(Number);
                     let totalMin = h * 60 + m;
                     let isAtrasado = (totalMin > 30);
-
+        
                     // Define o emoji (⚠️ ou 📜 ou nada)
                     let emoji = "";
                     if (isAtrasado) {
                         if (item.justificativa && item.justificativa.trim() !== "") {
-                            emoji = "📜";
+                            emoji = "📜"; // Já justificado
                         } else {
-                            emoji = "⚠️";
+                            emoji = "⚠️"; // Não justificado
                         }
                     }
-
+        
                     // Monta o campo TEMPO (ex: "01:25⚠️")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
                         tempoCell += `${emoji}`; // Ex.: "01:25⚠️"
                     }
-
-                    // Injetar onclick se estiver atrasado
+        
+                    // Adiciona funcionalidade de clicar para justificar
                     if (emoji) {
                         tempoCell = `
-                            <span style="cursor: pointer;"
+                            <span style="cursor: pointer; color: ${emoji === "⚠️" ? "red" : "green"};"
                                   onclick="abrirJanelaJustificativa(${index})"
                                   title="Clique para justificar ou ver justificativa">
                                 ${tempoCell}
                             </span>
                         `;
                     }
-
+        
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
                         <td class="checkbox-column hidden"><input type="checkbox" class="delete-checkbox"></td>
@@ -1208,7 +1208,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
                     recebidosTable.appendChild(newRow);
                 });
-
+        
                 // Mensagem para tabela vazia
                 if (recebidos.length === 0) {
                     var emptyRow = document.createElement("tr");
@@ -1221,6 +1221,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
         }
+        
 
         atualizarTabelaRecebidos();
 
@@ -1733,28 +1734,5 @@ document.getElementById("okConfirmacaoButton").addEventListener("click", functio
         console.error("Elemento #janelaConfirmacao não encontrado.");
     }
 });
-document.addEventListener('DOMContentLoaded', function () {
-    const salvarJustificativaButton = document.getElementById('salvarJustificativaButton');
 
-    salvarJustificativaButton.addEventListener('click', function (event) {
-        event.preventDefault(); // Previne o envio do formulário
-
-        const justificativaTexto = document.getElementById('justificativaTexto').value.trim();
-        const selectedRow = document.querySelector('.selected-row'); // A linha que foi selecionada
-        const tempoCell = selectedRow.querySelector('.tempo-cell'); // Célula da coluna TEMPO
-
-        if (justificativaTexto !== '') {
-            // Substituir o emoji ⚠️ por 📜
-            const tempoText = tempoCell.textContent.trim();
-            if (tempoText.includes('⚠️')) {
-                tempoCell.innerHTML = tempoText.replace('⚠️', '📜');
-            }
-
-            // Fechar a janela de justificativa
-            document.getElementById('janelaJustificativaAtraso').classList.add('hidden');
-        } else {
-            alert('A justificativa não pode estar vazia.');
-        }
-    });
-});
 
