@@ -1556,6 +1556,47 @@ window.abrirJanelaJustificativa = function (index) {
     console.log("Janela de justificativa aberta para o item:", item);
 };
 
+// Salva a justificativa no item selecionado
+window.salvarJustificativa = function () {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+
+    // Verifica se o índice da justificativa é válido
+    if (justificativaIndex < 0 || justificativaIndex >= recebidos.length) {
+        console.warn("Índice inválido para salvar justificativa:", justificativaIndex);
+        alert("Erro: Não foi possível salvar a justificativa.");
+        return;
+    }
+
+    let item = recebidos[justificativaIndex];
+
+    // Atualiza a justificativa no item
+    if (justificarRadio.checked) {
+        item.justificativa = justificativaTexto.value.trim();
+    } else {
+        item.justificativa = ""; // Limpa a justificativa se marcado como "Sem justificativa"
+    }
+
+    // Atualiza os dados no localStorage
+    localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+    // Atualiza a tabela para refletir os emojis e demais alterações
+    atualizarTabelaRecebidos();
+
+    // Fecha a janela de justificativa
+    if (janelaJustificativa) {
+        janelaJustificativa.style.animation = "slideUp 0.3s forwards";
+        setTimeout(() => {
+            janelaJustificativa.classList.add("hidden");
+        }, 300);
+    }
+
+    // Remove o overlay
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.remove("active");
+
+    console.log("Justificativa salva para o item:", item);
+};
+
 
     // Fecha a janela de justificativa
     function fecharJanelaJustificativa() {
