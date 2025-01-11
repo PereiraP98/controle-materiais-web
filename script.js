@@ -1710,3 +1710,16 @@ function fecharJanelaJustificativa() {
         if (overlay) overlay.classList.remove("active");
     }, 300);
 }
+
+okConfirmacaoButton.onclick = function () {
+    console.log("Botão OK foi clicado");
+
+    // Fecha a janela de justificativa se estiver aberta
+    fecharJanelaJustificativa();
+
+    // Fecha a janela de confirmação
+    fecharJanelaConfirmacao();
+
+    // Redireciona ou recarrega a página, se necessário
+    window.location.href = "detalhes.html";
+};
