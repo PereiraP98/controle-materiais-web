@@ -1955,4 +1955,43 @@ function visualizarMaterialGuardado(index) {
     if (overlay) overlay.classList.add("active");
 }
 
+function abrirJanelaVisualizacaoMaterial(index) {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+    if (!item) {
+        console.warn("Item de recebidos não encontrado para index:", index);
+        return;
+    }
+
+    // Preenche os dados na janela de visualização
+    document.getElementById("visualizacaoCodigo").textContent = item.item || "N/A";
+    document.getElementById("visualizacaoQuantidade").textContent = item.quantidadeGuardada || item.quantidade || "N/A";
+    document.getElementById("visualizacaoEndereco").textContent = item.endereco || "N/A";
+    document.getElementById("visualizacaoEnderecoUZ").textContent = item.enderecoUZ || "N/A";
+    document.getElementById("visualizacaoNome").textContent = (item.nomeRepositor || "N/A").toUpperCase(); // Garante letras maiúsculas
+    document.getElementById("visualizacaoIndex").value = index;
+
+    // Exibe a janela de visualização
+    let janelaVisualizacao = document.getElementById("janelaVisualizacaoMaterial");
+    if (janelaVisualizacao) {
+        janelaVisualizacao.classList.remove("hidden");
+        janelaVisualizacao.style.animation = "fadeIn 0.3s forwards";
+    }
+
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.add("active");
+}
+
+function fecharJanela(janelaId) {
+    let janela = document.getElementById(janelaId);
+    if (janela) {
+        janela.classList.add("hidden");
+        janela.style.animation = ""; // Reseta a animação caso seja reaberto
+    }
+
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.remove("active");
+}
+
+
 
