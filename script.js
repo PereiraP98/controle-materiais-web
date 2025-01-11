@@ -1514,32 +1514,48 @@ if (justificativaForm) {
     const contadorJustificativa = document.getElementById("contadorJustificativa");
     const cancelarJustificativaButton = document.getElementById("cancelarJustificativaButton");
 
-    // Abre a janela de justificativa
-    function abrirJanelaJustificativa(index) {
-        var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
-        var item = recebidos[index];
-    
-        // Preenche os campos na janela de justificativa
-        document.getElementById("justificativaTexto").value = item.justificativa || "";
-    
-        // Mostra a janela
-        document.getElementById("janelaJustificativaAtraso").classList.remove("hidden");
-    
-        // Salvar justificativa ao clicar no botão "Salvar"
-        document.getElementById("salvarJustificativaButton").onclick = function () {
-            var justificativa = document.getElementById("justificativaTexto").value.trim();
-            if (justificativa) {
-                item.justificativa = justificativa;
-                recebidos[index] = item;
-                localStorage.setItem("recebidos", JSON.stringify(recebidos));
-                atualizarTabelaRecebidos(); // Atualiza a tabela com o novo emoji
-                document.getElementById("janelaJustificativaAtraso").classList.add("hidden");
-            } else {
-                alert("A justificativa não pode estar vazia.");
-            }
-        };
+// Abre a janela de justificativa
+window.abrirJanelaJustificativa = function (index) {
+    justificativaIndex = index;
+
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+
+    // Verifica se o item existe
+    if (!item) {
+        console.warn("Item de recebidos não encontrado para index:", index);
+        alert("Erro: O item selecionado não foi encontrado.");
+        return;
     }
-    
+
+    // Configura o estado inicial da janela
+    if (item.justificativa && item.justificativa.trim() !== "") {
+        justificarRadio.checked = true; // Marca o radio de justificativa
+        justificativaTexto.disabled = false; // Habilita o campo de texto
+        justificativaTexto.value = item.justificativa; // Preenche a justificativa
+        contadorJustificativa.textContent = `${justificativaTexto.value.length}/200`; // Atualiza contador
+    } else {
+        semJustificaRadio.checked = true; // Marca o radio sem justificativa
+        justificativaTexto.disabled = true; // Desabilita o campo de texto
+        justificativaTexto.value = ""; // Limpa o campo de texto
+        contadorJustificativa.textContent = "0/200"; // Reseta contador
+    }
+
+    // Exibe a janela de justificativa
+    if (janelaJustificativa) {
+        janelaJustificativa.classList.remove("hidden");
+        janelaJustificativa.style.animation = 'slideDown 0.3s forwards';
+    }
+
+    // Ativa o overlay
+    let overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.classList.add("active");
+    }
+
+    console.log("Janela de justificativa aberta para o item:", item);
+};
+
 
     // Fecha a janela de justificativa
     function fecharJanelaJustificativa() {
