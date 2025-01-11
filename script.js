@@ -1205,6 +1205,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
         
+                    // Atualiza a célula de GUARDADO
+                    let guardadoCell = item.guardado || "NÃO📥";
+                    guardadoCell = `
+                        <span style="cursor: pointer; color: ${guardadoCell.includes("NÃO") ? "red" : "green"};"
+                              onclick="abrirJanelaGuardarMaterial(${index})"
+                              title="Clique para ${guardadoCell.includes("NÃO") ? "guardar" : "visualizar dados do material guardado"}">
+                            ${guardadoCell}
+                        </span>
+                    `;
+        
                     // Cria uma nova linha na tabela
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
@@ -1217,7 +1227,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${item.horario}</td>
                         <td>${item.recebido}</td>
                         <td>${tempoCell}</td>
-                        <td>${item.guardado}</td>
+                        <td>${guardadoCell}</td>
                     `;
                     recebidosTable.appendChild(newRow);
                 });
@@ -1234,6 +1244,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
         }
+        
         
         
 
@@ -1811,5 +1822,83 @@ document.getElementById("fecharMostrarJustificativaButton").addEventListener("cl
     let overlay = document.getElementById("overlay");
     if (overlay) overlay.classList.remove("active");
 });
+
+function abrirJanelaGuardarMaterial(index) {
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+    if (!item) {
+        console.warn("Item de recebidos não encontrado para index:", index);
+        return;
+    }
+
+    // Preenche os dados na janela
+    document.getElementById("guardarCodigo").textContent = item.item;
+    document.getElementById("guardarQuantidade").value = item.quantidade || 1;
+    document.getElementById("guardarEndereco").value = "";
+    document.getElementById("guardarEnderecoUZ").value = "";
+    document.getElementById("guardarNome").value = "";
+
+    // Exibe a janela flutuante
+    let janelaGuardar = document.getElementById("janelaGuardarMaterial");
+    if (janelaGuardar) {
+        janelaGuardar.classList.remove("hidden");
+        janelaGuardar.style.animation = "slideDown 0.3s forwards";
+    }
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.add("active");
+
+    // Define o índice do item para salvar
+    document.getElementById("guardarMaterialButton").dataset.index = index;
+}
+
+function guardarMaterial() {
+    let index = document.getElementById("guardarMaterialButton").dataset.index;
+    let recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+    let item = recebidos[index];
+
+    if (!item) {
+        console.warn("Item de recebidos não encontrado para index:", index);
+        return;
+    }
+
+    // Obtém os dados da janela
+    let quantidade = parseInt(document.getElementById("guardarQuantidade").value, 10);
+    let endereco = document.getElementById("guardarEndereco").value.trim().toUpperCase();
+    let enderecoUZ = document.getElementById("guardarEnderecoUZ").value.trim();
+    let nomeRepositor = document.getElementById("guardarNome").value.trim();
+
+    // Valida os campos
+    if (isNaN(quantidade) || quantidade <= 0 || !endereco || !enderecoUZ || !nomeRepositor) {
+        alert("Por favor, preencha todos os campos corretamente.");
+        return;
+    }
+
+    // Atualiza os dados no item
+    item.guardado = "SIM📦";
+    item.quantidadeGuardada = quantidade;
+    item.endereco = endereco;
+    item.enderecoUZ = enderecoUZ;
+    item.nomeRepositor = nomeRepositor;
+
+    // Salva no localStorage
+    localStorage.setItem("recebidos", JSON.stringify(recebidos));
+
+    // Fecha a janela
+    fecharJanelaGuardarMaterial();
+
+    // Atualiza a tabela
+    atualizarTabelaRecebidos();
+
+    alert("Material guardado com sucesso!");
+}
+
+function fecharJanelaGuardarMaterial() {
+    let janelaGuardar = document.getElementById("janelaGuardarMaterial");
+    if (janelaGuardar) {
+        janelaGuardar.classList.add("hidden");
+    }
+    let overlay = document.getElementById("overlay");
+    if (overlay) overlay.classList.remove("active");
+}
 
 
