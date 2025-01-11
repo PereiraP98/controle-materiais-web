@@ -198,6 +198,68 @@
       return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
     }
   });
+
+    function carregarRelatorios() {
+    const relatorios = JSON.parse(localStorage.getItem("relatoriosMes")) || [];
+
+    const listaRelatorios = document.getElementById("listaRelatorios");
+    listaRelatorios.innerHTML = "";
+
+    relatorios.forEach((relatorio, index) => {
+        const div = document.createElement("div");
+        div.classList.add("relatorio-mes");
+        div.innerHTML = `
+            <h3>📄 Relatório - ${relatorio.dataGeracao}</h3>
+            <button onclick="exibirDetalhesRelatorio(${index})">Visualizar</button>
+        `;
+        listaRelatorios.appendChild(div);
+    });
+}
+
+function exibirDetalhesRelatorio(index) {
+    const relatorios = JSON.parse(localStorage.getItem("relatoriosMes")) || [];
+    const relatorio = relatorios[index];
+
+    const solicitadosBody = document.getElementById("solicitadosBody");
+    solicitadosBody.innerHTML = "";
+    relatorio.solicitados.forEach(item => {
+        solicitadosBody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.qtd}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.hora}</td>
+                <td>${item.reportado}</td>
+            </tr>
+        `);
+    });
+
+    const recebidosBody = document.getElementById("recebidosBody");
+    recebidosBody.innerHTML = "";
+    relatorio.recebidos.forEach(item => {
+        const tempoCell = item.tempo.includes("📜")
+            ? `<span onclick="abrirJustificativa()" style="color: green; cursor: pointer;">${item.tempo}</span>`
+            : item.tempo;
+        recebidosBody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td>${item.local}</td>
+                <td>${item.item}</td>
+                <td>${item.quantidade}</td>
+                <td>${item.destino}</td>
+                <td>${item.data}</td>
+                <td>${item.horario}</td>
+                <td>${item.recebido}</td>
+                <td>${tempoCell}</td>
+                <td>${item.guardado}</td>
+            </tr>
+        `);
+    });
+}
+
+
+    
   </script>
 </body>
 </html>
