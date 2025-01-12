@@ -277,6 +277,45 @@
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Função para formatar a data no formato dd/mm
+    function formatarData(dataStr) {
+        // Verifica se a data é válida
+        if (!dataStr) return dataStr;
+        
+        const partes = dataStr.split("/");
+        if (partes.length === 3) {
+            const dia = partes[0].padStart(2, "0");
+            const mes = partes[1].padStart(2, "0");
+            return `${dia}/${mes}`; // Retorna apenas dd/mm
+        }
+        return dataStr; // Retorna sem alterar caso não seja válida
+    }
+
+    // Formatar as datas na tabela "detalhesTable"
+    const detalhesTable = document.querySelector("#detalhesTable tbody");
+    if (detalhesTable) {
+        detalhesTable.querySelectorAll("tr").forEach((row) => {
+            const dataCell = row.children[5]; // Coluna DATA
+            if (dataCell) {
+                dataCell.textContent = formatarData(dataCell.textContent.trim());
+            }
+        });
+    }
+
+    // Formatar as datas na tabela "recebidosTable"
+    const recebidosTable = document.querySelector("#recebidosTable tbody");
+    if (recebidosTable) {
+        recebidosTable.querySelectorAll("tr").forEach((row) => {
+            const dataCell = row.children[5]; // Coluna DATA
+            if (dataCell) {
+                dataCell.textContent = formatarData(dataCell.textContent.trim());
+            }
+        });
+    }
+});
+</script>
 
 
 
