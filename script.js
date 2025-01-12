@@ -1999,52 +1999,60 @@ function gerarRelatorio() {
     const detalhesTable = document.querySelector("#detalhesTable tbody");
     const recebidosTable = document.querySelector("#recebidosTable tbody");
 
-    // Verificar se as tabelas existem na página
-    if (!detalhesTable || !recebidosTable) {
-        alert("Não foi possível localizar os dados para gerar o relatório.");
-        return;
-    }
-
     // Extrair dados das tabelas
     const solicitados = [];
     const recebidos = [];
 
     detalhesTable.querySelectorAll("tr").forEach((row) => {
-        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
-        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
-            solicitados.push(rowData);
-        }
+        const cells = Array.from(row.children);
+        const rowData = [
+            cells[0]?.textContent.trim(), // LOCAL
+            cells[1]?.textContent.trim(), // ITEM
+            cells[2]?.textContent.trim(), // QTD
+            cells[3]?.textContent.trim(), // DESTINO
+            cells[4]?.textContent.trim(), // DATA
+            cells[5]?.textContent.trim(), // HORA
+            cells[6]?.textContent.trim(), // RECEBER
+            cells[7]?.textContent.trim(), // TEMPO
+        ];
+        solicitados.push(rowData);
     });
 
     recebidosTable.querySelectorAll("tr").forEach((row) => {
-        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
-        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
-            recebidos.push(rowData);
-        }
+        const cells = Array.from(row.children);
+        const rowData = [
+            cells[0]?.textContent.trim(), // LOCAL
+            cells[1]?.textContent.trim(), // ITEM
+            cells[2]?.textContent.trim(), // QTD
+            cells[3]?.textContent.trim(), // DESTINO
+            cells[4]?.textContent.trim(), // DATA
+            cells[5]?.textContent.trim(), // HORA
+            cells[6]?.textContent.trim(), // RECEBIDO
+            cells[7]?.textContent.trim(), // TEMPO
+            cells[8]?.textContent.trim(), // GUARDADO
+        ];
+        recebidos.push(rowData);
     });
-
-    // Verificar se há dados a serem registrados
-    if (solicitados.length === 0 && recebidos.length === 0) {
-        alert("Nenhum dado disponível para gerar o relatório.");
-        return;
-    }
 
     // Criar estrutura para salvar no localStorage
     const dataAtual = new Date();
-    const nomeRelatorio = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1).toString().padStart(2, '0')}-${dataAtual.getDate().toString().padStart(2, '0')}`;
+    const nomeRelatorio = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${dataAtual.getDate().toString().padStart(2, "0")}`;
     const relatorio = {
         data: nomeRelatorio,
         solicitados,
         recebidos,
     };
 
-    // Armazenar no localStorage (pode ser substituído por API ou banco de dados no futuro)
+    // Armazenar no localStorage
     let relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
     relatorios.push(relatorio);
     localStorage.setItem("relatorios", JSON.stringify(relatorios));
 
-    // Exibir mensagem de sucesso ao gerar o relatório
-    alert(`Relatório de ${nomeRelatorio} gerado com sucesso!`);
+    // Aviso de relatório gerado
+    alert("Relatório gerado com sucesso!");
 
-    // Permanecer na página (não redirecionar para DATArelatorio.html)
+    // Permanecer na página atual após gerar relatório
 }
+
