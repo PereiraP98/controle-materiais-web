@@ -156,16 +156,141 @@
         </section>
     </main>
 
+    <!-- Janela Flutuante de Recebimento -->
+    <div id="janelaRecebimento" class="janela-flutuante hidden">
+        <h2>Receber Material</h2>
+        <form id="recebimentoForm">
+            <label for="recebimentoQuantidade">Quantidade Recebida:</label>
+            <input type="number" id="recebimentoQuantidade" name="recebimentoQuantidade" value="1" min="1" required>
+
+            <label for="recebimentoHorario">Horário Recebido:</label>
+            <input type="time" id="recebimentoHorario" name="recebimentoHorario" required>
+
+            <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
+
+            <div class="button-container">
+                <button type="button" id="cancelarRecebimentoButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="confirmarRecebimentoButton" class="primary-button">Receber</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela Flutuante para Justificativa de Material Atrasado -->
+    <div id="janelaJustificativaAtraso" class="janela-flutuante hidden">
+        <h2>Justificativa de material atrasado</h2>
+        <form id="justificativaForm">
+            <div style="text-align: left; margin-bottom: 10px;">
+                <label>
+                    <input type="radio" name="radioJustificativa" value="sem" checked>
+                    Material atrasado sem justificativa
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="radioJustificativa" value="com">
+                    Justificar atraso deste material
+                </label>
+            </div>
+
+            <!-- Campo de texto para justificativa, inicia desabilitado -->
+            <textarea 
+                id="justificativaTexto"
+                rows="4"
+                maxlength="200"
+                placeholder="Descreva o motivo do atraso (máx 200 caracteres)..."
+                style="width: 100%; resize: none; display: block; margin-bottom: 5px;"
+                disabled
+            ></textarea>
+
+            <!-- Contador de caracteres -->
+            <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">
+                0/200
+            </div>
+
+            <div class="button-container">
+                <button type="button" id="cancelarJustificativaButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="salvarJustificativaButton" class="primary-button">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ======================
+         JANELA DE CONFIRMAÇÃO
+         ====================== -->
+    <div id="janelaConfirmacao" class="janela-flutuante hidden">
+        <div class="conteudo-justificativa">
+            <!-- Mensagem dinâmica de confirmação -->
+            <p id="confirmacaoMensagem" class="titulo-janela"></p>
+            <div class="botoes-justificativa">
+                <button id="okConfirmacaoButton" class="primary-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Janela Flutuante para Mostrar Justificativa Salva -->
+<div id="janelaMostrarJustificativa" class="janela-flutuante hidden">
+    <h2>Justificativa Salva</h2>
+    <p id="justificativaTextoSalvo" style="text-align: left; margin-bottom: 20px;"></p>
+    <div class="button-container">
+        <button type="button" id="editarJustificativaButton" class="primary-button">Editar</button>
+        <button type="button" id="fecharMostrarJustificativaButton" class="secondary-button">Fechar</button>
+    </div>
+</div>
+
+    <!-- Janela Flutuante para Guardar Material -->
+<div id="janelaGuardarMaterial" class="janela-flutuante hidden">
+    <h2>Guarda de Material Recebido</h2>
+    <form id="guardarMaterialForm">
+        <label for="guardarCodigo">Código do Item:</label>
+        <p id="guardarCodigo" style="font-weight: bold;"></p>
+
+        <label for="guardarQuantidade">Quantidade de Caixa:</label>
+        <input type="number" id="guardarQuantidade" name="guardarQuantidade" min="1" required>
+
+        <label for="guardarEndereco">Endereço:</label>
+        <input type="text" id="guardarEndereco" name="guardarEndereco" style="text-transform: uppercase;" required>
+
+        <label for="guardarEnderecoUZ">Endereço de UZ:</label>
+        <input type="number" id="guardarEnderecoUZ" name="guardarEnderecoUZ" required>
+
+        <label for="guardarNome">Nome do Repositor:</label>
+        <input type="text" id="guardarNome" name="guardarNome" style="text-transform: uppercase;" required>
+
+
+        <div class="button-container">
+            <button type="button" id="cancelarGuardarButton" class="secondary-button" onclick="fecharJanelaGuardarMaterial()">Cancelar</button>
+            <button type="button" id="guardarMaterialButton" class="primary-button" onclick="guardarMaterial()">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div id="janelaVisualizacaoMaterial" class="janela-flutuante hidden">
+    <h2>Material Guardado</h2>
+    <p><strong>Código do Item:</strong> <span id="visualizacaoCodigo"></span></p>
+    <p><strong>Quantidade de Caixas:</strong> <span id="visualizacaoQuantidade"></span></p>
+    <p><strong>Endereço:</strong> <span id="visualizacaoEndereco"></span></p>
+    <p><strong>Endereço de UZ:</strong> <span id="visualizacaoEnderecoUZ"></span></p>
+    <p><strong>Nome do Repositor:</strong> <span id="visualizacaoNome" style="text-transform: uppercase;"></span></p>
+    <input type="hidden" id="visualizacaoIndex">
+    <div class="button-container">
+        <button onclick="abrirJanelaGuardarMaterial(document.getElementById('visualizacaoIndex').value)" class="primary-button">Editar</button>
+        <button onclick="fecharJanela('janelaVisualizacaoMaterial')" class="secondary-button">Fechar</button>
+    </div>
+</div>
+
     <footer>
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
     <!-- Scripts básicos da aplicação -->
+    <!-- (Verifique se a versão do script.js bate com aquela atualizada) -->
     <script src="script.js?v=2"></script>
+    
+    <!-- Script de relatório (carregado por último) -->
     <script src="relatorio.js"></script>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    // Lógica de tema escuro e outras inicializações
+    document.addEventListener('DOMContentLoaded', function () {
         // Carregar tema salvo
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
@@ -174,31 +299,19 @@
             document.body.classList.remove('dark-mode');
         }
 
-        // Alternar tema
-        document.getElementById('themeToggleButton').addEventListener('click', function () {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        });
-
-        // Função para formatar a data no formato dd/mm
-        function formatarData(dataStr) {
-            if (!dataStr) return dataStr;
-            const partes = dataStr.split("/");
-            if (partes.length === 3) {
-                const dia = partes[0].padStart(2, "0");
-                const mes = partes[1].padStart(2, "0");
-                return `${dia}/${mes}`;
-            }
-            return dataStr;
-        }
-
-        // Atualizar datas na tabela de detalhes
-        document.querySelectorAll("#detalhesTable tbody tr, #recebidosTable tbody tr").forEach((row) => {
-            const dataCell = row.children[5]; // Coluna DATA
-            if (dataCell) {
-                dataCell.textContent = formatarData(dataCell.textContent.trim());
+        // Botão de alternar tema
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        themeToggleButton.addEventListener('click', function () {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
             }
         });
+
+        // O evento de clique em "Gerar Relatório" está em relatorio.js
     });
     </script>
 </body>
