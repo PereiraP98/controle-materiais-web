@@ -2008,7 +2008,7 @@ function gerarRelatorio() {
         const cells = Array.from(row.children);
         if (cells.length >= 8) {
             const rowData = {
-                local: cells[0]?.textContent.trim(),
+                local: cells[0]?.textContent.trim(), // Certificar que LOCAL é registrado corretamente
                 item: cells[1]?.textContent.trim(),
                 qtd: cells[2]?.textContent.trim(),
                 destino: cells[3]?.textContent.trim(),
@@ -2026,7 +2026,7 @@ function gerarRelatorio() {
         const cells = Array.from(row.children);
         if (cells.length >= 9) {
             const rowData = {
-                local: cells[0]?.textContent.trim(),
+                local: cells[0]?.textContent.trim(), // Certificar que LOCAL é registrado corretamente
                 item: cells[1]?.textContent.trim(),
                 qtd: cells[2]?.textContent.trim(),
                 destino: cells[3]?.textContent.trim(),
@@ -2061,4 +2061,5 @@ function gerarRelatorio() {
 
     // Permanecer na página atual após gerar relatório
 }
+
 
