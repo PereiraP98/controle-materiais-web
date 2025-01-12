@@ -4,193 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
         }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .folder-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
         .folder {
-            display: inline-block;
             width: 120px;
             text-align: center;
             cursor: pointer;
-            margin: 10px;
         }
-        .folder-icon {
-            font-size: 50px;
-            color: #007bff;
+
+        .folder img {
+            width: 100px;
+            height: auto;
         }
-        .file-window {
-            display: none;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 20px;
+
+        .files-container {
             margin-top: 20px;
-            position: relative;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .file {
-            display: block;
+
+        .files-container h2 {
+            margin-top: 0;
+        }
+
+        .file-item {
+            margin: 10px 0;
             cursor: pointer;
-            margin: 5px 0;
             color: #007bff;
+        }
+
+        .file-item:hover {
             text-decoration: underline;
         }
-        .file:hover {
-            color: #0056b3;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            color: #ff0000;
-            font-size: 16px;
-        }
-        .data-section {
+
+        .tables-container {
             display: none;
             margin-top: 20px;
+            width: 90%;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
-        table th, table td {
-            border: 1px solid #ccc;
+
+        th, td {
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
         }
-        table th {
+
+        th {
             background-color: #007bff;
             color: white;
         }
     </style>
 </head>
 <body>
-    <h1>Relatórios de Materiais</h1>
+    <h1>Relatórios</h1>
 
-    <div class="folders">
-        <div class="folder" onclick="openFolder('jan')">
-            <div class="folder-icon">📂</div>
-            <p>Janeiro</p>
-        </div>
-        <div class="folder" onclick="openFolder('feb')">
-            <div class="folder-icon">📂</div>
-            <p>Fevereiro</p>
-        </div>
-        <!-- Continue com os meses até dezembro -->
+    <div class="folder-container" id="folderContainer">
+        <!-- Pastas dos meses serão geradas dinamicamente aqui -->
     </div>
 
-    <div id="fileWindow" class="file-window">
-        <span class="close-btn" onclick="closeFileWindow()">✖</span>
-        <h3>Arquivos</h3>
-        <div id="fileList"></div>
+    <div class="files-container" id="filesContainer">
+        <h2>Arquivos</h2>
+        <div id="fileList">
+            <!-- Arquivos serão listados dinamicamente aqui -->
+        </div>
     </div>
 
-    <div class="data-section" id="dataSection">
-        <h2>Detalhes de Materiais Solicitados</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>RECEBER</th>
-                    <th>TEMPO</th>
-                </tr>
-            </thead>
-            <tbody id="solicitadosData">
-                <!-- Dados preenchidos dinamicamente -->
-            </tbody>
-        </table>
+    <div class="tables-container" id="tablesContainer">
+        <section>
+            <h2>Detalhes de Materiais Solicitados</h2>
+            <table id="solicitadosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBER</th>
+                        <th>TEMPO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dos materiais solicitados serão inseridos aqui -->
+                </tbody>
+            </table>
+        </section>
 
-        <h2>Detalhes de Materiais Recebidos</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>RECEBIDO</th>
-                    <th>TEMPO</th>
-                    <th>GUARDADO</th>
-                </tr>
-            </thead>
-            <tbody id="recebidosData">
-                <!-- Dados preenchidos dinamicamente -->
-            </tbody>
-        </table>
+        <section>
+            <h2>Detalhes de Materiais Recebidos</h2>
+            <table id="recebidosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>TEMPO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados dos materiais recebidos serão inseridos aqui -->
+                </tbody>
+            </table>
+        </section>
     </div>
 
     <script>
-        const mockData = {
-            solicitados: [
-                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "11/01", hora: "10:00", receber: "Sim", tempo: "00:30" }
-            ],
-            recebidos: [
-                { local: "CA", item: "20239", qtd: "1", destino: "PICKING", data: "11/01", hora: "22:40", recebido: "23:21", tempo: "00:41", guardado: "Não" }
-            ]
-        };
-
-        function openFolder(month) {
-            const fileWindow = document.getElementById("fileWindow");
+        document.addEventListener("DOMContentLoaded", function () {
+            const folderContainer = document.getElementById("folderContainer");
+            const filesContainer = document.getElementById("filesContainer");
             const fileList = document.getElementById("fileList");
+            const tablesContainer = document.getElementById("tablesContainer");
+            const solicitadosTable = document.querySelector("#solicitadosTable tbody");
+            const recebidosTable = document.querySelector("#recebidosTable tbody");
 
-            fileList.innerHTML = `
-                <div class="file" onclick="openFile('12_01_2025')">12_01_2025</div>
-                <!-- Adicione outros arquivos aqui -->
-            `;
+            // Carregar relatórios do localStorage
+            const relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
 
-            fileWindow.style.display = "block";
-        }
+            // Criar pastas dos meses dinamicamente
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const pastas = {};
 
-        function closeFileWindow() {
-            const fileWindow = document.getElementById("fileWindow");
-            fileWindow.style.display = "none";
-        }
+            relatorios.forEach((relatorio) => {
+                const data = new Date(relatorio.data);
+                const ano = data.getFullYear();
+                const mes = data.getMonth();
 
-        function openFile(fileName) {
-            closeFileWindow();
-            const dataSection = document.getElementById("dataSection");
-            const solicitadosData = document.getElementById("solicitadosData");
-            const recebidosData = document.getElementById("recebidosData");
+                if (!pastas[ano]) pastas[ano] = {};
+                if (!pastas[ano][mes]) pastas[ano][mes] = [];
 
-            solicitadosData.innerHTML = mockData.solicitados.map(item => `
-                <tr>
-                    <td>${item.local}</td>
-                    <td>${item.item}</td>
-                    <td>${item.qtd}</td>
-                    <td>${item.destino}</td>
-                    <td>${item.data}</td>
-                    <td>${item.hora}</td>
-                    <td>${item.receber}</td>
-                    <td>${item.tempo}</td>
-                </tr>
-            `).join("");
+                pastas[ano][mes].push(relatorio);
+            });
 
-            recebidosData.innerHTML = mockData.recebidos.map(item => `
-                <tr>
-                    <td>${item.local}</td>
-                    <td>${item.item}</td>
-                    <td>${item.qtd}</td>
-                    <td>${item.destino}</td>
-                    <td>${item.data}</td>
-                    <td>${item.hora}</td>
-                    <td>${item.recebido}</td>
-                    <td>${item.tempo}</td>
-                    <td>${item.guardado}</td>
-                </tr>
-            `).join("");
+            Object.keys(pastas).forEach((ano) => {
+                Object.keys(pastas[ano]).forEach((mes) => {
+                    const folder = document.createElement("div");
+                    folder.className = "folder";
+                    folder.innerHTML = `<img src='https://cdn-icons-png.flaticon.com/512/716/716784.png' alt='Pasta'>
+                                       <p>${meses[mes]}</p>`;
 
-            dataSection.style.display = "block";
-        }
+                    folder.addEventListener("click", function () {
+                        fileList.innerHTML = "";
+                        filesContainer.style.display = "flex";
+                        tablesContainer.style.display = "none";
+
+                        pastas[ano][mes].forEach((relatorio) => {
+                            const fileItem = document.createElement("div");
+                            fileItem.className = "file-item";
+                            fileItem.textContent = relatorio.data;
+
+                            fileItem.addEventListener("click", function () {
+                                filesContainer.style.display = "none";
+                                tablesContainer.style.display = "block";
+
+                                solicitadosTable.innerHTML = "";
+                                recebidosTable.innerHTML = "";
+
+                                relatorio.solicitados.forEach((item) => {
+                                    const row = document.createElement("tr");
+                                    item.forEach((cell) => {
+                                        const td = document.createElement("td");
+                                        td.textContent = cell;
+                                        row.appendChild(td);
+                                    });
+                                    solicitadosTable.appendChild(row);
+                                });
+
+                                relatorio.recebidos.forEach((item) => {
+                                    const row = document.createElement("tr");
+                                    item.forEach((cell) => {
+                                        const td = document.createElement("td");
+                                        td.textContent = cell;
+                                        row.appendChild(td);
+                                    });
+                                    recebidosTable.appendChild(row);
+                                });
+                            });
+
+                            fileList.appendChild(fileItem);
+                        });
+                    });
+
+                    folderContainer.appendChild(folder);
+                });
+            });
+        });
     </script>
 </body>
 </html>
