@@ -1994,5 +1994,55 @@ function fecharJanela(janelaId) {
     if (overlay) overlay.classList.remove("active");
 }
 
+function gerarRelatorio() {
+    const solicitados = [];
+    const solicitadosRows = document.querySelectorAll("#detalhesTable tbody tr");
+    solicitadosRows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        solicitados.push({
+            local: cells[1]?.textContent || "",
+            item: cells[2]?.textContent || "",
+            qtd: cells[3]?.textContent || "",
+            destino: cells[4]?.textContent || "",
+            data: cells[5]?.textContent || "",
+            hora: cells[6]?.textContent || "",
+            reportado: cells[7]?.textContent || ""
+        });
+    });
 
+    const recebidos = [];
+    const recebidosRows = document.querySelectorAll("#recebidosTable tbody tr");
+    recebidosRows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        recebidos.push({
+            local: cells[1]?.textContent || "",
+            item: cells[2]?.textContent || "",
+            quantidade: cells[3]?.textContent || "",
+            destino: cells[4]?.textContent || "",
+            data: cells[5]?.textContent || "",
+            horario: cells[6]?.textContent || "",
+            recebido: cells[7]?.textContent || "",
+            tempo: cells[8]?.textContent || "",
+            guardado: cells[9]?.textContent || ""
+        });
+    });
 
+    // Obtém o mês e a data para organizar os relatórios
+    const now = new Date();
+    const mes = now.toLocaleString("pt-BR", { month: "long" }).toUpperCase();
+    const dataCurta = now.toLocaleDateString("pt-BR").replace(/\//g, "_");
+
+    // Carrega os relatórios existentes no localStorage
+    const relatoriosMes = JSON.parse(localStorage.getItem("relatoriosMes")) || {};
+
+    // Adiciona a estrutura do mês e da data, se necessário
+    if (!relatoriosMes[mes]) {
+        relatoriosMes[mes] = {};
+    }
+    relatoriosMes[mes][dataCurta] = { solicitados, recebidos };
+
+    // Salva os relatórios no localStorage
+    localStorage.setItem("relatoriosMes", JSON.stringify(relatoriosMes));
+
+    alert("Relatório gerado com sucesso!");
+}
