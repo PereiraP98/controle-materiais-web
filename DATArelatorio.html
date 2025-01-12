@@ -3,37 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios Gerados</title>
+    <title>Detalhes do Relatório</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="relatorio.js"></script>
 </head>
 <body>
     <header>
-        <h1>Relatórios Gerados</h1>
+        <h1>Detalhes do Relatório</h1>
     </header>
     <main>
-        <ul id="listaRelatorios"></ul>
+        <section>
+            <h2>Materiais Solicitados</h2>
+            <table id="solicitadosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBER</th>
+                        <th>TEMPO</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Materiais Recebidos</h2>
+            <table id="recebidosTable">
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>TEMPO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
     </main>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const listaRelatorios = document.getElementById("listaRelatorios");
-            const relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
+            const relatorio = JSON.parse(sessionStorage.getItem("relatorioSelecionado"));
 
-            relatorios.forEach((relatorio, index) => {
-                const li = document.createElement("li");
-                li.textContent = relatorio.data;
-                li.dataset.index = index;
-                li.style.cursor = "pointer";
-                li.addEventListener("click", () => {
-                    sessionStorage.setItem("relatorioSelecionado", JSON.stringify(relatorio));
-                    window.location.href = "detalhesRelatorio.html";
+            if (!relatorio) {
+                alert("Nenhum relatório selecionado.");
+                window.location.href = "DATArelatorio.html";
+                return;
+            }
+
+            const solicitadosTable = document.querySelector("#solicitadosTable tbody");
+            const recebidosTable = document.querySelector("#recebidosTable tbody");
+
+            relatorio.solicitados.forEach((row) => {
+                const tr = document.createElement("tr");
+                row.forEach((cell) => {
+                    const td = document.createElement("td");
+                    td.textContent = cell;
+                    tr.appendChild(td);
                 });
-                listaRelatorios.appendChild(li);
+                solicitadosTable.appendChild(tr);
             });
 
-            if (relatorios.length === 0) {
-                listaRelatorios.textContent = "Nenhum relatório gerado.";
-            }
+            relatorio.recebidos.forEach((row) => {
+                const tr = document.createElement("tr");
+                row.forEach((cell) => {
+                    const td = document.createElement("td");
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                recebidosTable.appendChild(tr);
+            });
         });
     </script>
 </body>
