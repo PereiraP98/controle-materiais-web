@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
-        .header-container {
-            text-align: center;
+        .year {
+            font-size: 24px;
+            font-weight: bold;
             margin-bottom: 20px;
         }
 
-        .header-container h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #007bff;
-        }
-
-        .folders-container {
+        .folders {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            justify-content: center;
         }
 
         .folder {
@@ -36,197 +28,173 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            width: 120px;
         }
 
-        .folder img {
-            width: 100px;
-            height: auto;
+        .folder-icon {
+            font-size: 50px;
+            color: #007bff;
         }
 
         .folder-name {
             margin-top: 10px;
-            font-size: 16px;
-            color: #333;
-            text-align: center;
-        }
-
-        .popup {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-            max-width: 300px;
-        }
-
-        .popup h2 {
             font-size: 18px;
-            margin-bottom: 10px;
-            color: #007bff;
+            font-weight: bold;
         }
 
-        .popup .file {
-            display: block;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            text-align: center;
-            border-radius: 4px;
-        }
-
-        .popup .file:hover {
-            background-color: #0056b3;
-        }
-
-        .report-details {
-            display: none;
-            margin-top: 30px;
-            background-color: #fff;
-            border: 1px solid #ddd;
+        .file-list {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .file-list.open {
+            display: block;
+        }
+
+        .file {
+            cursor: pointer;
+            margin: 5px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .file:hover {
+            background-color: #f0f0f0;
+        }
+
+        .details {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .details.open {
+            display: block;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        table th, table td {
-            border: 1px solid #ddd;
+        th, td {
+            border: 1px solid #ccc;
             padding: 8px;
-            text-align: center;
+            text-align: left;
         }
 
-        table th {
-            background-color: #f4f4f4;
+        th {
+            background-color: #f9f9f9;
         }
 
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .button-container button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
+        .close-details {
             cursor: pointer;
-        }
-
-        .button-container button:hover {
-            background-color: #0056b3;
+            color: red;
+            margin-top: -10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <header class="header-container">
-        <h1>Relatórios de Materiais</h1>
-    </header>
-
-    <main class="folders-container">
-        <!-- Exemplo de pastas -->
-        <div class="folder" onclick="abrirPopup('popupJaneiro')">
-            <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="Pasta">
+    <div class="year">2025</div>
+    <div class="folders">
+        <div class="folder" onclick="toggleFolder('januaryFiles')">
+            <div class="folder-icon">📂</div>
             <div class="folder-name">Janeiro</div>
         </div>
-
-        <div class="folder" onclick="abrirPopup('popupFevereiro')">
-            <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="Pasta">
+        <div class="folder" onclick="toggleFolder('februaryFiles')">
+            <div class="folder-icon">📂</div>
             <div class="folder-name">Fevereiro</div>
         </div>
+        <!-- Continue com outras pastas -->
+    </div>
 
-        <!-- Popups com arquivos -->
-        <div id="popupJaneiro" class="popup">
-            <h2>Arquivos - Janeiro</h2>
-            <a href="#" class="file" onclick="exibirRelatorio('12_01_2025')">12_01_2025</a>
-            <a href="#" class="file" onclick="exibirRelatorio('15_01_2025')">15_01_2025</a>
-        </div>
-
-        <div id="popupFevereiro" class="popup">
-            <h2>Arquivos - Fevereiro</h2>
-            <a href="#" class="file" onclick="exibirRelatorio('05_02_2025')">05_02_2025</a>
-        </div>
-    </main>
+    <!-- Arquivos da pasta Janeiro -->
+    <div id="januaryFiles" class="file-list">
+        <div class="file" onclick="showDetails('januaryDetails')">12_01_2025</div>
+        <div class="file" onclick="showDetails('januaryDetails')">15_01_2025</div>
+    </div>
 
     <!-- Detalhes do relatório -->
-    <div id="reportDetails" class="report-details">
-        <h2>Detalhes do Relatório</h2>
+    <div id="januaryDetails" class="details">
+        <span class="close-details" onclick="closeDetails('januaryDetails')">&times; Fechar</span>
+
+        <h3>Materiais Solicitados</h3>
         <table>
             <thead>
                 <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>RECEBIDO</th>
-                    <th>TEMPO</th>
-                    <th>GUARDADO</th>
+                    <th>Local</th>
+                    <th>Item</th>
+                    <th>Quantidade</th>
+                    <th>Destino</th>
+                    <th>Data</th>
+                    <th>Hora</th>
                 </tr>
             </thead>
-            <tbody id="reportTableBody">
-                <!-- Dados inseridos dinamicamente -->
+            <tbody>
+                <tr>
+                    <td>CA</td>
+                    <td>20239</td>
+                    <td>1</td>
+                    <td>Picking</td>
+                    <td>12/01/2025</td>
+                    <td>22:40</td>
+                </tr>
+                <!-- Outros itens solicitados -->
             </tbody>
         </table>
-        <div class="button-container">
-            <button onclick="fecharRelatorio()">Fechar Relatório</button>
-        </div>
+
+        <h3>Materiais Recebidos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Local</th>
+                    <th>Item</th>
+                    <th>Quantidade</th>
+                    <th>Destino</th>
+                    <th>Data</th>
+                    <th>Hora Solicitada</th>
+                    <th>Hora Recebida</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CA</td>
+                    <td>20239</td>
+                    <td>1</td>
+                    <td>Picking</td>
+                    <td>12/01/2025</td>
+                    <td>22:40</td>
+                    <td>23:21</td>
+                </tr>
+                <!-- Outros itens recebidos -->
+            </tbody>
+        </table>
     </div>
 
     <script>
-        const relatorios = {
-            "12_01_2025": [
-                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "12/01/2025", hora: "10:30", recebido: "10:50", tempo: "00:20", guardado: "SIM" }
-            ],
-            "15_01_2025": [
-                { local: "CA", item: "67890", qtd: "1", destino: "MESA", data: "15/01/2025", hora: "14:00", recebido: "14:30", tempo: "00:30", guardado: "NÃO" }
-            ],
-            "05_02_2025": [
-                { local: "VF", item: "11111", qtd: "3", destino: "PICKING", data: "05/02/2025", hora: "09:00", recebido: "09:20", tempo: "00:20", guardado: "SIM" }
-            ]
-        };
+        function toggleFolder(folderId) {
+            const folder = document.getElementById(folderId);
+            folder.classList.toggle('open');
+        }
 
-        function abrirPopup(popupId) {
-            const popup = document.getElementById(popupId);
-            if (popup) {
-                popup.style.display = 'block';
+        function showDetails(detailsId) {
+            const details = document.getElementById(detailsId);
+            const openDetails = document.querySelector('.details.open');
+            if (openDetails) {
+                openDetails.classList.remove('open');
             }
+            details.classList.add('open');
+            // Fecha a lista de arquivos após abrir detalhes
+            document.querySelectorAll('.file-list').forEach(list => list.classList.remove('open'));
         }
 
-        function exibirRelatorio(nomeRelatorio) {
-            const dados = relatorios[nomeRelatorio];
-            const tbody = document.getElementById("reportTableBody");
-            tbody.innerHTML = dados.map(item => `
-                <tr>
-                    <td>${item.local}</td>
-                    <td>${item.item}</td>
-                    <td>${item.qtd}</td>
-                    <td>${item.destino}</td>
-                    <td>${item.data}</td>
-                    <td>${item.hora}</td>
-                    <td>${item.recebido}</td>
-                    <td>${item.tempo}</td>
-                    <td>${item.guardado}</td>
-                </tr>
-            `).join("");
-
-            document.getElementById("reportDetails").style.display = "block";
-        }
-
-        function fecharRelatorio() {
-            document.getElementById("reportDetails").style.display = "none";
+        function closeDetails(detailsId) {
+            const details = document.getElementById(detailsId);
+            details.classList.remove('open');
         }
     </script>
 </body>
