@@ -3,83 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Relatório</title>
+    <title>Relatórios de Materiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+
+        body.dark-mode #themeToggleButton img {
+            filter: invert(1) brightness(1.2);
+        }
+
+        .relatorio-table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .relatorio-table th, .relatorio-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .relatorio-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .relatorio-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .relatorio-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Detalhes do Relatório</h1>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+                     alt="DevCore Logo" class="logo">
+            </div>
+            <h1>Relatórios de Materiais</h1>
+            <div class="header-buttons">
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
+                         alt="Painel" width="30" height="30">
+                </button>
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
+                         alt="Logout" width="30" height="30">
+                </button>
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
+                         alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
+        </div>
     </header>
-    <main>
-        <section>
-            <h2>Materiais Solicitados</h2>
-            <table id="solicitadosTable">
+
+    <main class="main-container">
+        <section class="detalhes-container">
+            <h2>Relatórios Disponíveis</h2>
+            <table class="relatorio-table">
                 <thead>
                     <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
                         <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBER</th>
-                        <th>TEMPO</th>
+                        <th>DETALHES</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
-            </table>
-        </section>
-        <section>
-            <h2>Materiais Recebidos</h2>
-            <table id="recebidosTable">
-                <thead>
+                <tbody>
                     <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBIDO</th>
-                        <th>TEMPO</th>
-                        <th>GUARDADO</th>
+                        <td>11/01</td>
+                        <td><a href="detalhesRelatorio.html" class="relatorio-link">Ver Relatório</a></td>
                     </tr>
-                </thead>
-                <tbody></tbody>
+                    <!-- Outros relatórios serão listados dinamicamente -->
+                </tbody>
             </table>
         </section>
     </main>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const relatorio = JSON.parse(sessionStorage.getItem("relatorioSelecionado"));
 
-            if (!relatorio) {
-                alert("Nenhum relatório selecionado.");
-                window.location.href = "DATArelatorio.html";
-                return;
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tema escuro
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
             }
 
-            const solicitadosTable = document.querySelector("#solicitadosTable tbody");
-            const recebidosTable = document.querySelector("#recebidosTable tbody");
-
-            relatorio.solicitados.forEach((row) => {
-                const tr = document.createElement("tr");
-                row.forEach((cell) => {
-                    const td = document.createElement("td");
-                    td.textContent = cell;
-                    tr.appendChild(td);
-                });
-                solicitadosTable.appendChild(tr);
-            });
-
-            relatorio.recebidos.forEach((row) => {
-                const tr = document.createElement("tr");
-                row.forEach((cell) => {
-                    const td = document.createElement("td");
-                    td.textContent = cell;
-                    tr.appendChild(td);
-                });
-                recebidosTable.appendChild(tr);
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                document.body.classList.toggle('dark-mode');
+                const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
             });
         });
     </script>
