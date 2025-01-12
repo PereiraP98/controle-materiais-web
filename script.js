@@ -2003,35 +2003,41 @@ function gerarRelatorio() {
     const solicitados = [];
     const recebidos = [];
 
+    // Organizar os dados da tabela de materiais solicitados
     detalhesTable.querySelectorAll("tr").forEach((row) => {
         const cells = Array.from(row.children);
-        const rowData = [
-            cells[0]?.textContent.trim(), // LOCAL
-            cells[1]?.textContent.trim(), // ITEM
-            cells[2]?.textContent.trim(), // QTD
-            cells[3]?.textContent.trim(), // DESTINO
-            cells[4]?.textContent.trim(), // DATA
-            cells[5]?.textContent.trim(), // HORA
-            cells[6]?.textContent.trim(), // RECEBER
-            cells[7]?.textContent.trim(), // TEMPO
-        ];
-        solicitados.push(rowData);
+        if (cells.length >= 8) {
+            const rowData = {
+                local: cells[0]?.textContent.trim(),
+                item: cells[1]?.textContent.trim(),
+                qtd: cells[2]?.textContent.trim(),
+                destino: cells[3]?.textContent.trim(),
+                data: cells[4]?.textContent.trim(),
+                hora: cells[5]?.textContent.trim(),
+                receber: cells[6]?.textContent.trim(),
+                tempo: cells[7]?.textContent.trim(),
+            };
+            solicitados.push(rowData);
+        }
     });
 
+    // Organizar os dados da tabela de materiais recebidos
     recebidosTable.querySelectorAll("tr").forEach((row) => {
         const cells = Array.from(row.children);
-        const rowData = [
-            cells[0]?.textContent.trim(), // LOCAL
-            cells[1]?.textContent.trim(), // ITEM
-            cells[2]?.textContent.trim(), // QTD
-            cells[3]?.textContent.trim(), // DESTINO
-            cells[4]?.textContent.trim(), // DATA
-            cells[5]?.textContent.trim(), // HORA
-            cells[6]?.textContent.trim(), // RECEBIDO
-            cells[7]?.textContent.trim(), // TEMPO
-            cells[8]?.textContent.trim(), // GUARDADO
-        ];
-        recebidos.push(rowData);
+        if (cells.length >= 9) {
+            const rowData = {
+                local: cells[0]?.textContent.trim(),
+                item: cells[1]?.textContent.trim(),
+                qtd: cells[2]?.textContent.trim(),
+                destino: cells[3]?.textContent.trim(),
+                data: cells[4]?.textContent.trim(),
+                hora: cells[5]?.textContent.trim(),
+                recebido: cells[6]?.textContent.trim(),
+                tempo: cells[7]?.textContent.trim(),
+                guardado: cells[8]?.textContent.trim(),
+            };
+            recebidos.push(rowData);
+        }
     });
 
     // Criar estrutura para salvar no localStorage
