@@ -183,7 +183,7 @@
                     const folder = document.createElement("div");
                     folder.className = "folder";
                     folder.innerHTML = `<img src='https://cdn-icons-png.flaticon.com/512/716/716784.png' alt='Pasta'>
-                                       <p>${meses[mes]}</p>`;
+                                        <p>${meses[mes]}</p>`;
 
                     folder.addEventListener("click", function () {
                         fileList.innerHTML = "";
@@ -202,23 +202,36 @@
                                 solicitadosTable.innerHTML = "";
                                 recebidosTable.innerHTML = "";
 
+                                // Adicionar dados de materiais solicitados
                                 relatorio.solicitados.forEach((item) => {
                                     const row = document.createElement("tr");
-                                    item.forEach((cell) => {
-                                        const td = document.createElement("td");
-                                        td.textContent = cell;
-                                        row.appendChild(td);
-                                    });
+                                    row.innerHTML = `
+                                        <td>${item[0]}</td>
+                                        <td>${item[1]}</td>
+                                        <td>${item[2]}</td>
+                                        <td>${item[3]}</td>
+                                        <td>${item[4]}</td>
+                                        <td>${item[5]}</td>
+                                        <td>${item[6]}</td>
+                                        <td>${item[7]}</td>
+                                    `;
                                     solicitadosTable.appendChild(row);
                                 });
 
+                                // Adicionar dados de materiais recebidos
                                 relatorio.recebidos.forEach((item) => {
                                     const row = document.createElement("tr");
-                                    item.forEach((cell) => {
-                                        const td = document.createElement("td");
-                                        td.textContent = cell;
-                                        row.appendChild(td);
-                                    });
+                                    row.innerHTML = `
+                                        <td>${item[0]}</td>
+                                        <td>${item[1]}</td>
+                                        <td>${item[2]}</td>
+                                        <td>${item[3]}</td>
+                                        <td>${item[4]}</td>
+                                        <td>${item[5]}</td>
+                                        <td>${item[6]}</td>
+                                        <td>${item[7]}</td>
+                                        <td>${item[8]}</td>
+                                    `;
                                     recebidosTable.appendChild(row);
                                 });
                             });
@@ -232,151 +245,5 @@
             });
         });
     </script>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const folderContainer = document.getElementById("folderContainer");
-        const filesContainer = document.getElementById("filesContainer");
-        const fileList = document.getElementById("fileList");
-        const tablesContainer = document.getElementById("tablesContainer");
-        const solicitadosTable = document.querySelector("#solicitadosTable tbody");
-        const recebidosTable = document.querySelector("#recebidosTable tbody");
-
-        // Carregar relatórios do localStorage
-        const relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
-
-        // Criar pastas dos meses dinamicamente
-        const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        const pastas = {};
-
-        relatorios.forEach((relatorio) => {
-            const data = new Date(relatorio.data);
-            const ano = data.getFullYear();
-            const mes = data.getMonth();
-
-            if (!pastas[ano]) pastas[ano] = {};
-            if (!pastas[ano][mes]) pastas[ano][mes] = [];
-
-            pastas[ano][mes].push(relatorio);
-        });
-
-        Object.keys(pastas).forEach((ano) => {
-            Object.keys(pastas[ano]).forEach((mes) => {
-                const folder = document.createElement("div");
-                folder.className = "folder";
-                folder.innerHTML = `<img src='https://cdn-icons-png.flaticon.com/512/716/716784.png' alt='Pasta'>
-                                    <p>${meses[mes]}</p>`;
-
-                folder.addEventListener("click", function () {
-                    fileList.innerHTML = "";
-                    filesContainer.style.display = "flex";
-                    tablesContainer.style.display = "none";
-
-                    pastas[ano][mes].forEach((relatorio) => {
-                        const fileItem = document.createElement("div");
-                        fileItem.className = "file-item";
-                        fileItem.textContent = relatorio.data;
-
-                        fileItem.addEventListener("click", function () {
-                            filesContainer.style.display = "none";
-                            tablesContainer.style.display = "block";
-
-                            solicitadosTable.innerHTML = "";
-                            recebidosTable.innerHTML = "";
-
-                            relatorio.solicitados.forEach((item) => {
-                                const row = document.createElement("tr");
-
-                                const localTd = document.createElement("td");
-                                localTd.textContent = item.local;
-                                row.appendChild(localTd);
-
-                                const itemTd = document.createElement("td");
-                                itemTd.textContent = item.item;
-                                row.appendChild(itemTd);
-
-                                const qtdTd = document.createElement("td");
-                                qtdTd.textContent = item.qtd;
-                                row.appendChild(qtdTd);
-
-                                const destinoTd = document.createElement("td");
-                                destinoTd.textContent = item.destino;
-                                row.appendChild(destinoTd);
-
-                                const dataTd = document.createElement("td");
-                                dataTd.textContent = item.data;
-                                row.appendChild(dataTd);
-
-                                const horaTd = document.createElement("td");
-                                horaTd.textContent = item.hora;
-                                row.appendChild(horaTd);
-
-                                const receberTd = document.createElement("td");
-                                receberTd.textContent = item.receber;
-                                row.appendChild(receberTd);
-
-                                const tempoTd = document.createElement("td");
-                                tempoTd.textContent = item.tempo;
-                                row.appendChild(tempoTd);
-
-                                solicitadosTable.appendChild(row);
-                            });
-
-                            relatorio.recebidos.forEach((item) => {
-                                const row = document.createElement("tr");
-
-                                const localTd = document.createElement("td");
-                                localTd.textContent = item.local;
-                                row.appendChild(localTd);
-
-                                const itemTd = document.createElement("td");
-                                itemTd.textContent = item.item;
-                                row.appendChild(itemTd);
-
-                                const qtdTd = document.createElement("td");
-                                qtdTd.textContent = item.qtd;
-                                row.appendChild(qtdTd);
-
-                                const destinoTd = document.createElement("td");
-                                destinoTd.textContent = item.destino;
-                                row.appendChild(destinoTd);
-
-                                const dataTd = document.createElement("td");
-                                dataTd.textContent = item.data;
-                                row.appendChild(dataTd);
-
-                                const horaTd = document.createElement("td");
-                                horaTd.textContent = item.hora;
-                                row.appendChild(horaTd);
-
-                                const recebidoTd = document.createElement("td");
-                                recebidoTd.textContent = item.recebido;
-                                row.appendChild(recebidoTd);
-
-                                const tempoTd = document.createElement("td");
-                                tempoTd.textContent = item.tempo;
-                                row.appendChild(tempoTd);
-
-                                const guardadoTd = document.createElement("td");
-                                guardadoTd.textContent = item.guardado;
-                                row.appendChild(guardadoTd);
-
-                                recebidosTable.appendChild(row);
-                            });
-                        });
-
-                        fileList.appendChild(fileItem);
-                    });
-                });
-
-                folderContainer.appendChild(folder);
-            });
-        });
-    });
-</script>
-
-
-
-    
 </body>
 </html>
