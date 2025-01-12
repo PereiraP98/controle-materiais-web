@@ -1,185 +1,211 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Materiais</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-
-    <style>
-        .logo {
-            width: 60px;
-            height: auto;
-        }
-
-        .emoji-button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .emoji-button:hover {
-            transform: scale(1.2);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios Armazenados</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .relatorio-mes {
+      margin-bottom: 20px;
+    }
+    .relatorio-data {
+      margin-left: 20px;
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+    .relatorio-data:hover {
+      color: darkblue;
+    }
+    .delete-button {
+      margin-left: 10px;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
+    .detalhes-container {
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+    }
+  </style>
 </head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
-                     alt="DevCore Logo" class="logo">
-            </div>
-            <h1>Relatório de Materiais</h1>
-        </div>
-    </header>
+<body class="detalhes-page">
+  <header>
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+             alt="DevCore Logo" class="logo" />
+      </div>
+      <h1>Relatórios Armazenados</h1>
+      <div class="header-buttons">
+        <button onclick="window.location.href='detalhes.html'">Voltar</button>
+      </div>
+    </div>
+  </header>
 
-    <main class="main-container">
-        <h2>Detalhes do Relatório</h2>
-        <table>
-            <thead>
-                <tr>
+  <main class="main-container">
+    <section class="detalhes-container">
+      <h2>Pastas por Mês</h2>
+      <div id="listaRelatorios"></div>
+    </section>
+  </main>
+
+  <footer>
+    © 2024 COLLAB - Todos os direitos reservados.
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem('relatoriosMes');
+      if (!stored) {
+        document.getElementById('listaRelatorios').innerHTML = '<p>Nenhum relatório encontrado.</p>';
+        return;
+      }
+
+      const relatoriosMes = JSON.parse(stored);
+      let html = '';
+
+      for (let mes in relatoriosMes) {
+        html += `<div class="relatorio-mes">
+                   <h3>📁 ${mes}</h3>`;
+
+        const datasObjeto = relatoriosMes[mes];
+
+        for (let dataCurta in datasObjeto) {
+          html += `<div class="relatorio-data-container">
+                     <span class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
+                       📄 ${dataCurta}
+                     </span>
+                     <span class="delete-button" data-mes="${mes}" data-data="${dataCurta}">❌</span>
+                   </div>
+                   <div id="container-${mes}-${dataCurta}" style="display:none;"></div>`;
+        }
+
+        html += `</div>`;
+      }
+
+      document.getElementById('listaRelatorios').innerHTML = html;
+
+      const dataElements = document.querySelectorAll('.relatorio-data');
+      dataElements.forEach(elem => {
+        elem.addEventListener('click', () => {
+          const mes = elem.getAttribute('data-mes');
+          const dataCurta = elem.getAttribute('data-data');
+          const containerId = `container-${mes}-${dataCurta}`;
+
+          const { solicitados, recebidos } = relatoriosMes[mes][dataCurta];
+          const containerDiv = document.getElementById(containerId);
+
+          if (containerDiv.style.display === 'none') {
+            let solicitadosHtml = `
+              <h4>Materiais Solicitados</h4>
+              <table>
+                <thead>
+                  <tr>
                     <th>LOCAL</th>
                     <th>ITEM</th>
                     <th>QTD</th>
                     <th>DESTINO</th>
                     <th>DATA</th>
                     <th>HORA</th>
-                    <th>JUSTIFICATIVA</th>
-                    <th>GUARDA</th>
-                </tr>
-            </thead>
-            <tbody id="relatorioBody">
-                <!-- Dados dinâmicos serão preenchidos aqui -->
-            </tbody>
-        </table>
-
-        <div class="button-container">
-            <button onclick="location.href='index.html'">Voltar</button>
-        </div>
-    </main>
-
-    <!-- Janela Flutuante para Visualizar Justificativa -->
-    <div id="janelaVisualizacaoJustificativa" class="hidden">
-        <h2>Justificativa de Material Atrasado</h2>
-        <p id="textoJustificativa"></p>
-        <div class="button-container">
-            <button onclick="fecharJanela('janelaVisualizacaoJustificativa')">Fechar</button>
-        </div>
-    </div>
-
-    <!-- Janela Flutuante para Visualizar Material Guardado -->
-    <div id="janelaVisualizacaoGuardado" class="hidden">
-        <h2>Material Guardado</h2>
-        <p><strong>Código do Item:</strong> <span id="visualizacaoCodigo"></span></p>
-        <p><strong>Quantidade de Caixas:</strong> <span id="visualizacaoQuantidade"></span></p>
-        <p><strong>Endereço:</strong> <span id="visualizacaoEndereco"></span></p>
-        <p><strong>Endereço de UZ:</strong> <span id="visualizacaoEnderecoUZ"></span></p>
-        <p><strong>Nome do Repositor:</strong> <span id="visualizacaoNome"></span></p>
-        <div class="button-container">
-            <button onclick="fecharJanela('janelaVisualizacaoGuardado')">Fechar</button>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const relatorioBody = document.getElementById('relatorioBody');
-
-            // Simulação de dados carregados do relatório
-            const dadosRelatorio = [
-                {
-                    local: 'CA',
-                    item: '12345',
-                    qtd: 10,
-                    destino: 'PICKING',
-                    data: '12/01',
-                    hora: '14:30',
-                    justificativa: 'Atraso devido à logística.',
-                    guardado: {
-                        codigo: '12345',
-                        quantidade: 10,
-                        endereco: 'A01',
-                        enderecoUZ: '001',
-                        nome: 'Lucas'
-                    }
-                },
-                {
-                    local: 'VF',
-                    item: '54321',
-                    qtd: 5,
-                    destino: 'MESA',
-                    data: '12/01',
-                    hora: '15:00',
-                    justificativa: null,
-                    guardado: null
-                }
-            ];
-
-            // Preencher tabela com os dados do relatório
-            dadosRelatorio.forEach((dado, index) => {
-                const row = document.createElement('tr');
-
-                row.innerHTML = `
-                    <td>${dado.local}</td>
-                    <td>${dado.item}</td>
-                    <td>${dado.qtd}</td>
-                    <td>${dado.destino}</td>
-                    <td>${dado.data}</td>
-                    <td>${dado.hora}</td>
-                    <td>${dado.justificativa ? `<button class="emoji-button" onclick="abrirJustificativa(${index})">📜</button>` : 'N/A'}</td>
-                    <td>${dado.guardado ? `<button class="emoji-button" onclick="abrirGuardado(${index})">📦</button>` : 'N/A'}</td>
-                `;
-
-                relatorioBody.appendChild(row);
+                    <th>REPORTADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            solicitados.forEach(item => {
+              solicitadosHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.qtd}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.hora}</td>
+                  <td>${item.reportado}</td>
+                </tr>`;
             });
+            solicitadosHtml += '</tbody></table>';
 
-            // Funções para abrir janelas
-            window.abrirJustificativa = function(index) {
-                const justificativa = dadosRelatorio[index].justificativa;
-                if (justificativa) {
-                    document.getElementById('textoJustificativa').textContent = justificativa;
-                    document.getElementById('janelaVisualizacaoJustificativa').classList.remove('hidden');
-                }
-            };
+            let recebidosHtml = `
+              <h4>Materiais Recebidos</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>RECEBIDO</th>
+                    <th>TEMPO</th>
+                    <th>GUARDADO</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            recebidos.forEach(item => {
+              const tempoCell = item.tempo.includes('📜')
+                ? `<span style="color: green; cursor: pointer;" onclick="mostrarJustificativa('${item.justificativa}')">${item.tempo}</span>`
+                : item.tempo;
 
-            window.abrirGuardado = function(index) {
-                const guardado = dadosRelatorio[index].guardado;
-                if (guardado) {
-                    document.getElementById('visualizacaoCodigo').textContent = guardado.codigo;
-                    document.getElementById('visualizacaoQuantidade').textContent = guardado.quantidade;
-                    document.getElementById('visualizacaoEndereco').textContent = guardado.endereco;
-                    document.getElementById('visualizacaoEnderecoUZ').textContent = guardado.enderecoUZ;
-                    document.getElementById('visualizacaoNome').textContent = guardado.nome;
-                    document.getElementById('janelaVisualizacaoGuardado').classList.remove('hidden');
-                }
-            };
+              recebidosHtml += `
+                <tr>
+                  <td>${item.local}</td>
+                  <td>${item.item}</td>
+                  <td>${item.quantidade}</td>
+                  <td>${item.destino}</td>
+                  <td>${item.data}</td>
+                  <td>${item.horario}</td>
+                  <td>${item.recebido}</td>
+                  <td>${tempoCell}</td>
+                  <td>${item.guardado}</td>
+                </tr>`;
+            });
+            recebidosHtml += '</tbody></table>';
 
-            window.fecharJanela = function(id) {
-                document.getElementById(id).classList.add('hidden');
-            };
+            containerDiv.innerHTML = solicitadosHtml + recebidosHtml;
+            containerDiv.style.display = 'block';
+          } else {
+            containerDiv.style.display = 'none';
+          }
         });
-    </script>
+      });
+
+      const deleteButtons = document.querySelectorAll('.delete-button');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const mes = button.getAttribute('data-mes');
+          const dataCurta = button.getAttribute('data-data');
+
+          if (confirm(`Deseja excluir o relatório de ${dataCurta} no mês ${mes}?`)) {
+            delete relatoriosMes[mes][dataCurta];
+            if (Object.keys(relatoriosMes[mes]).length === 0) {
+              delete relatoriosMes[mes];
+            }
+            localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
+            location.reload();
+          }
+        });
+      });
+    });
+
+    function mostrarJustificativa(justificativa) {
+      alert(`Justificativa: ${justificativa || 'Nenhuma justificativa registrada.'}`);
+    }
+  </script>
 </body>
 </html>
