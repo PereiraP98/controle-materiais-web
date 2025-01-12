@@ -13,14 +13,16 @@
             height: auto;
         }
 
-        body.dark-mode #themeToggleButton img {
-            filter: invert(1) brightness(1.2);
+        .relatorio-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
         }
 
         .relatorio-table {
-            margin-top: 20px;
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
 
         .relatorio-table th, .relatorio-table td {
@@ -34,14 +36,22 @@
             font-weight: bold;
         }
 
-        .relatorio-link {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 500;
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .relatorio-link:hover {
-            text-decoration: underline;
+        .button-container button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -62,33 +72,65 @@
                     <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
                          alt="Logout" width="30" height="30">
                 </button>
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
-                         alt="Tema Escuro" width="30" height="30">
-                </button>
             </div>
         </div>
     </header>
 
-    <main class="main-container">
-        <section class="detalhes-container">
-            <h2>Relatórios Disponíveis</h2>
-            <table class="relatorio-table">
-                <thead>
-                    <tr>
-                        <th>DATA</th>
-                        <th>DETALHES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>11/01</td>
-                        <td><a href="detalhesRelatorio.html" class="relatorio-link">Ver Relatório</a></td>
-                    </tr>
-                    <!-- Outros relatórios serão listados dinamicamente -->
-                </tbody>
-            </table>
-        </section>
+    <main>
+        <div class="relatorio-container">
+            <!-- Tabela de Materiais Solicitados -->
+            <section class="detalhes-container">
+                <h2>Materiais Solicitados</h2>
+                <table class="relatorio-table" id="tabelaSolicitados">
+                    <thead>
+                        <tr>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>QTD</th>
+                            <th>DESTINO</th>
+                            <th>DATA</th>
+                            <th>HORA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dados inseridos dinamicamente -->
+                        <tr>
+                            <td colspan="6">Nenhum material solicitado no momento.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Tabela de Materiais Recebidos -->
+            <section class="detalhes-container">
+                <h2>Materiais Recebidos</h2>
+                <table class="relatorio-table" id="tabelaRecebidos">
+                    <thead>
+                        <tr>
+                            <th>LOCAL</th>
+                            <th>ITEM</th>
+                            <th>QTD</th>
+                            <th>DESTINO</th>
+                            <th>DATA</th>
+                            <th>HORA</th>
+                            <th>RECEBIDO</th>
+                            <th>TEMPO</th>
+                            <th>GUARDADO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dados inseridos dinamicamente -->
+                        <tr>
+                            <td colspan="9">Nenhum material recebido no momento.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <div class="button-container">
+            <button onclick="location.href='index.html'">Voltar ao Painel</button>
+        </div>
     </main>
 
     <footer>
@@ -96,19 +138,49 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Tema escuro
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
+        // Função para popular as tabelas dinamicamente
+        document.addEventListener("DOMContentLoaded", function () {
+            const solicitados = [
+                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "11/01", hora: "22:40" }
+            ];
+
+            const recebidos = [
+                { local: "CA", item: "20239", qtd: "1", destino: "PICKING", data: "11/01", hora: "22:40", recebido: "23:21", tempo: "00:41", guardado: "NÃO" }
+            ];
+
+            const tabelaSolicitados = document.querySelector("#tabelaSolicitados tbody");
+            const tabelaRecebidos = document.querySelector("#tabelaRecebidos tbody");
+
+            // Populando a tabela de solicitados
+            if (solicitados.length > 0) {
+                tabelaSolicitados.innerHTML = solicitados.map(item => `
+                    <tr>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.qtd}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.data}</td>
+                        <td>${item.hora}</td>
+                    </tr>
+                `).join("");
             }
 
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                document.body.classList.toggle('dark-mode');
-                const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-                localStorage.setItem('theme', theme);
-            });
+            // Populando a tabela de recebidos
+            if (recebidos.length > 0) {
+                tabelaRecebidos.innerHTML = recebidos.map(item => `
+                    <tr>
+                        <td>${item.local}</td>
+                        <td>${item.item}</td>
+                        <td>${item.qtd}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.data}</td>
+                        <td>${item.hora}</td>
+                        <td>${item.recebido}</td>
+                        <td>${item.tempo}</td>
+                        <td>${item.guardado}</td>
+                    </tr>
+                `).join("");
+            }
         });
     </script>
 </body>
