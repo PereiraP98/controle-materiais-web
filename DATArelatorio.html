@@ -5,65 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
 
         .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .header-container h1 {
             margin: 0;
+            font-size: 24px;
+            color: #007bff;
         }
 
-        .relatorios-container {
-            padding: 20px;
+        .folders-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
         }
 
-        .pasta {
-            margin-bottom: 20px;
-        }
-
-        .pasta h2 {
-            background-color: #f4f4f4;
-            padding: 10px;
-            margin: 0 0 10px 0;
-            border-radius: 4px;
-        }
-
-        .arquivo {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            margin: 5px;
-            border-radius: 4px;
-            text-align: center;
+        .folder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-            text-decoration: none;
+            width: 120px;
         }
 
-        .arquivo:hover {
+        .folder img {
+            width: 100px;
+            height: auto;
+        }
+
+        .folder-name {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            max-width: 300px;
+        }
+
+        .popup h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .popup .file {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .popup .file:hover {
             background-color: #0056b3;
         }
 
-        .relatorio-detalhes {
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 20px;
+        .report-details {
             display: none;
+            margin-top: 30px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         table {
@@ -102,57 +130,60 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <h1>Relatórios de Materiais</h1>
-            <button onclick="location.href='index.html'" style="background-color: #fff; color: #007bff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Voltar ao Painel</button>
-        </div>
+    <header class="header-container">
+        <h1>Relatórios de Materiais</h1>
     </header>
 
-    <main class="relatorios-container">
-        <!-- Exemplo de pastas e arquivos -->
-        <div class="pasta">
-            <h2>Janeiro</h2>
-            <a href="#" class="arquivo" onclick="exibirRelatorio('12_01_2025')">12_01_2025</a>
-            <a href="#" class="arquivo" onclick="exibirRelatorio('15_01_2025')">15_01_2025</a>
+    <main class="folders-container">
+        <!-- Exemplo de pastas -->
+        <div class="folder" onclick="abrirPopup('popupJaneiro')">
+            <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="Pasta">
+            <div class="folder-name">Janeiro</div>
         </div>
 
-        <div class="pasta">
-            <h2>Fevereiro</h2>
-            <a href="#" class="arquivo" onclick="exibirRelatorio('05_02_2025')">05_02_2025</a>
+        <div class="folder" onclick="abrirPopup('popupFevereiro')">
+            <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="Pasta">
+            <div class="folder-name">Fevereiro</div>
         </div>
 
-        <!-- Seção para exibir o relatório -->
-        <div id="relatorioDetalhes" class="relatorio-detalhes">
-            <h2>Detalhes do Relatório</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>LOCAL</th>
-                        <th>ITEM</th>
-                        <th>QTD</th>
-                        <th>DESTINO</th>
-                        <th>DATA</th>
-                        <th>HORA</th>
-                        <th>RECEBIDO</th>
-                        <th>TEMPO</th>
-                        <th>GUARDADO</th>
-                    </tr>
-                </thead>
-                <tbody id="relatorioTableBody">
-                    <!-- Dados inseridos dinamicamente -->
-                </tbody>
-            </table>
+        <!-- Popups com arquivos -->
+        <div id="popupJaneiro" class="popup">
+            <h2>Arquivos - Janeiro</h2>
+            <a href="#" class="file" onclick="exibirRelatorio('12_01_2025')">12_01_2025</a>
+            <a href="#" class="file" onclick="exibirRelatorio('15_01_2025')">15_01_2025</a>
+        </div>
 
-            <div class="button-container">
-                <button onclick="fecharRelatorio()">Fechar Relatório</button>
-            </div>
+        <div id="popupFevereiro" class="popup">
+            <h2>Arquivos - Fevereiro</h2>
+            <a href="#" class="file" onclick="exibirRelatorio('05_02_2025')">05_02_2025</a>
         </div>
     </main>
 
-    <footer style="text-align: center; padding: 10px 0; background-color: #f4f4f4;">
-        © 2025 COLLAB - Todos os direitos reservados.
-    </footer>
+    <!-- Detalhes do relatório -->
+    <div id="reportDetails" class="report-details">
+        <h2>Detalhes do Relatório</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>RECEBIDO</th>
+                    <th>TEMPO</th>
+                    <th>GUARDADO</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                <!-- Dados inseridos dinamicamente -->
+            </tbody>
+        </table>
+        <div class="button-container">
+            <button onclick="fecharRelatorio()">Fechar Relatório</button>
+        </div>
+    </div>
 
     <script>
         const relatorios = {
@@ -167,9 +198,16 @@
             ]
         };
 
+        function abrirPopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.style.display = 'block';
+            }
+        }
+
         function exibirRelatorio(nomeRelatorio) {
             const dados = relatorios[nomeRelatorio];
-            const tbody = document.getElementById("relatorioTableBody");
+            const tbody = document.getElementById("reportTableBody");
             tbody.innerHTML = dados.map(item => `
                 <tr>
                     <td>${item.local}</td>
@@ -184,11 +222,11 @@
                 </tr>
             `).join("");
 
-            document.getElementById("relatorioDetalhes").style.display = "block";
+            document.getElementById("reportDetails").style.display = "block";
         }
 
         function fecharRelatorio() {
-            document.getElementById("relatorioDetalhes").style.display = "none";
+            document.getElementById("reportDetails").style.display = "none";
         }
     </script>
 </body>
