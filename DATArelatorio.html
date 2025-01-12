@@ -17,9 +17,9 @@
             cursor: pointer;
             margin: 10px;
         }
-        .folder img {
-            width: 100px;
-            height: auto;
+        .folder-icon {
+            font-size: 50px;
+            color: #007bff;
         }
         .file-window {
             display: none;
@@ -72,11 +72,11 @@
 
     <div class="folders">
         <div class="folder" onclick="openFolder('jan')">
-            <img src="folder.png" alt="Janeiro">
+            <div class="folder-icon">📂</div>
             <p>Janeiro</p>
         </div>
         <div class="folder" onclick="openFolder('feb')">
-            <img src="folder.png" alt="Fevereiro">
+            <div class="folder-icon">📂</div>
             <p>Fevereiro</p>
         </div>
         <!-- Continue com os meses até dezembro -->
