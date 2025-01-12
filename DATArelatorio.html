@@ -10,191 +10,186 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
-        .year {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .folders {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
         .folder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: inline-block;
+            width: 120px;
+            text-align: center;
             cursor: pointer;
+            margin: 10px;
         }
-
-        .folder-icon {
-            font-size: 50px;
-            color: #007bff;
+        .folder img {
+            width: 100px;
+            height: auto;
         }
-
-        .folder-name {
-            margin-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .file-list {
-            margin-top: 20px;
-            padding: 15px;
+        .file-window {
+            display: none;
+            background-color: #f4f4f4;
             border: 1px solid #ccc;
             border-radius: 5px;
-            display: none;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
         }
-
-        .file-list.open {
-            display: block;
-        }
-
         .file {
+            display: block;
             cursor: pointer;
             margin: 5px 0;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
+            color: #007bff;
+            text-decoration: underline;
         }
-
         .file:hover {
-            background-color: #f0f0f0;
+            color: #0056b3;
         }
-
-        .details {
-            margin-top: 20px;
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #ff0000;
+            font-size: 16px;
+        }
+        .data-section {
             display: none;
+            margin-top: 20px;
         }
-
-        .details.open {
-            display: block;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
-
-        th, td {
+        table th, table td {
             border: 1px solid #ccc;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
-
-        th {
-            background-color: #f9f9f9;
-        }
-
-        .close-details {
-            cursor: pointer;
-            color: red;
-            margin-top: -10px;
-            margin-bottom: 10px;
+        table th {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="year">2025</div>
+    <h1>Relatórios de Materiais</h1>
+
     <div class="folders">
-        <div class="folder" onclick="toggleFolder('januaryFiles')">
-            <div class="folder-icon">📂</div>
-            <div class="folder-name">Janeiro</div>
+        <div class="folder" onclick="openFolder('jan')">
+            <img src="folder.png" alt="Janeiro">
+            <p>Janeiro</p>
         </div>
-        <div class="folder" onclick="toggleFolder('februaryFiles')">
-            <div class="folder-icon">📂</div>
-            <div class="folder-name">Fevereiro</div>
+        <div class="folder" onclick="openFolder('feb')">
+            <img src="folder.png" alt="Fevereiro">
+            <p>Fevereiro</p>
         </div>
-        <!-- Continue com outras pastas -->
+        <!-- Continue com os meses até dezembro -->
     </div>
 
-    <!-- Arquivos da pasta Janeiro -->
-    <div id="januaryFiles" class="file-list">
-        <div class="file" onclick="showDetails('januaryDetails')">12_01_2025</div>
-        <div class="file" onclick="showDetails('januaryDetails')">15_01_2025</div>
+    <div id="fileWindow" class="file-window">
+        <span class="close-btn" onclick="closeFileWindow()">✖</span>
+        <h3>Arquivos</h3>
+        <div id="fileList"></div>
     </div>
 
-    <!-- Detalhes do relatório -->
-    <div id="januaryDetails" class="details">
-        <span class="close-details" onclick="closeDetails('januaryDetails')">&times; Fechar</span>
-
-        <h3>Materiais Solicitados</h3>
+    <div class="data-section" id="dataSection">
+        <h2>Detalhes de Materiais Solicitados</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Local</th>
-                    <th>Item</th>
-                    <th>Quantidade</th>
-                    <th>Destino</th>
-                    <th>Data</th>
-                    <th>Hora</th>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>RECEBER</th>
+                    <th>TEMPO</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>CA</td>
-                    <td>20239</td>
-                    <td>1</td>
-                    <td>Picking</td>
-                    <td>12/01/2025</td>
-                    <td>22:40</td>
-                </tr>
-                <!-- Outros itens solicitados -->
+            <tbody id="solicitadosData">
+                <!-- Dados preenchidos dinamicamente -->
             </tbody>
         </table>
 
-        <h3>Materiais Recebidos</h3>
+        <h2>Detalhes de Materiais Recebidos</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Local</th>
-                    <th>Item</th>
-                    <th>Quantidade</th>
-                    <th>Destino</th>
-                    <th>Data</th>
-                    <th>Hora Solicitada</th>
-                    <th>Hora Recebida</th>
+                    <th>LOCAL</th>
+                    <th>ITEM</th>
+                    <th>QTD</th>
+                    <th>DESTINO</th>
+                    <th>DATA</th>
+                    <th>HORA</th>
+                    <th>RECEBIDO</th>
+                    <th>TEMPO</th>
+                    <th>GUARDADO</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>CA</td>
-                    <td>20239</td>
-                    <td>1</td>
-                    <td>Picking</td>
-                    <td>12/01/2025</td>
-                    <td>22:40</td>
-                    <td>23:21</td>
-                </tr>
-                <!-- Outros itens recebidos -->
+            <tbody id="recebidosData">
+                <!-- Dados preenchidos dinamicamente -->
             </tbody>
         </table>
     </div>
 
     <script>
-        function toggleFolder(folderId) {
-            const folder = document.getElementById(folderId);
-            folder.classList.toggle('open');
+        const mockData = {
+            solicitados: [
+                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "11/01", hora: "10:00", receber: "Sim", tempo: "00:30" }
+            ],
+            recebidos: [
+                { local: "CA", item: "20239", qtd: "1", destino: "PICKING", data: "11/01", hora: "22:40", recebido: "23:21", tempo: "00:41", guardado: "Não" }
+            ]
+        };
+
+        function openFolder(month) {
+            const fileWindow = document.getElementById("fileWindow");
+            const fileList = document.getElementById("fileList");
+
+            fileList.innerHTML = `
+                <div class="file" onclick="openFile('12_01_2025')">12_01_2025</div>
+                <!-- Adicione outros arquivos aqui -->
+            `;
+
+            fileWindow.style.display = "block";
         }
 
-        function showDetails(detailsId) {
-            const details = document.getElementById(detailsId);
-            const openDetails = document.querySelector('.details.open');
-            if (openDetails) {
-                openDetails.classList.remove('open');
-            }
-            details.classList.add('open');
-            // Fecha a lista de arquivos após abrir detalhes
-            document.querySelectorAll('.file-list').forEach(list => list.classList.remove('open'));
+        function closeFileWindow() {
+            const fileWindow = document.getElementById("fileWindow");
+            fileWindow.style.display = "none";
         }
 
-        function closeDetails(detailsId) {
-            const details = document.getElementById(detailsId);
-            details.classList.remove('open');
+        function openFile(fileName) {
+            closeFileWindow();
+            const dataSection = document.getElementById("dataSection");
+            const solicitadosData = document.getElementById("solicitadosData");
+            const recebidosData = document.getElementById("recebidosData");
+
+            solicitadosData.innerHTML = mockData.solicitados.map(item => `
+                <tr>
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.qtd}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.data}</td>
+                    <td>${item.hora}</td>
+                    <td>${item.receber}</td>
+                    <td>${item.tempo}</td>
+                </tr>
+            `).join("");
+
+            recebidosData.innerHTML = mockData.recebidos.map(item => `
+                <tr>
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.qtd}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.data}</td>
+                    <td>${item.hora}</td>
+                    <td>${item.recebido}</td>
+                    <td>${item.tempo}</td>
+                    <td>${item.guardado}</td>
+                </tr>
+            `).join("");
+
+            dataSection.style.display = "block";
         }
     </script>
 </body>
