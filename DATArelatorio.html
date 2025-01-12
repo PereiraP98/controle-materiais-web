@@ -3,50 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios de Materiais</title>
+    <title>Relatórios</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        .logo {
-            width: 60px;
-            height: auto;
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .relatorio-container {
+        .header-container {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            align-items: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
         }
 
-        .relatorio-table {
+        .header-container h1 {
+            margin: 0;
+        }
+
+        .relatorios-container {
+            padding: 20px;
+        }
+
+        .pasta {
+            margin-bottom: 20px;
+        }
+
+        .pasta h2 {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 0 0 10px 0;
+            border-radius: 4px;
+        }
+
+        .arquivo {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .arquivo:hover {
+            background-color: #0056b3;
+        }
+
+        .relatorio-detalhes {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            display: none;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .relatorio-table th, .relatorio-table td {
+        table th, table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
         }
 
-        .relatorio-table th {
+        table th {
             background-color: #f4f4f4;
-            font-weight: bold;
         }
 
         .button-container {
-            margin-top: 20px;
             text-align: center;
+            margin-top: 20px;
         }
 
         .button-container button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
             padding: 10px 20px;
+            border: none;
             border-radius: 4px;
+            background-color: #007bff;
+            color: white;
             cursor: pointer;
         }
 
@@ -58,130 +104,92 @@
 <body>
     <header>
         <div class="header-container">
-            <div class="logo-container">
-                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
-                     alt="DevCore Logo" class="logo">
-            </div>
             <h1>Relatórios de Materiais</h1>
-            <div class="header-buttons">
-                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
-                         alt="Painel" width="30" height="30">
-                </button>
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
-                         alt="Logout" width="30" height="30">
-                </button>
-            </div>
+            <button onclick="location.href='index.html'" style="background-color: #fff; color: #007bff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Voltar ao Painel</button>
         </div>
     </header>
 
-    <main>
-        <div class="relatorio-container">
-            <!-- Tabela de Materiais Solicitados -->
-            <section class="detalhes-container">
-                <h2>Materiais Solicitados</h2>
-                <table class="relatorio-table" id="tabelaSolicitados">
-                    <thead>
-                        <tr>
-                            <th>LOCAL</th>
-                            <th>ITEM</th>
-                            <th>QTD</th>
-                            <th>DESTINO</th>
-                            <th>DATA</th>
-                            <th>HORA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dados inseridos dinamicamente -->
-                        <tr>
-                            <td colspan="6">Nenhum material solicitado no momento.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- Tabela de Materiais Recebidos -->
-            <section class="detalhes-container">
-                <h2>Materiais Recebidos</h2>
-                <table class="relatorio-table" id="tabelaRecebidos">
-                    <thead>
-                        <tr>
-                            <th>LOCAL</th>
-                            <th>ITEM</th>
-                            <th>QTD</th>
-                            <th>DESTINO</th>
-                            <th>DATA</th>
-                            <th>HORA</th>
-                            <th>RECEBIDO</th>
-                            <th>TEMPO</th>
-                            <th>GUARDADO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dados inseridos dinamicamente -->
-                        <tr>
-                            <td colspan="9">Nenhum material recebido no momento.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+    <main class="relatorios-container">
+        <!-- Exemplo de pastas e arquivos -->
+        <div class="pasta">
+            <h2>Janeiro</h2>
+            <a href="#" class="arquivo" onclick="exibirRelatorio('12_01_2025')">12_01_2025</a>
+            <a href="#" class="arquivo" onclick="exibirRelatorio('15_01_2025')">15_01_2025</a>
         </div>
 
-        <div class="button-container">
-            <button onclick="location.href='index.html'">Voltar ao Painel</button>
+        <div class="pasta">
+            <h2>Fevereiro</h2>
+            <a href="#" class="arquivo" onclick="exibirRelatorio('05_02_2025')">05_02_2025</a>
+        </div>
+
+        <!-- Seção para exibir o relatório -->
+        <div id="relatorioDetalhes" class="relatorio-detalhes">
+            <h2>Detalhes do Relatório</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>TEMPO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody id="relatorioTableBody">
+                    <!-- Dados inseridos dinamicamente -->
+                </tbody>
+            </table>
+
+            <div class="button-container">
+                <button onclick="fecharRelatorio()">Fechar Relatório</button>
+            </div>
         </div>
     </main>
 
-    <footer>
-        © 2024 COLLAB - Todos os direitos reservados.
+    <footer style="text-align: center; padding: 10px 0; background-color: #f4f4f4;">
+        © 2025 COLLAB - Todos os direitos reservados.
     </footer>
 
     <script>
-        // Função para popular as tabelas dinamicamente
-        document.addEventListener("DOMContentLoaded", function () {
-            const solicitados = [
-                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "11/01", hora: "22:40" }
-            ];
+        const relatorios = {
+            "12_01_2025": [
+                { local: "CA", item: "12345", qtd: "2", destino: "PICKING", data: "12/01/2025", hora: "10:30", recebido: "10:50", tempo: "00:20", guardado: "SIM" }
+            ],
+            "15_01_2025": [
+                { local: "CA", item: "67890", qtd: "1", destino: "MESA", data: "15/01/2025", hora: "14:00", recebido: "14:30", tempo: "00:30", guardado: "NÃO" }
+            ],
+            "05_02_2025": [
+                { local: "VF", item: "11111", qtd: "3", destino: "PICKING", data: "05/02/2025", hora: "09:00", recebido: "09:20", tempo: "00:20", guardado: "SIM" }
+            ]
+        };
 
-            const recebidos = [
-                { local: "CA", item: "20239", qtd: "1", destino: "PICKING", data: "11/01", hora: "22:40", recebido: "23:21", tempo: "00:41", guardado: "NÃO" }
-            ];
+        function exibirRelatorio(nomeRelatorio) {
+            const dados = relatorios[nomeRelatorio];
+            const tbody = document.getElementById("relatorioTableBody");
+            tbody.innerHTML = dados.map(item => `
+                <tr>
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.qtd}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.data}</td>
+                    <td>${item.hora}</td>
+                    <td>${item.recebido}</td>
+                    <td>${item.tempo}</td>
+                    <td>${item.guardado}</td>
+                </tr>
+            `).join("");
 
-            const tabelaSolicitados = document.querySelector("#tabelaSolicitados tbody");
-            const tabelaRecebidos = document.querySelector("#tabelaRecebidos tbody");
+            document.getElementById("relatorioDetalhes").style.display = "block";
+        }
 
-            // Populando a tabela de solicitados
-            if (solicitados.length > 0) {
-                tabelaSolicitados.innerHTML = solicitados.map(item => `
-                    <tr>
-                        <td>${item.local}</td>
-                        <td>${item.item}</td>
-                        <td>${item.qtd}</td>
-                        <td>${item.destino}</td>
-                        <td>${item.data}</td>
-                        <td>${item.hora}</td>
-                    </tr>
-                `).join("");
-            }
-
-            // Populando a tabela de recebidos
-            if (recebidos.length > 0) {
-                tabelaRecebidos.innerHTML = recebidos.map(item => `
-                    <tr>
-                        <td>${item.local}</td>
-                        <td>${item.item}</td>
-                        <td>${item.qtd}</td>
-                        <td>${item.destino}</td>
-                        <td>${item.data}</td>
-                        <td>${item.hora}</td>
-                        <td>${item.recebido}</td>
-                        <td>${item.tempo}</td>
-                        <td>${item.guardado}</td>
-                    </tr>
-                `).join("");
-            }
-        });
+        function fecharRelatorio() {
+            document.getElementById("relatorioDetalhes").style.display = "none";
+        }
     </script>
 </body>
 </html>
