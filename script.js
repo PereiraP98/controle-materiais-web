@@ -1999,82 +1999,35 @@ function gerarRelatorio() {
     const detalhesTable = document.querySelector("#detalhesTable tbody");
     const recebidosTable = document.querySelector("#recebidosTable tbody");
 
-    // Verificar se as tabelas existem e contêm linhas
-    if (!detalhesTable || !recebidosTable) {
-        alert("Tabelas não encontradas na página.");
-        return;
-    }
-
+    // Extrair dados das tabelas
     const solicitados = [];
     const recebidos = [];
 
-    // Verificar se há dados na tabela de materiais solicitados
-    const detalhesRows = detalhesTable.querySelectorAll("tr");
-    if (detalhesRows.length > 0) {
-        detalhesRows.forEach((row) => {
-            const cells = Array.from(row.children);
-            if (cells.length === 8) { // Certificar-se de que há 8 colunas
-                const rowData = [
-                    cells[0]?.textContent.trim(), // LOCAL
-                    cells[1]?.textContent.trim(), // ITEM
-                    cells[2]?.textContent.trim(), // QTD
-                    cells[3]?.textContent.trim(), // DESTINO
-                    cells[4]?.textContent.trim(), // DATA
-                    cells[5]?.textContent.trim(), // HORA
-                    cells[6]?.textContent.trim(), // RECEBER
-                    cells[7]?.textContent.trim(), // TEMPO
-                ];
-                solicitados.push(rowData);
-            }
-        });
-    }
+    detalhesTable.querySelectorAll("tr").forEach((row) => {
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        solicitados.push(rowData);
+    });
 
-    // Verificar se há dados na tabela de materiais recebidos
-    const recebidosRows = recebidosTable.querySelectorAll("tr");
-    if (recebidosRows.length > 0) {
-        recebidosRows.forEach((row) => {
-            const cells = Array.from(row.children);
-            if (cells.length === 9) { // Certificar-se de que há 9 colunas
-                const rowData = [
-                    cells[0]?.textContent.trim(), // LOCAL
-                    cells[1]?.textContent.trim(), // ITEM
-                    cells[2]?.textContent.trim(), // QTD
-                    cells[3]?.textContent.trim(), // DESTINO
-                    cells[4]?.textContent.trim(), // DATA
-                    cells[5]?.textContent.trim(), // HORA
-                    cells[6]?.textContent.trim(), // RECEBIDO
-                    cells[7]?.textContent.trim(), // TEMPO
-                    cells[8]?.textContent.trim(), // GUARDADO
-                ];
-                recebidos.push(rowData);
-            }
-        });
-    }
-
-    // Verificar se há dados para salvar
-    if (solicitados.length === 0 && recebidos.length === 0) {
-        alert("Nenhum dado disponível para gerar relatório.");
-        return;
-    }
+    recebidosTable.querySelectorAll("tr").forEach((row) => {
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        recebidos.push(rowData);
+    });
 
     // Criar estrutura para salvar no localStorage
     const dataAtual = new Date();
-    const nomeRelatorio = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${dataAtual.getDate().toString().padStart(2, "0")}`;
+    const nomeRelatorio = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1).toString().padStart(2, '0')}-${dataAtual.getDate().toString().padStart(2, '0')}`;
     const relatorio = {
         data: nomeRelatorio,
         solicitados,
         recebidos,
     };
 
-    // Armazenar no localStorage
+    // Armazenar no localStorage (pode ser substituído por API ou banco de dados no futuro)
     let relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
     relatorios.push(relatorio);
     localStorage.setItem("relatorios", JSON.stringify(relatorios));
 
-    // Aviso de sucesso
-    alert(`Relatório gerado com sucesso para ${nomeRelatorio}!`);
+    // Redirecionar para a página DATArelatorio.html
+    window.location.href = "DATArelatorio.html";
 }
-
 
