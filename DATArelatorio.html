@@ -3,92 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios de Materiais</title>
+    <title>Relatórios</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        .container {
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
         }
 
         h1 {
-            text-align: center;
-            color: #007bff;
             margin-bottom: 20px;
         }
 
+        .folder-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
         .folder {
-            display: inline-block;
+            width: 120px;
             text-align: center;
-            margin: 10px;
             cursor: pointer;
         }
 
-        .folder span {
-            display: block;
-            margin-top: 5px;
-            font-weight: bold;
+        .folder img {
+            width: 100px;
+            height: auto;
         }
 
-        .folder-icon {
-            font-size: 48px;
+        .files-container {
+            margin-top: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .files-container h2 {
+            margin-top: 0;
+        }
+
+        .file-item {
+            margin: 10px 0;
+            cursor: pointer;
             color: #007bff;
         }
 
-        .files {
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .file-item:hover {
+            text-decoration: underline;
         }
 
-        .files table {
+        .tables-container {
+            display: none;
+            margin-top: 20px;
+            width: 90%;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        .files th, .files td {
+        th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
         }
 
-        .files th {
+        th {
             background-color: #007bff;
             color: white;
-            font-weight: bold;
-        }
-
-        .files tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .hidden {
-            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Relatórios de Materiais</h1>
+    <h1>Relatórios</h1>
 
-        <div class="folders">
-            <!-- Pastas geradas dinamicamente -->
+    <div class="folder-container" id="folderContainer">
+        <!-- Pastas dos meses serão geradas dinamicamente aqui -->
+    </div>
+
+    <div class="files-container" id="filesContainer">
+        <h2>Arquivos</h2>
+        <div id="fileList">
+            <!-- Arquivos serão listados dinamicamente aqui -->
         </div>
+    </div>
 
-        <div id="files" class="files hidden">
-            <h2>Relatórios</h2>
-            <table>
+    <div class="tables-container" id="tablesContainer">
+        <section>
+            <h2>Detalhes de Materiais Solicitados</h2>
+            <table id="solicitadosTable">
                 <thead>
                     <tr>
                         <th>LOCAL</th>
@@ -101,11 +122,15 @@
                         <th>TEMPO</th>
                     </tr>
                 </thead>
-                <tbody id="solicitados"></tbody>
+                <tbody>
+                    <!-- Dados dos materiais solicitados serão inseridos aqui -->
+                </tbody>
             </table>
+        </section>
 
-            <h2>Materiais Recebidos</h2>
-            <table>
+        <section>
+            <h2>Detalhes de Materiais Recebidos</h2>
+            <table id="recebidosTable">
                 <thead>
                     <tr>
                         <th>LOCAL</th>
@@ -119,73 +144,92 @@
                         <th>GUARDADO</th>
                     </tr>
                 </thead>
-                <tbody id="recebidos"></tbody>
+                <tbody>
+                    <!-- Dados dos materiais recebidos serão inseridos aqui -->
+                </tbody>
             </table>
-        </div>
+        </section>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const foldersContainer = document.querySelector('.folders');
-            const filesContainer = document.getElementById('files');
-            const solicitadosTable = document.getElementById('solicitados');
-            const recebidosTable = document.getElementById('recebidos');
+        document.addEventListener("DOMContentLoaded", function () {
+            const folderContainer = document.getElementById("folderContainer");
+            const filesContainer = document.getElementById("filesContainer");
+            const fileList = document.getElementById("fileList");
+            const tablesContainer = document.getElementById("tablesContainer");
+            const solicitadosTable = document.querySelector("#solicitadosTable tbody");
+            const recebidosTable = document.querySelector("#recebidosTable tbody");
 
-            // Obter relatórios do localStorage
-            const relatorios = JSON.parse(localStorage.getItem('relatorios')) || [];
+            // Carregar relatórios do localStorage
+            const relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
 
-            // Organizar relatórios por mês
-            const relatoriosPorMes = relatorios.reduce((acc, relatorio) => {
-                const [ano, mes] = relatorio.data.split('-');
-                const key = `${ano}-${mes}`;
+            // Criar pastas dos meses dinamicamente
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const pastas = {};
 
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(relatorio);
+            relatorios.forEach((relatorio) => {
+                const data = new Date(relatorio.data);
+                const ano = data.getFullYear();
+                const mes = data.getMonth();
 
-                return acc;
-            }, {});
+                if (!pastas[ano]) pastas[ano] = {};
+                if (!pastas[ano][mes]) pastas[ano][mes] = [];
 
-            // Criar pastas
-            Object.keys(relatoriosPorMes).forEach((mesAno) => {
-                const [ano, mes] = mesAno.split('-');
-                const folder = document.createElement('div');
-                folder.classList.add('folder');
-                folder.innerHTML = `<div class="folder-icon">📂</div><span>${mesAno}</span>`;
-                foldersContainer.appendChild(folder);
+                pastas[ano][mes].push(relatorio);
+            });
 
-                folder.addEventListener('click', () => {
-                    // Mostrar relatórios dentro da pasta
-                    const relatóriosMes = relatoriosPorMes[mesAno];
+            Object.keys(pastas).forEach((ano) => {
+                Object.keys(pastas[ano]).forEach((mes) => {
+                    const folder = document.createElement("div");
+                    folder.className = "folder";
+                    folder.innerHTML = `<img src='https://cdn-icons-png.flaticon.com/512/716/716784.png' alt='Pasta'>
+                                       <p>${meses[mes]}</p>`;
 
-                    solicitadosTable.innerHTML = '';
-                    recebidosTable.innerHTML = '';
+                    folder.addEventListener("click", function () {
+                        fileList.innerHTML = "";
+                        filesContainer.style.display = "flex";
+                        tablesContainer.style.display = "none";
 
-                    relatóriosMes.forEach((relatorio) => {
-                        const solicitadosRows = relatorio.solicitados.map((solicitado) => {
-                            const row = document.createElement('tr');
-                            solicitado.forEach((cell) => {
-                                const td = document.createElement('td');
-                                td.textContent = cell;
-                                row.appendChild(td);
+                        pastas[ano][mes].forEach((relatorio) => {
+                            const fileItem = document.createElement("div");
+                            fileItem.className = "file-item";
+                            fileItem.textContent = relatorio.data;
+
+                            fileItem.addEventListener("click", function () {
+                                filesContainer.style.display = "none";
+                                tablesContainer.style.display = "block";
+
+                                solicitadosTable.innerHTML = "";
+                                recebidosTable.innerHTML = "";
+
+                                relatorio.solicitados.forEach((item) => {
+                                    const row = document.createElement("tr");
+                                    const columns = ["LOCAL", "ITEM", "QTD", "DESTINO", "DATA", "HORA", "RECEBER", "TEMPO"];
+                                    columns.forEach((col, index) => {
+                                        const td = document.createElement("td");
+                                        td.textContent = item[index] || "";
+                                        row.appendChild(td);
+                                    });
+                                    solicitadosTable.appendChild(row);
+                                });
+
+                                relatorio.recebidos.forEach((item) => {
+                                    const row = document.createElement("tr");
+                                    const columns = ["LOCAL", "ITEM", "QTD", "DESTINO", "DATA", "HORA", "RECEBIDO", "TEMPO", "GUARDADO"];
+                                    columns.forEach((col, index) => {
+                                        const td = document.createElement("td");
+                                        td.textContent = item[index] || "";
+                                        row.appendChild(td);
+                                    });
+                                    recebidosTable.appendChild(row);
+                                });
                             });
-                            return row;
-                        });
 
-                        const recebidosRows = relatorio.recebidos.map((recebido) => {
-                            const row = document.createElement('tr');
-                            recebido.forEach((cell) => {
-                                const td = document.createElement('td');
-                                td.textContent = cell;
-                                row.appendChild(td);
-                            });
-                            return row;
+                            fileList.appendChild(fileItem);
                         });
-
-                        solicitadosRows.forEach((row) => solicitadosTable.appendChild(row));
-                        recebidosRows.forEach((row) => recebidosTable.appendChild(row));
                     });
 
-                    filesContainer.classList.remove('hidden');
+                    folderContainer.appendChild(folder);
                 });
             });
         });
