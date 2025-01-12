@@ -1999,19 +1999,35 @@ function gerarRelatorio() {
     const detalhesTable = document.querySelector("#detalhesTable tbody");
     const recebidosTable = document.querySelector("#recebidosTable tbody");
 
+    // Verificar se as tabelas existem na página
+    if (!detalhesTable || !recebidosTable) {
+        alert("Não foi possível localizar os dados para gerar o relatório.");
+        return;
+    }
+
     // Extrair dados das tabelas
     const solicitados = [];
     const recebidos = [];
 
     detalhesTable.querySelectorAll("tr").forEach((row) => {
         const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
-        solicitados.push(rowData);
+        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
+            solicitados.push(rowData);
+        }
     });
 
     recebidosTable.querySelectorAll("tr").forEach((row) => {
         const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
-        recebidos.push(rowData);
+        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
+            recebidos.push(rowData);
+        }
     });
+
+    // Verificar se há dados a serem registrados
+    if (solicitados.length === 0 && recebidos.length === 0) {
+        alert("Nenhum dado disponível para gerar o relatório.");
+        return;
+    }
 
     // Criar estrutura para salvar no localStorage
     const dataAtual = new Date();
@@ -2027,7 +2043,9 @@ function gerarRelatorio() {
     relatorios.push(relatorio);
     localStorage.setItem("relatorios", JSON.stringify(relatorios));
 
-    // Redirecionar para a página DATArelatorio.html
-    window.location.href = "DATArelatorio.html";
+    // Exibir mensagem de sucesso ao gerar o relatório
+    alert(`Relatório de ${nomeRelatorio} gerado com sucesso!`);
+
+    // Permanecer na página (não redirecionar para DATArelatorio.html)
 }
 
