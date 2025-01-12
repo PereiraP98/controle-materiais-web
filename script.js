@@ -1996,6 +1996,9 @@ function fecharJanela(janelaId) {
 
 function gerarRelatorio() {
     const solicitados = [];
+    const recebidos = [];
+
+    // Coleta os dados dos materiais solicitados
     const solicitadosRows = document.querySelectorAll("#detalhesTable tbody tr");
     solicitadosRows.forEach(row => {
         const cells = row.querySelectorAll("td");
@@ -2006,43 +2009,43 @@ function gerarRelatorio() {
             destino: cells[4]?.textContent || "",
             data: cells[5]?.textContent || "",
             hora: cells[6]?.textContent || "",
-            reportado: cells[7]?.textContent || ""
+            reportado: cells[8]?.textContent.includes("⚠️") ? "Sim" : "Não"
         });
     });
 
-    const recebidos = [];
+    // Coleta os dados dos materiais recebidos
     const recebidosRows = document.querySelectorAll("#recebidosTable tbody tr");
     recebidosRows.forEach(row => {
         const cells = row.querySelectorAll("td");
         recebidos.push({
             local: cells[1]?.textContent || "",
             item: cells[2]?.textContent || "",
-            quantidade: cells[3]?.textContent || "",
+            qtd: cells[3]?.textContent || "",
             destino: cells[4]?.textContent || "",
             data: cells[5]?.textContent || "",
-            horario: cells[6]?.textContent || "",
+            hora: cells[6]?.textContent || "",
             recebido: cells[7]?.textContent || "",
             tempo: cells[8]?.textContent || "",
-            guardado: cells[9]?.textContent || ""
+            guardado: cells[9]?.textContent.includes("SIM") ? "Sim" : "Não"
         });
     });
 
-    // Obtém o mês e a data para organizar os relatórios
-    const now = new Date();
-    const mes = now.toLocaleString("pt-BR", { month: "long" }).toUpperCase();
-    const dataCurta = now.toLocaleDateString("pt-BR").replace(/\//g, "_");
+    // Gera o relatório consolidado
+    const relatorio = {
+        solicitados,
+        recebidos,
+        dataGeracao: new Date().toLocaleString("pt-BR")
+    };
 
-    // Carrega os relatórios existentes no localStorage
+    // Salva no localStorage ou envia para geração de PDF
+    const mesAtual = new Date().toLocaleString("pt-BR", { month: "long", year: "numeric" });
+    const dataAtual = new Date().toLocaleDateString("pt-BR");
+
     const relatoriosMes = JSON.parse(localStorage.getItem("relatoriosMes")) || {};
-
-    // Adiciona a estrutura do mês e da data, se necessário
-    if (!relatoriosMes[mes]) {
-        relatoriosMes[mes] = {};
-    }
-    relatoriosMes[mes][dataCurta] = { solicitados, recebidos };
-
-    // Salva os relatórios no localStorage
+    if (!relatoriosMes[mesAtual]) relatoriosMes[mesAtual] = {};
+    relatoriosMes[mesAtual][dataAtual] = relatorio;
     localStorage.setItem("relatoriosMes", JSON.stringify(relatoriosMes));
 
     alert("Relatório gerado com sucesso!");
+    window.location.href = "DATArelatorio.html";
 }
