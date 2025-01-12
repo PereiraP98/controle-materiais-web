@@ -204,10 +204,9 @@
 
                                 relatorio.solicitados.forEach((item) => {
                                     const row = document.createElement("tr");
-                                    const columns = ["LOCAL", "ITEM", "QTD", "DESTINO", "DATA", "HORA", "RECEBER", "TEMPO"];
-                                    columns.forEach((col, index) => {
+                                    item.forEach((cell) => {
                                         const td = document.createElement("td");
-                                        td.textContent = item[index] || "";
+                                        td.textContent = cell;
                                         row.appendChild(td);
                                     });
                                     solicitadosTable.appendChild(row);
@@ -215,10 +214,9 @@
 
                                 relatorio.recebidos.forEach((item) => {
                                     const row = document.createElement("tr");
-                                    const columns = ["LOCAL", "ITEM", "QTD", "DESTINO", "DATA", "HORA", "RECEBIDO", "TEMPO", "GUARDADO"];
-                                    columns.forEach((col, index) => {
+                                    item.forEach((cell) => {
                                         const td = document.createElement("td");
-                                        td.textContent = item[index] || "";
+                                        td.textContent = cell;
                                         row.appendChild(td);
                                     });
                                     recebidosTable.appendChild(row);
