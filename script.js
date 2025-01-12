@@ -1995,57 +1995,38 @@ function fecharJanela(janelaId) {
 }
 
 function gerarRelatorio() {
+    // Selecionar tabelas de materiais solicitados e recebidos
+    const detalhesTable = document.querySelector("#detalhesTable tbody");
+    const recebidosTable = document.querySelector("#recebidosTable tbody");
+
+    // Extrair dados das tabelas
     const solicitados = [];
     const recebidos = [];
 
-    // Coleta os dados dos materiais solicitados
-    const solicitadosRows = document.querySelectorAll("#detalhesTable tbody tr");
-    solicitadosRows.forEach(row => {
-        const cells = row.querySelectorAll("td");
-        solicitados.push({
-            local: cells[1]?.textContent || "",
-            item: cells[2]?.textContent || "",
-            qtd: cells[3]?.textContent || "",
-            destino: cells[4]?.textContent || "",
-            data: cells[5]?.textContent || "",
-            hora: cells[6]?.textContent || "",
-            reportado: cells[8]?.textContent.includes("⚠️") ? "Sim" : "Não"
-        });
+    detalhesTable.querySelectorAll("tr").forEach((row) => {
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        solicitados.push(rowData);
     });
 
-    // Coleta os dados dos materiais recebidos
-    const recebidosRows = document.querySelectorAll("#recebidosTable tbody tr");
-    recebidosRows.forEach(row => {
-        const cells = row.querySelectorAll("td");
-        recebidos.push({
-            local: cells[1]?.textContent || "",
-            item: cells[2]?.textContent || "",
-            qtd: cells[3]?.textContent || "",
-            destino: cells[4]?.textContent || "",
-            data: cells[5]?.textContent || "",
-            hora: cells[6]?.textContent || "",
-            recebido: cells[7]?.textContent || "",
-            tempo: cells[8]?.textContent || "",
-            guardado: cells[9]?.textContent.includes("SIM") ? "Sim" : "Não"
-        });
+    recebidosTable.querySelectorAll("tr").forEach((row) => {
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        recebidos.push(rowData);
     });
 
-    // Gera o relatório consolidado
+    // Criar estrutura para salvar no localStorage
+    const dataAtual = new Date();
+    const nomeRelatorio = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1).toString().padStart(2, '0')}-${dataAtual.getDate().toString().padStart(2, '0')}`;
     const relatorio = {
+        data: nomeRelatorio,
         solicitados,
         recebidos,
-        dataGeracao: new Date().toLocaleString("pt-BR")
     };
 
-    // Salva no localStorage ou envia para geração de PDF
-    const mesAtual = new Date().toLocaleString("pt-BR", { month: "long", year: "numeric" });
-    const dataAtual = new Date().toLocaleDateString("pt-BR");
+    // Armazenar no localStorage (pode ser substituído por API ou banco de dados no futuro)
+    let relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
+    relatorios.push(relatorio);
+    localStorage.setItem("relatorios", JSON.stringify(relatorios));
 
-    const relatoriosMes = JSON.parse(localStorage.getItem("relatoriosMes")) || {};
-    if (!relatoriosMes[mesAtual]) relatoriosMes[mesAtual] = {};
-    relatoriosMes[mesAtual][dataAtual] = relatorio;
-    localStorage.setItem("relatoriosMes", JSON.stringify(relatoriosMes));
-
-    alert("Relatório gerado com sucesso!");
+    // Redirecionar para a página DATArelatorio.html
     window.location.href = "DATArelatorio.html";
 }
