@@ -2009,39 +2009,16 @@ function gerarRelatorio() {
     const solicitados = [];
     const recebidos = [];
 
-    // Organizar os dados corretamente para "Materiais Solicitados"
     detalhesTable.querySelectorAll("tr").forEach((row) => {
-        const cells = Array.from(row.children);
-        if (cells.length === 8) { // Certificar-se de que há 8 colunas
-            const rowData = {
-                local: cells[0]?.textContent.trim(),
-                item: cells[1]?.textContent.trim(),
-                qtd: cells[2]?.textContent.trim(),
-                destino: cells[3]?.textContent.trim(),
-                data: cells[4]?.textContent.trim(),
-                hora: cells[5]?.textContent.trim(),
-                receber: cells[6]?.textContent.trim(),
-                tempo: cells[7]?.textContent.trim(),
-            };
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
             solicitados.push(rowData);
         }
     });
 
-    // Organizar os dados corretamente para "Materiais Recebidos"
     recebidosTable.querySelectorAll("tr").forEach((row) => {
-        const cells = Array.from(row.children);
-        if (cells.length === 9) { // Certificar-se de que há 9 colunas
-            const rowData = {
-                local: cells[0]?.textContent.trim(),
-                item: cells[1]?.textContent.trim(),
-                qtd: cells[2]?.textContent.trim(),
-                destino: cells[3]?.textContent.trim(),
-                data: cells[4]?.textContent.trim(),
-                hora: cells[5]?.textContent.trim(),
-                recebido: cells[6]?.textContent.trim(),
-                tempo: cells[7]?.textContent.trim(),
-                guardado: cells[8]?.textContent.trim(),
-            };
+        const rowData = Array.from(row.children).map((cell) => cell.textContent.trim());
+        if (rowData.length > 0 && rowData.some(cell => cell !== "")) {
             recebidos.push(rowData);
         }
     });
@@ -2061,7 +2038,7 @@ function gerarRelatorio() {
         recebidos,
     };
 
-    // Armazenar no localStorage
+    // Armazenar no localStorage (pode ser substituído por API ou banco de dados no futuro)
     let relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
     relatorios.push(relatorio);
     localStorage.setItem("relatorios", JSON.stringify(relatorios));
@@ -2071,5 +2048,4 @@ function gerarRelatorio() {
 
     // Permanecer na página (não redirecionar para DATArelatorio.html)
 }
-
 
