@@ -18,6 +18,12 @@
     .relatorio-data:hover {
       color: darkblue;
     }
+    .delete-button {
+      margin-left: 10px;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
     .detalhes-container {
       margin: 10px 0;
     }
@@ -78,8 +84,11 @@
         const datasObjeto = relatoriosMes[mes];
 
         for (let dataCurta in datasObjeto) {
-          html += `<div class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
-                     📄 ${dataCurta}
+          html += `<div class="relatorio-data-container">
+                     <span class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
+                       📄 ${dataCurta}
+                     </span>
+                     <span class="delete-button" data-mes="${mes}" data-data="${dataCurta}">❌</span>
                    </div>
                    <div id="container-${mes}-${dataCurta}" style="display:none;"></div>`;
         }
@@ -172,6 +181,23 @@
             containerDiv.style.display = 'block';
           } else {
             containerDiv.style.display = 'none';
+          }
+        });
+      });
+
+      const deleteButtons = document.querySelectorAll('.delete-button');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const mes = button.getAttribute('data-mes');
+          const dataCurta = button.getAttribute('data-data');
+
+          if (confirm(`Deseja excluir o relatório de ${dataCurta} no mês ${mes}?`)) {
+            delete relatoriosMes[mes][dataCurta];
+            if (Object.keys(relatoriosMes[mes]).length === 0) {
+              delete relatoriosMes[mes];
+            }
+            localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
+            location.reload();
           }
         });
       });
