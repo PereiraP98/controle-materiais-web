@@ -1,211 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatórios Armazenados</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .relatorio-mes {
-      margin-bottom: 20px;
-    }
-    .relatorio-data {
-      margin-left: 20px;
-      cursor: pointer;
-      color: blue;
-      text-decoration: underline;
-    }
-    .relatorio-data:hover {
-      color: darkblue;
-    }
-    .delete-button {
-      margin-left: 10px;
-      cursor: pointer;
-      color: red;
-      font-weight: bold;
-    }
-    .detalhes-container {
-      margin: 10px 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 6px 8px;
-      text-align: left;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Gerados</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="relatorio.js"></script>
 </head>
-<body class="detalhes-page">
-  <header>
-    <div class="header-container">
-      <div class="logo-container">
-        <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
-             alt="DevCore Logo" class="logo" />
-      </div>
-      <h1>Relatórios Armazenados</h1>
-      <div class="header-buttons">
-        <button onclick="window.location.href='detalhes.html'">Voltar</button>
-      </div>
-    </div>
-  </header>
+<body>
+    <header>
+        <h1>Relatórios Gerados</h1>
+    </header>
+    <main>
+        <ul id="listaRelatorios"></ul>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const listaRelatorios = document.getElementById("listaRelatorios");
+            const relatorios = JSON.parse(localStorage.getItem("relatorios")) || [];
 
-  <main class="main-container">
-    <section class="detalhes-container">
-      <h2>Pastas por Mês</h2>
-      <div id="listaRelatorios"></div>
-    </section>
-  </main>
-
-  <footer>
-    © 2024 COLLAB - Todos os direitos reservados.
-  </footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const stored = localStorage.getItem('relatoriosMes');
-      if (!stored) {
-        document.getElementById('listaRelatorios').innerHTML = '<p>Nenhum relatório encontrado.</p>';
-        return;
-      }
-
-      const relatoriosMes = JSON.parse(stored);
-      let html = '';
-
-      for (let mes in relatoriosMes) {
-        html += `<div class="relatorio-mes">
-                   <h3>📁 ${mes}</h3>`;
-
-        const datasObjeto = relatoriosMes[mes];
-
-        for (let dataCurta in datasObjeto) {
-          html += `<div class="relatorio-data-container">
-                     <span class="relatorio-data" data-mes="${mes}" data-data="${dataCurta}">
-                       📄 ${dataCurta}
-                     </span>
-                     <span class="delete-button" data-mes="${mes}" data-data="${dataCurta}">❌</span>
-                   </div>
-                   <div id="container-${mes}-${dataCurta}" style="display:none;"></div>`;
-        }
-
-        html += `</div>`;
-      }
-
-      document.getElementById('listaRelatorios').innerHTML = html;
-
-      const dataElements = document.querySelectorAll('.relatorio-data');
-      dataElements.forEach(elem => {
-        elem.addEventListener('click', () => {
-          const mes = elem.getAttribute('data-mes');
-          const dataCurta = elem.getAttribute('data-data');
-          const containerId = `container-${mes}-${dataCurta}`;
-
-          const { solicitados, recebidos } = relatoriosMes[mes][dataCurta];
-          const containerDiv = document.getElementById(containerId);
-
-          if (containerDiv.style.display === 'none') {
-            let solicitadosHtml = `
-              <h4>Materiais Solicitados</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>REPORTADO</th>
-                  </tr>
-                </thead>
-                <tbody>
-            `;
-            solicitados.forEach(item => {
-              solicitadosHtml += `
-                <tr>
-                  <td>${item.local}</td>
-                  <td>${item.item}</td>
-                  <td>${item.qtd}</td>
-                  <td>${item.destino}</td>
-                  <td>${item.data}</td>
-                  <td>${item.hora}</td>
-                  <td>${item.reportado}</td>
-                </tr>`;
+            relatorios.forEach((relatorio, index) => {
+                const li = document.createElement("li");
+                li.textContent = relatorio.data;
+                li.dataset.index = index;
+                li.style.cursor = "pointer";
+                li.addEventListener("click", () => {
+                    sessionStorage.setItem("relatorioSelecionado", JSON.stringify(relatorio));
+                    window.location.href = "detalhesRelatorio.html";
+                });
+                listaRelatorios.appendChild(li);
             });
-            solicitadosHtml += '</tbody></table>';
 
-            let recebidosHtml = `
-              <h4>Materiais Recebidos</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>LOCAL</th>
-                    <th>ITEM</th>
-                    <th>QTD</th>
-                    <th>DESTINO</th>
-                    <th>DATA</th>
-                    <th>HORA</th>
-                    <th>RECEBIDO</th>
-                    <th>TEMPO</th>
-                    <th>GUARDADO</th>
-                  </tr>
-                </thead>
-                <tbody>
-            `;
-            recebidos.forEach(item => {
-              const tempoCell = item.tempo.includes('📜')
-                ? `<span style="color: green; cursor: pointer;" onclick="mostrarJustificativa('${item.justificativa}')">${item.tempo}</span>`
-                : item.tempo;
-
-              recebidosHtml += `
-                <tr>
-                  <td>${item.local}</td>
-                  <td>${item.item}</td>
-                  <td>${item.quantidade}</td>
-                  <td>${item.destino}</td>
-                  <td>${item.data}</td>
-                  <td>${item.horario}</td>
-                  <td>${item.recebido}</td>
-                  <td>${tempoCell}</td>
-                  <td>${item.guardado}</td>
-                </tr>`;
-            });
-            recebidosHtml += '</tbody></table>';
-
-            containerDiv.innerHTML = solicitadosHtml + recebidosHtml;
-            containerDiv.style.display = 'block';
-          } else {
-            containerDiv.style.display = 'none';
-          }
-        });
-      });
-
-      const deleteButtons = document.querySelectorAll('.delete-button');
-      deleteButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const mes = button.getAttribute('data-mes');
-          const dataCurta = button.getAttribute('data-data');
-
-          if (confirm(`Deseja excluir o relatório de ${dataCurta} no mês ${mes}?`)) {
-            delete relatoriosMes[mes][dataCurta];
-            if (Object.keys(relatoriosMes[mes]).length === 0) {
-              delete relatoriosMes[mes];
+            if (relatorios.length === 0) {
+                listaRelatorios.textContent = "Nenhum relatório gerado.";
             }
-            localStorage.setItem('relatoriosMes', JSON.stringify(relatoriosMes));
-            location.reload();
-          }
         });
-      });
-    });
-
-    function mostrarJustificativa(justificativa) {
-      alert(`Justificativa: ${justificativa || 'Nenhuma justificativa registrada.'}`);
-    }
-  </script>
+    </script>
 </body>
 </html>
