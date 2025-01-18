@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Cabeçalho -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Itens</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Inclusão do SDK do EmailJS (se necessário) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+    <style>
+        .logo {
+            width: 60px;
+            height: auto;
+        }
+
+        body.dark-mode #themeToggleButton img {
+            filter: invert(1) brightness(1.2);
+        }
+
+        /* Botão de gerar relatório (se quiser estilizar) */
+        .gerar-relatorio-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .gerar-relatorio-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Oculta elementos com .hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="detalhes-page"><!-- Você pode trocar a classe para .monitoramento-page se quiser -->
+    <!-- Overlay para escurecer o fundo -->
+    <div id="overlay" class="overlay"></div>
+
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <!-- Logo da sua aplicação -->
+                <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
+                     alt="DevCore Logo" class="logo">
+            </div>
+            <!-- TÍTULO ESPECÍFICO DA PÁGINA -->
+            <h1>Monitoramento de Itens</h1>
+            <div class="header-buttons">
+                <!-- Botão de Voltar ao Painel -->
+                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
+                         alt="Painel" width="30" height="30">
+                </button>
+                <!-- Botão de Logout -->
+                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
+                         alt="Logout" width="30" height="30">
+                </button>
+                <!-- Botão de Alternar Tema (Dark/Light) -->
+                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
+                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
+                         alt="Tema Escuro" width="30" height="30">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Seção para visualizar todos os materiais SOLICITADOS em tempo real -->
+        <section class="detalhes-container">
+            <h2>Materiais Solicitados</h2>
+
+            <div class="botoes-detalhes" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <div>
+                    <!-- Botões de exclusão, reporte, etc. (Opcional manter) -->
+                    <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
+                    <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
+                </div>
+                <div>
+                    <!-- Botão de gerar relatório (se quiser manter) -->
+                    <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button" onclick="gerarRelatorio()">Gerar relatório</button>
+                </div>
+            </div>
+
+            <table id="detalhesTable">
+                <thead>
+                    <tr>
+                        <!-- Tabela de Solicitados: 9 colunas (0..8) -->
+                        <th class="checkbox-column hidden">
+                            <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
+                        </th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBER</th>
+                        <th>TEMPO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Seção para visualizar todos os materiais RECEBIDOS em tempo real -->
+        <section class="detalhes-container">
+            <div class="header-with-button">
+                <h2>Materiais Recebidos</h2>
+                <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
+            </div>
+
+            <table id="recebidosTable">
+                <thead>
+                    <tr>
+                        <!-- Tabela de Recebidos: 10 colunas (0..9) -->
+                        <th class="checkbox-column hidden">
+                            <input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos">
+                        </th>
+                        <th>LOCAL</th>
+                        <th>ITEM</th>
+                        <th>QTD</th>
+                        <th>DESTINO</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>RECEBIDO</th>
+                        <th>TEMPO</th>
+                        <th>GUARDADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Janelas Flutuantes (mesmas do detalhes.html, para permitir interação se desejar) -->
+
+    <!-- Janela Flutuante de Recebimento -->
+    <div id="janelaRecebimento" class="janela-flutuante hidden">
+        <h2>Receber Material</h2>
+        <form id="recebimentoForm">
+            <label for="recebimentoQuantidade">Quantidade Recebida:</label>
+            <input type="number" id="recebimentoQuantidade" name="recebimentoQuantidade" value="1" min="1" required>
+
+            <label for="recebimentoHorario">Horário Recebido:</label>
+            <input type="time" id="recebimentoHorario" name="recebimentoHorario" required>
+
+            <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
+
+            <div class="button-container">
+                <button type="button" id="cancelarRecebimentoButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="confirmarRecebimentoButton" class="primary-button">Receber</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela Flutuante para Justificativa de Material Atrasado -->
+    <div id="janelaJustificativaAtraso" class="janela-flutuante hidden">
+        <h2>Justificativa de material atrasado</h2>
+        <form id="justificativaForm">
+            <div style="text-align: left; margin-bottom: 10px;">
+                <label>
+                    <input type="radio" name="radioJustificativa" value="sem" checked>
+                    Material atrasado sem justificativa
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="radioJustificativa" value="com">
+                    Justificar atraso deste material
+                </label>
+            </div>
+
+            <textarea 
+                id="justificativaTexto"
+                rows="4"
+                maxlength="200"
+                placeholder="Descreva o motivo do atraso (máx 200 caracteres)..."
+                style="width: 100%; resize: none; display: block; margin-bottom: 5px;"
+                disabled
+            ></textarea>
+
+            <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">
+                0/200
+            </div>
+
+            <div class="button-container">
+                <button type="button" id="cancelarJustificativaButton" class="secondary-button">Cancelar</button>
+                <button type="submit" id="salvarJustificativaButton" class="primary-button">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela de Confirmação (reaproveitada) -->
+    <div id="janelaConfirmacao" class="janela-flutuante hidden">
+        <div class="conteudo-justificativa">
+            <p id="confirmacaoMensagem" class="titulo-janela"></p>
+            <div class="botoes-justificativa">
+                <button id="okConfirmacaoButton" class="primary-button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Janela Flutuante para Mostrar Justificativa Salva -->
+    <div id="janelaMostrarJustificativa" class="janela-flutuante hidden">
+        <h2>Justificativa Salva</h2>
+        <p id="justificativaTextoSalvo" style="text-align: left; margin-bottom: 20px;"></p>
+        <div class="button-container">
+            <button type="button" id="editarJustificativaButton" class="primary-button">Editar</button>
+            <button type="button" id="fecharMostrarJustificativaButton" class="secondary-button">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Janela Flutuante para Guardar Material -->
+    <div id="janelaGuardarMaterial" class="janela-flutuante hidden">
+        <h2>Guarda de Material Recebido</h2>
+        <form id="guardarMaterialForm">
+            <label for="guardarCodigo">Código do Item:</label>
+            <p id="guardarCodigo" style="font-weight: bold;"></p>
+
+            <label for="guardarQuantidade">Quantidade de Caixa:</label>
+            <input type="number" id="guardarQuantidade" name="guardarQuantidade" min="1" required>
+
+            <label for="guardarEndereco">Endereço:</label>
+            <input type="text" id="guardarEndereco" name="guardarEndereco" style="text-transform: uppercase;" required>
+
+            <label for="guardarEnderecoUZ">Endereço de UZ:</label>
+            <input type="number" id="guardarEnderecoUZ" name="guardarEnderecoUZ" required>
+
+            <label for="guardarNome">Nome do Repositor:</label>
+            <input type="text" id="guardarNome" name="guardarNome" style="text-transform: uppercase;" required>
+
+            <div class="button-container">
+                <button type="button" id="cancelarGuardarButton" class="secondary-button" onclick="fecharJanelaGuardarMaterial()">Cancelar</button>
+                <button type="button" id="guardarMaterialButton" class="primary-button" onclick="guardarMaterial()">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Janela Flutuante para Visualizar Material Guardado -->
+    <div id="janelaVisualizacaoMaterial" class="janela-flutuante hidden">
+        <h2>Material Guardado</h2>
+        <p><strong>Código do Item:</strong> <span id="visualizacaoCodigo"></span></p>
+        <p><strong>Quantidade de Caixas:</strong> <span id="visualizacaoQuantidade"></span></p>
+        <p><strong>Endereço:</strong> <span id="visualizacaoEndereco"></span></p>
+        <p><strong>Endereço de UZ:</strong> <span id="visualizacaoEnderecoUZ"></span></p>
+        <p><strong>Nome do Repositor:</strong> <span id="visualizacaoNome" style="text-transform: uppercase;"></span></p>
+        <input type="hidden" id="visualizacaoIndex">
+        <div class="button-container">
+            <button onclick="abrirJanelaGuardarMaterial(document.getElementById('visualizacaoIndex').value)" class="primary-button">Editar</button>
+            <button onclick="fecharJanela('janelaVisualizacaoMaterial')" class="secondary-button">Fechar</button>
+        </div>
+    </div>
+
+    <footer>
+        © 2024 COLLAB - Todos os direitos reservados.
+    </footer>
+
+    <!-- Scripts (podem ser os mesmos do detalhes.html) -->
+    <script src="script.js?v=2"></script>
+    <script src="relatorio.js"></script>
+
+    <!-- Ajustes de Tema e inicialização -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Carregar tema salvo
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+
+            // Botão de alternar tema
+            const themeToggleButton = document.getElementById('themeToggleButton');
+            themeToggleButton.addEventListener('click', function () {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
+
+    <!-- Pequeno script opcional para formatar datas se necessário (similar ao detalhes.html) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function formatarData(dataStr) {
+                if (!dataStr) return dataStr;
+                const partes = dataStr.split("/");
+                if (partes.length === 3) {
+                    const dia = partes[0].padStart(2, "0");
+                    const mes = partes[1].padStart(2, "0");
+                    return `${dia}/${mes}`; // dd/mm
+                }
+                return dataStr;
+            }
+
+            const detalhesTable = document.querySelector("#detalhesTable tbody");
+            if (detalhesTable) {
+                detalhesTable.querySelectorAll("tr").forEach((row) => {
+                    const dataCell = row.children[5];
+                    if (dataCell) {
+                        dataCell.textContent = formatarData(dataCell.textContent.trim());
+                    }
+                });
+            }
+
+            const recebidosTable = document.querySelector("#recebidosTable tbody");
+            if (recebidosTable) {
+                recebidosTable.querySelectorAll("tr").forEach((row) => {
+                    const dataCell = row.children[5];
+                    if (dataCell) {
+                        dataCell.textContent = formatarData(dataCell.textContent.trim());
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
