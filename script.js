@@ -717,7 +717,9 @@ document.addEventListener("DOMContentLoaded", function () {
     atualizarTabelaReservados();
     atualizarTabelaSolicitados();
 
-    // Código específico para detalhes.html
+    // ================================
+    //   BLOCO ESPECÍFICO PARA DETALHES
+    // ================================
     if (window.location.pathname.includes("detalhes.html")) {
         var detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
         var detalhesTableElement = document.getElementById("detalhesTable");
@@ -1159,13 +1161,13 @@ document.addEventListener("DOMContentLoaded", function () {
             var recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
             if (recebidosTable) {
                 recebidosTable.innerHTML = ""; // Limpa a tabela antes de recarregar
-        
+
                 recebidos.forEach(function (item, index) {
                     // Verifica se é atrasado
-                    let [h, m] = (item.tempo || "00:00").split(":" ).map(Number);
+                    let [h, m] = (item.tempo || "00:00").split(":").map(Number);
                     let totalMin = h * 60 + m;
                     let isAtrasado = (totalMin > 30);
-        
+
                     // Define o emoji (⚠️ ou 📜 ou nada)
                     let emoji = "";
                     if (isAtrasado) {
@@ -1175,14 +1177,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             emoji = "⚠️"; // Não justificado
                         }
                     }
-        
+
                     // Monta o campo TEMPO (ex: "01:25⚠️" ou "01:25📜")
                     let tempoCell = (item.tempo || "");
                     if (emoji) {
-                        tempoCell += `${emoji}`; // Adiciona o emoji ao lado do tempo
+                        tempoCell += `${emoji}`;
                     }
-        
-                    // Adiciona funcionalidade de clicar para visualizar ou justificar
+
+                    // Se quisesse permitir cliques no DETALHES, mantemos essa lógica
                     if (emoji) {
                         if (emoji === "⚠️") {
                             // Clique para justificar
@@ -1204,7 +1206,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             `;
                         }
                     }
-        
+
                     // Atualiza a célula de GUARDADO
                     let guardadoCell = item.guardado || "NÃO📥";
                     guardadoCell = `
@@ -1214,7 +1216,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             ${guardadoCell}
                         </span>
                     `;
-        
+
                     // Cria uma nova linha na tabela
                     var newRow = document.createElement("tr");
                     newRow.innerHTML = `
@@ -1231,7 +1233,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
                     recebidosTable.appendChild(newRow);
                 });
-        
+
                 // Mensagem para tabela vazia
                 if (recebidos.length === 0) {
                     var emptyRow = document.createElement("tr");
@@ -1244,10 +1246,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Tabela de materiais recebidos não encontrada.");
             }
         }
-        
-        
-        
-        
 
         atualizarTabelaRecebidos();
 
@@ -1512,12 +1510,183 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    document.getElementById("selecionarDataButton").addEventListener("click", function () {
+    document.getElementById("selecionarDataButton")?.addEventListener("click", function () {
         const dateInput = document.getElementById("data-relatorio");
         if (dateInput) {
             dateInput.showPicker();
         }
     });
+
+    // =====================================
+    //   BLOCO ESPECÍFICO PARA MONITORAMENTO
+    // =====================================
+    if (window.location.pathname.includes("monitoramentodeitens.html")) {
+        
+        // Mesma função que formatTime em detalhes
+        function formatTime(milliseconds, showSeconds = false) {
+            if (milliseconds < 0) milliseconds = 0;
+            var totalSeconds = Math.floor(milliseconds / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+            var timeString = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+            if (showSeconds) {
+                timeString += ':' + seconds.toString().padStart(2, '0');
+            }
+            return timeString;
+        }
+
+        // --- Tabela de materiais solicitados (somente visualização) ---
+        function atualizarTabelaMonitoramentoSolicitados() {
+            const detalhes = JSON.parse(localStorage.getItem("detalhes")) || [];
+            const tbody = document.querySelector("#detalhesTable tbody");
+            if (!tbody) return;
+
+            tbody.innerHTML = "";
+
+            if (detalhes.length === 0) {
+                const emptyRow = document.createElement("tr");
+                emptyRow.innerHTML = `<td colspan="7" style="text-align:center;">Nenhum material solicitado.</td>`;
+                tbody.appendChild(emptyRow);
+                return;
+            }
+
+            detalhes.forEach((detalhe, index) => {
+                const newRow = document.createElement("tr");
+
+                // Verifica se horário é futuro ou passado
+                const agora = Date.now();
+                detalhe.isFuture = detalhe.timestamp > agora;
+                
+                // Calcula tempo
+                let tempoDisplay = detalhe.isFuture
+                    ? formatTime(detalhe.timestamp - agora, true)
+                    : formatTime(agora - detalhe.timestamp);
+
+                newRow.innerHTML = `
+                    <td>${detalhe.local}</td>
+                    <td>${detalhe.item}</td>
+                    <td>${detalhe.quantidade}</td>
+                    <td>${detalhe.destino}</td>
+                    <td>${detalhe.dataAtual}</td>
+                    <td>${detalhe.horario}</td>
+                    <td class="tempo-cell">${tempoDisplay}</td>
+                `;
+                tbody.appendChild(newRow);
+
+                // Atualização do tempo
+                const tempoCell = newRow.querySelector(".tempo-cell");
+                if (tempoCell) {
+                    function updateTimeCell(showSeconds = false) {
+                        const now = Date.now();
+                        const elapsed = now - detalhe.timestamp;
+                        
+                        // Se ainda for futuro, conta regressiva
+                        if (detalhe.isFuture) {
+                            let remaining = detalhe.timestamp - now;
+                            if (remaining < 0) {
+                                detalhe.isFuture = false;
+                                detalhe.timestamp = now;
+                                remaining = 0;
+                            }
+                            tempoCell.textContent = formatTime(remaining, showSeconds);
+                        } else {
+                            tempoCell.textContent = formatTime(elapsed, showSeconds);
+                        }
+                    }
+
+                    // Intervalo “tempo real”
+                    if (detalhe.isFuture) {
+                        var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                        intervalMap.set(index, countdownInterval);
+                    } else {
+                        var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                        intervalMap.set(index, elapsedInterval);
+                    }
+
+                    // Eventos de hover para mostrar segundos
+                    newRow.addEventListener("mouseover", function () {
+                        if (intervalMap.has(index)) {
+                            clearInterval(intervalMap.get(index));
+                            intervalMap.delete(index);
+                        }
+                        updateTimeCell(true);
+                        if (!tempoCell._hoverInterval) {
+                            tempoCell._hoverInterval = setInterval(() => {
+                                const now = Date.now();
+                                if (detalhe.isFuture) {
+                                    tempoCell.textContent = formatTime(detalhe.timestamp - now, true);
+                                } else {
+                                    tempoCell.textContent = formatTime(now - detalhe.timestamp, true);
+                                }
+                            }, 1000);
+                        }
+                    });
+                    newRow.addEventListener("mouseout", function () {
+                        if (tempoCell._hoverInterval) {
+                            clearInterval(tempoCell._hoverInterval);
+                            delete tempoCell._hoverInterval;
+                        }
+                        // Retoma contagem normal
+                        if (detalhe.isFuture) {
+                            var countdownInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, countdownInterval);
+                        } else {
+                            var elapsedInterval = setInterval(() => updateTimeCell(false), 1000);
+                            intervalMap.set(index, elapsedInterval);
+                        }
+                    });
+                }
+            });
+        }
+
+        // --- Tabela de materiais recebidos (somente visualização) ---
+        function atualizarTabelaMonitoramentoRecebidos() {
+            const recebidos = JSON.parse(localStorage.getItem("recebidos")) || [];
+            const tbody = document.querySelector("#recebidosTable tbody");
+            if (!tbody) return;
+
+            tbody.innerHTML = "";
+
+            if (recebidos.length === 0) {
+                const emptyRow = document.createElement("tr");
+                emptyRow.innerHTML = `<td colspan="7" style="text-align:center;">Nenhum material recebido.</td>`;
+                tbody.appendChild(emptyRow);
+                return;
+            }
+
+            recebidos.forEach((item, index) => {
+                // Precisamos calcular se é futuro ou passado? Aqui, "recebido" normalmente é só decorrido
+                // Vamos usar item.horario (solicitação) e item.recebido ou item.tempo para exibir
+                // Mantemos a célula de TEMPO para acompanhar “tempo total” do item?
+
+                // Se você quiser exibir o “tempo” do item da mesma forma, podemos usar item.timestamp 
+                // ou reproduzir a lógica do “calcularTempoDecorrido”.  
+                // Abaixo, usarei a string item.tempo que já contém ex: "01:25", 
+                // mas sem atualizar via setInterval, pois é só leitura.  
+                // Se quiser setInterval igual a “detalhes”, precisa armazenar o timestamp de recebimento.
+
+                let tempoCell = item.tempo || ""; // "hh:mm"
+                // Se tiver que verificar atraso, etc., você poderia, mas aqui deixamos somente leitura.
+
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${item.local}</td>
+                    <td>${item.item}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${item.destino}</td>
+                    <td>${item.dataAtual}</td>
+                    <td>${item.horario}</td>
+                    <td>${tempoCell}</td>
+                `;
+                tbody.appendChild(newRow);
+            });
+        }
+
+        // Atualizar as tabelas de monitoramento
+        atualizarTabelaMonitoramentoSolicitados();
+        atualizarTabelaMonitoramentoRecebidos();
+    }
 });
 
 /* 
@@ -1752,7 +1921,7 @@ okConfirmacaoButton.onclick = function () {
 };
 
 // Função para lidar com o clique no botão "OK" da janela de confirmação
-document.getElementById("okConfirmacaoButton").addEventListener("click", function () {
+document.getElementById("okConfirmacaoButton")?.addEventListener("click", function () {
     // Fecha a janela de confirmação
     if (janelaConfirmacao) {
         janelaConfirmacao.style.animation = "slideUp 0.3s forwards";
@@ -1796,7 +1965,7 @@ window.mostrarJustificativa = function (index) {
     justificativaIndex = index;
 };
 
-document.getElementById("editarJustificativaButton").addEventListener("click", function () {
+document.getElementById("editarJustificativaButton")?.addEventListener("click", function () {
     // Fecha a janela de exibição
     let janelaMostrar = document.getElementById("janelaMostrarJustificativa");
     if (janelaMostrar) {
@@ -1810,7 +1979,7 @@ document.getElementById("editarJustificativaButton").addEventListener("click", f
     abrirJanelaJustificativa(justificativaIndex);
 });
 
-document.getElementById("fecharMostrarJustificativaButton").addEventListener("click", function () {
+document.getElementById("fecharMostrarJustificativaButton")?.addEventListener("click", function () {
     let janelaMostrar = document.getElementById("janelaMostrarJustificativa");
     if (janelaMostrar) {
         janelaMostrar.style.animation = "slideUp 0.3s forwards";
@@ -1857,10 +2026,6 @@ function abrirJanelaGuardarMaterial(index) {
     // Define o índice do item para salvar
     document.getElementById("guardarMaterialButton").dataset.index = index;
 }
-
-
-
-
 
 function guardarMaterial() {
     let index = document.getElementById("guardarMaterialButton").dataset.index;
@@ -2048,4 +2213,3 @@ function gerarRelatorio() {
 
     // Permanecer na página (não redirecionar para DATArelatorio.html)
 }
-
