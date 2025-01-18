@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Inclusão do SDK do EmailJS (se necessário) -->
+    <!-- Se estiver usando EmailJS ou outro SDK, pode manter aqui -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
     <style>
@@ -17,33 +17,31 @@
             height: auto;
         }
 
-        body.dark-mode #themeToggleButton img {
-            filter: invert(1) brightness(1.2);
-        }
-
-        /* Botão de gerar relatório (se quiser estilizar) */
-        .gerar-relatorio-button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .gerar-relatorio-button:hover {
-            background-color: #0056b3;
-        }
-
+        /* Não teremos botões, então nenhum estilo adicional é necessário para eles */
+        
         /* Oculta elementos com .hidden */
         .hidden {
             display: none !important;
         }
+
+        /* Tabelas para visualização */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
     </style>
 </head>
 
-<body class="detalhes-page"><!-- Você pode trocar a classe para .monitoramento-page se quiser -->
-    <!-- Overlay para escurecer o fundo -->
+<body class="detalhes-page">
+
+    <!-- Overlay para escurecer o fundo (usado para janelas flutuantes) -->
     <div id="overlay" class="overlay"></div>
 
     <header>
@@ -53,103 +51,61 @@
                 <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/Logo2.png?raw=true" 
                      alt="DevCore Logo" class="logo">
             </div>
-            <!-- TÍTULO ESPECÍFICO DA PÁGINA -->
+            <!-- Apenas o título: sem botões de painel, logout, tema etc. -->
             <h1>Monitoramento de Itens</h1>
-            <div class="header-buttons">
-                <!-- Botão de Voltar ao Painel -->
-                <button id="backToPanelButton" class="header-button" aria-label="Voltar ao Painel" title="Voltar ao Painel">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/painel.png?raw=true" 
-                         alt="Painel" width="30" height="30">
-                </button>
-                <!-- Botão de Logout -->
-                <button id="logoutButton" class="header-button" aria-label="Logout" title="Sair">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/logout.png?raw=true" 
-                         alt="Logout" width="30" height="30">
-                </button>
-                <!-- Botão de Alternar Tema (Dark/Light) -->
-                <button id="themeToggleButton" class="header-button" aria-label="Alternar Tema" title="Alternar Tema">
-                    <img src="https://github.com/PereiraP98/controle-materiais-web/blob/main/assets/temescuro.png?raw=true" 
-                         alt="Tema Escuro" width="30" height="30">
-                </button>
-            </div>
         </div>
     </header>
 
     <main class="main-container">
-        <!-- Seção para visualizar todos os materiais SOLICITADOS em tempo real -->
+        <!-- Seção de materiais solicitados (somente leitura) -->
         <section class="detalhes-container">
             <h2>Materiais Solicitados</h2>
-
-            <div class="botoes-detalhes" style="display: flex; justify-content: space-between; margin-top: 10px;">
-                <div>
-                    <!-- Botões de exclusão, reporte, etc. (Opcional manter) -->
-                    <button type="button" id="excluirItensButton" class="excluir-button">Excluir Itens</button>
-                    <button type="button" id="reportarItensButton" class="reportar-button">Reportar</button>
-                </div>
-                <div>
-                    <!-- Botão de gerar relatório (se quiser manter) -->
-                    <button type="button" id="gerarRelatorioButton" class="gerar-relatorio-button" onclick="gerarRelatorio()">Gerar relatório</button>
-                </div>
-            </div>
-
             <table id="detalhesTable">
                 <thead>
                     <tr>
-                        <!-- Tabela de Solicitados: 9 colunas (0..8) -->
-                        <th class="checkbox-column hidden">
-                            <input type="checkbox" id="selectAllCheckbox" title="Selecionar Todos">
-                        </th>
+                        <!-- Remove colunas de checkbox, botão receber, etc. -->
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
                         <th>DESTINO</th>
                         <th>DATA</th>
                         <th>HORA</th>
-                        <th>RECEBER</th>
                         <th>TEMPO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
+                    <!-- Preenchido dinamicamente via script.js -->
                 </tbody>
             </table>
         </section>
 
-        <!-- Seção para visualizar todos os materiais RECEBIDOS em tempo real -->
+        <!-- Seção de materiais recebidos (somente leitura) -->
         <section class="detalhes-container">
-            <div class="header-with-button">
-                <h2>Materiais Recebidos</h2>
-                <button type="button" id="excluirRecebidosButton" class="excluir-button">Excluir Itens</button>
-            </div>
-
+            <h2>Materiais Recebidos</h2>
             <table id="recebidosTable">
                 <thead>
                     <tr>
-                        <!-- Tabela de Recebidos: 10 colunas (0..9) -->
-                        <th class="checkbox-column hidden">
-                            <input type="checkbox" id="selectAllRecebidosCheckbox" title="Selecionar Todos">
-                        </th>
+                        <!-- Remove colunas de checkbox, RECEBIDO e GUARDADO "clicáveis" -->
                         <th>LOCAL</th>
                         <th>ITEM</th>
                         <th>QTD</th>
                         <th>DESTINO</th>
                         <th>DATA</th>
                         <th>HORA</th>
-                        <th>RECEBIDO</th>
                         <th>TEMPO</th>
-                        <th>GUARDADO</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Corpo da tabela preenchido dinamicamente via script.js -->
+                    <!-- Preenchido dinamicamente via script.js -->
                 </tbody>
             </table>
         </section>
     </main>
 
-    <!-- Janelas Flutuantes (mesmas do detalhes.html, para permitir interação se desejar) -->
+    <!-- As janelas flutuantes abaixo continuam no HTML, mas sem nenhum gatilho (sem botões). -->
+    <!-- Se quiser removê-las totalmente, pode excluir esses blocos. -->
 
-    <!-- Janela Flutuante de Recebimento -->
+    <!-- Janela Flutuante de Recebimento (hidden, sem botão que abra) -->
     <div id="janelaRecebimento" class="janela-flutuante hidden">
         <h2>Receber Material</h2>
         <form id="recebimentoForm">
@@ -162,6 +118,7 @@
             <input type="hidden" id="recebimentoIndex" name="recebimentoIndex">
 
             <div class="button-container">
+                <!-- Sem botões de ação nesta página, mas mantidos no HTML -->
                 <button type="button" id="cancelarRecebimentoButton" class="secondary-button">Cancelar</button>
                 <button type="submit" id="confirmarRecebimentoButton" class="primary-button">Receber</button>
             </div>
@@ -183,19 +140,15 @@
                     Justificar atraso deste material
                 </label>
             </div>
-
             <textarea 
                 id="justificativaTexto"
                 rows="4"
                 maxlength="200"
                 placeholder="Descreva o motivo do atraso (máx 200 caracteres)..."
-                style="width: 100%; resize: none; display: block; margin-bottom: 5px;"
+                style="width: 100%; resize: none; margin-bottom: 5px;"
                 disabled
             ></textarea>
-
-            <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">
-                0/200
-            </div>
+            <div id="contadorJustificativa" style="text-align: right; font-size: 0.85em; color: #999;">0/200</div>
 
             <div class="button-container">
                 <button type="button" id="cancelarJustificativaButton" class="secondary-button">Cancelar</button>
@@ -204,7 +157,7 @@
         </form>
     </div>
 
-    <!-- Janela de Confirmação (reaproveitada) -->
+    <!-- Janela de Confirmação -->
     <div id="janelaConfirmacao" class="janela-flutuante hidden">
         <div class="conteudo-justificativa">
             <p id="confirmacaoMensagem" class="titulo-janela"></p>
@@ -244,8 +197,8 @@
             <input type="text" id="guardarNome" name="guardarNome" style="text-transform: uppercase;" required>
 
             <div class="button-container">
-                <button type="button" id="cancelarGuardarButton" class="secondary-button" onclick="fecharJanelaGuardarMaterial()">Cancelar</button>
-                <button type="button" id="guardarMaterialButton" class="primary-button" onclick="guardarMaterial()">Guardar</button>
+                <button type="button" id="cancelarGuardarButton" class="secondary-button">Cancelar</button>
+                <button type="button" id="guardarMaterialButton" class="primary-button">Guardar</button>
             </div>
         </form>
     </div>
@@ -269,69 +222,54 @@
         © 2024 COLLAB - Todos os direitos reservados.
     </footer>
 
-    <!-- Scripts (podem ser os mesmos do detalhes.html) -->
-    <script src="script.js?v=2"></script>
-    <script src="relatorio.js"></script>
+    <!-- Pode reaproveitar o mesmo script.js que carrega os dados de localStorage,
+         mas lembre-se de que lá existem funções de clique e botões.
+         Caso queira, crie uma versão "só de leitura" do script. -->
 
-    <!-- Ajustes de Tema e inicialização -->
+    <script src="script.js"></script>
+    <!-- Se tiver um relatorio.js, pode tirar se não quer gerar relatórios -->
+    <!-- <script src="relatorio.js"></script> -->
+
+    <!-- Script opcional para formatar a data no formato dd/mm na tabela -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Carregar tema salvo
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
+    document.addEventListener("DOMContentLoaded", function () {
+        // Só removi referências a botões de excluir/receber. 
+        // Mantemos a formatação de data e a lógica de exibição do TEMPO.
+        
+        // Se seu script.js ainda cria botões, você pode comentá-los ou removê-los.
+        // Abaixo, apenas ajusto a formatação da DATA, se quiser.
+        function formatarData(dataStr) {
+            if (!dataStr) return dataStr;
+            const partes = dataStr.split("/");
+            if (partes.length === 3) {
+                const dia = partes[0].padStart(2, "0");
+                const mes = partes[1].padStart(2, "0");
+                return `${dia}/${mes}`; // dd/mm
             }
+            return dataStr;
+        }
 
-            // Botão de alternar tema
-            const themeToggleButton = document.getElementById('themeToggleButton');
-            themeToggleButton.addEventListener('click', function () {
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('theme', 'dark');
+        const detalhesTable = document.querySelector("#detalhesTable tbody");
+        if (detalhesTable) {
+            detalhesTable.querySelectorAll("tr").forEach((row) => {
+                const dataCell = row.children[4]; // A 5ª coluna agora é DATA (0..6)
+                if (dataCell) {
+                    dataCell.textContent = formatarData(dataCell.textContent.trim());
                 }
             });
-        });
-    </script>
+        }
 
-    <!-- Pequeno script opcional para formatar datas se necessário (similar ao detalhes.html) -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function formatarData(dataStr) {
-                if (!dataStr) return dataStr;
-                const partes = dataStr.split("/");
-                if (partes.length === 3) {
-                    const dia = partes[0].padStart(2, "0");
-                    const mes = partes[1].padStart(2, "0");
-                    return `${dia}/${mes}`; // dd/mm
+        const recebidosTable = document.querySelector("#recebidosTable tbody");
+        if (recebidosTable) {
+            recebidosTable.querySelectorAll("tr").forEach((row) => {
+                const dataCell = row.children[4]; // No recebidos, 5ª coluna é DATA (0..6)
+                if (dataCell) {
+                    dataCell.textContent = formatarData(dataCell.textContent.trim());
                 }
-                return dataStr;
-            }
-
-            const detalhesTable = document.querySelector("#detalhesTable tbody");
-            if (detalhesTable) {
-                detalhesTable.querySelectorAll("tr").forEach((row) => {
-                    const dataCell = row.children[5];
-                    if (dataCell) {
-                        dataCell.textContent = formatarData(dataCell.textContent.trim());
-                    }
-                });
-            }
-
-            const recebidosTable = document.querySelector("#recebidosTable tbody");
-            if (recebidosTable) {
-                recebidosTable.querySelectorAll("tr").forEach((row) => {
-                    const dataCell = row.children[5];
-                    if (dataCell) {
-                        dataCell.textContent = formatarData(dataCell.textContent.trim());
-                    }
-                });
-            }
-        });
+            });
+        }
+    });
     </script>
+
 </body>
 </html>
